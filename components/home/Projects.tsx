@@ -66,19 +66,43 @@ const projects = [
 
 export function Projects() {
   return (
-    <section id="projects" className="py-24 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <span className="inline-block px-4 py-2 bg-black text-sm uppercase tracking-wider text-white">
+    <section id="projects" className="py-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="text-center mb-16"
+        >
+          <motion.span
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
+            className="inline-block px-4 py-2 bg-black text-sm uppercase tracking-wider text-white"
+          >
             Төслүүд
-          </span>
-          <h2 className="text-4xl lg:text-5xl text-gray-900 mb-6">
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+            className="text-4xl lg:text-5xl text-gray-900 mb-6"
+          >
             Амжилттай <span className="text-[#0100FD]">төслүүд</span>
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
+            className="text-xl text-gray-600 max-w-3xl mx-auto"
+          >
             Бид олон төрлийн төсөл амжилттай хэрэгжүүлсэн туршлагатай
-          </p>
-        </div>
+          </motion.p>
+        </motion.div>
 
         <div className="grid lg:grid-cols-3 gap-8 mb-12">
           {projects.map((project, index) => (
@@ -142,3 +166,5 @@ export function Projects() {
     </section>
   );
 }
+
+export default Projects;

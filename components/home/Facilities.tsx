@@ -37,11 +37,11 @@ export const Facilities = () => {
           {facilities.map((facility, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{
-                duration: 0.8,
+                duration: 0.6,
                 ease: "easeOut",
                 delay: index * 0.2,
               }}
