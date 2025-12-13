@@ -1,0 +1,22 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle -->
+  <circle cx="40" cy="40" r="35" stroke="#FFFFFF" stroke-width="3" fill="none"/>
+  
+  <!-- Fan blades (ventilation symbol) -->
+  <g transform="translate(40, 40)">
+    <!-- Center circle -->
+    <circle cx="0" cy="0" r="4" fill="#FFFFFF"/>
+    
+    <!-- Blade 1 (top) -->
+    <path d="M 0,-4 Q -8,-12 -4,-18 Q 0,-20 4,-18 Q 8,-12 0,-4 Z" fill="#FFFFFF"/>
+    
+    <!-- Blade 2 (right) -->
+    <path d="M 4,0 Q 12,-8 18,-4 Q 20,0 18,4 Q 12,8 4,0 Z" fill="#FFFFFF"/>
+    
+    <!-- Blade 3 (bottom) -->
+    <path d="M 0,4 Q 8,12 4,18 Q 0,20 -4,18 Q -8,12 0,4 Z" fill="#FFFFFF"/>
+    
+    <!-- Blade 4 (left) -->
+    <path d="M -4,0 Q -12,8 -18,4 Q -20,0 -18,-4 Q -12,-8 -4,0 Z" fill="#FFFFFF"/>
+  </g>
+</svg>

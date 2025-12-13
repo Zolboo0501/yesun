@@ -1,0 +1,40 @@
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle -->
+  <circle cx="40" cy="40" r="35" stroke="#FFFFFF" stroke-width="3" fill="none"/>
+  
+  <!-- Pipeline installation with tools -->
+  <g stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Main pipe sections -->
+    <rect x="22" y="36" width="36" height="8" fill="none" stroke-width="2.5"/>
+    
+    <!-- Pipe joint/flange left -->
+    <rect x="20" y="34" width="4" height="12" fill="#FFFFFF"/>
+    
+    <!-- Pipe joint/flange right -->
+    <rect x="56" y="34" width="4" height="12" fill="#FFFFFF"/>
+    
+    <!-- Bolt holes on flanges -->
+    <circle cx="22" cy="37" r="1.5" fill="#000000"/>
+    <circle cx="22" cy="43" r="1.5" fill="#000000"/>
+    <circle cx="58" cy="37" r="1.5" fill="#000000"/>
+    <circle cx="58" cy="43" r="1.5" fill="#000000"/>
+    
+    <!-- Hammer (installation tool) -->
+    <g transform="translate(35, 52)">
+      <!-- Hammer handle -->
+      <rect x="-1" y="0" width="2" height="10" fill="#FFFFFF"/>
+      
+      <!-- Hammer head -->
+      <rect x="-5" y="-4" width="10" height="5" fill="#FFFFFF" rx="1"/>
+    </g>
+    
+    <!-- Screwdriver -->
+    <g transform="translate(45, 52)">
+      <!-- Screwdriver handle -->
+      <rect x="-1" y="4" width="2" height="6" fill="#FFFFFF"/>
+      
+      <!-- Screwdriver tip -->
+      <path d="M -1,4 L -0.5,0 L 0.5,0 L 1,4 Z" fill="#FFFFFF"/>
+    </g>
+  </g>
+</svg>

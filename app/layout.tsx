@@ -1,7 +1,7 @@
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
 import type { Metadata } from "next";
-import { mulish } from "./fonts";
+import { ptSans } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,8 +15,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={mulish.variable} suppressHydrationWarning>
+    <html lang="en">
+      <body className={`scroll-smooth ${ptSans.variable}`}>
         <Header />
         {children}
         <Footer />
