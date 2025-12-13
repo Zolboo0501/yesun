@@ -1,7 +1,8 @@
 "use client";
 import { Calendar, ChevronRight, MapPin } from "lucide-react";
 import { motion } from "motion/react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { ImageWithFallback } from "../ImageWithFallback";
+
 const projects = [
   {
     title: "Шангри-Ла Зочид Буудал",

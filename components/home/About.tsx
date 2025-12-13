@@ -1,7 +1,7 @@
 "use client";
 import { ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
-import { ImageWithFallback } from "./ImageWithFallback";
+import { ImageWithFallback } from "../ImageWithFallback";
 
 export function About() {
   return (
