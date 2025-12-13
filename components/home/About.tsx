@@ -3,7 +3,7 @@ import { ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../ImageWithFallback";
 
-export function About() {
+export function About({ hiddenButton }: { hiddenButton?: boolean }) {
   return (
     <section id="about" className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -45,13 +45,15 @@ export function About() {
               дүнгээрээ харагддаг билээ.
             </p>
 
-            <button
-              onClick={() => {}}
-              className="border border-black flex flex-row gap-2 items-center px-8 py-2 hover:bg-gray-200 transition-all duration-300 shadow-lg hover:shadow-xl"
-            >
-              Дэлгэрэнгүй
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            {!hiddenButton && (
+              <button
+                onClick={() => {}}
+                className="border border-black flex flex-row gap-2 items-center px-8 py-2 hover:bg-gray-200 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Дэлгэрэнгүй
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
           </motion.div>
 
           {/* Right Image */}

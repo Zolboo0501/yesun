@@ -1,10 +1,10 @@
 "use client";
+import { menu } from "@/constants/data";
 import { ChevronDown, Menu, X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { menu } from "@/constants/data";
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -58,15 +58,15 @@ export function Header() {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-8 justify-end w-full">
-              {menu.map((item: string, index: number) => (
-                <button
-                  key={index}
-                  onClick={() => scrollToSection("projects")}
-                  className="text-gray-700 text-sm hover:text-[#0100FD] transition-colors"
-                >
-                  {item}
-                </button>
-              ))}
+              {menu.map(
+                (item: { title: string; href: string }, index: number) => (
+                  <Link href={item.href} key={index}>
+                    <button className="text-gray-700 text-sm hover:text-[#0100FD] transition-colors">
+                      {item.title}
+                    </button>
+                  </Link>
+                )
+              )}
             </nav>
 
             {/* Mobile Menu Button */}
@@ -175,7 +175,7 @@ export function Header() {
                           }}
                         >
                           <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-3 font-medium hover:bg-blue-50 transition-colors duration-200 active:scale-95">
-                            <span className="text-sm">{menuItem}</span>
+                            <span className="text-sm">{menuItem.title}</span>
                             <motion.div className="group-open:rotate-180 transition-transform duration-300">
                               <ChevronDown className="h-4 w-4 text-primary" />
                             </motion.div>
