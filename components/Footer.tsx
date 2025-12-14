@@ -105,7 +105,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="text-sm transition-colors hover:text-white"
                 >
-                  Хан уул дүүрэг 15-р хороо наадам
+                  Оффис: Хан уул дүүрэг 15-р хороо наадам
                   <br />
                   центрийн 2-р давхарт
                 </Link>
@@ -118,7 +118,7 @@ export function Footer() {
                   rel="noopener noreferrer"
                   className="text-sm hover:text-white transition-colors"
                 >
-                  ХУД - 10 хороо,
+                  Үйлдвэр: ХУД - 10 хороо,
                   <br />
                   Морингийн зам 42
                 </Link>
