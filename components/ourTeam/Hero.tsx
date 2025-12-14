@@ -29,13 +29,20 @@ const teamSections = [
     isImageSection: true,
   },
   {
-    title: "Бидний тухай",
+    title: "Манай хамт олон",
     subtitle: "ДЭЛГЭРЭНГҮЙ",
     bgColor: "bg-[oklch(0.5_0.19_170)]",
   },
 ];
 
 const Hero = () => {
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -89,7 +96,10 @@ const Hero = () => {
                           {section.desc}
                         </p>
                       )}
-                      <div className="flex flex-row gap-2 items-center justify-center group/btn">
+                      <div
+                        onClick={() => scrollToSection("ourTeam")}
+                        className="flex flex-row gap-2 items-center justify-center group/btn"
+                      >
                         <p className="text-xs text-white font-semibold tracking-widest uppercase">
                           {section.subtitle}
                         </p>

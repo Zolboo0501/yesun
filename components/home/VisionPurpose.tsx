@@ -21,7 +21,7 @@ export function VisionPurpose() {
             {/* Second Image - Bottom Right (Behind) */}
             <div className="absolute bottom-12 right-0 w-full md:w-[70%] h-[45%] md:h-[50%] overflow-hidden shadow-2xl z-10">
               <ImageWithFallback
-                src="/images/banner2.webp"
+                src="/images/person3.jpg"
                 alt="Эрхэм зорилго"
                 className="w-full h-full object-cover"
               />
@@ -30,7 +30,7 @@ export function VisionPurpose() {
             {/* First Image - Top Left (On Top) */}
             <div className="absolute top-12 left-0 w-full md:w-[70%] h-[45%] md:h-[50%] overflow-hidden shadow-2xl z-20">
               <ImageWithFallback
-                src="/images/banner.webp"
+                src="/images/person4.jpg"
                 alt="Агааржуулалтын систем"
                 className="w-full h-full object-cover"
               />
