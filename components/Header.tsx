@@ -1,6 +1,6 @@
 "use client";
 import { menu } from "@/constants/data";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { ChevronDown, Facebook, Mail, Menu, Phone, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -27,10 +27,35 @@ export function Header() {
   };
 
   return (
-    <>
+    <div className="sticky top-0 z-50">
       {/* Main Header */}
+      <div className="h-[4vh] bg-linear-to-l from-[#0100FD] w-full  to-[black]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full lg:px-8 h-full flex items-center">
+          <div className="w-full flex flex-row justify-end">
+            <button
+              className="border-r border-white px-4 flex justify-center items-center"
+              onClick={() => scrollToSection("footer")}
+            >
+              <Facebook color="white" size={16} />
+            </button>
+            <button
+              className="border-r border-white px-4 flex justify-center items-center"
+              onClick={() => scrollToSection("footer")}
+            >
+              <Mail color="white" size={16} />
+            </button>
+            <button
+              className="pl-4 flex justify-center items-center"
+              onClick={() => scrollToSection("footer")}
+            >
+              <Phone color="white" size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+
       <header
-        className={`sticky top-0 z-50 bg-white/95 backdrop-blur-sm transition-all duration-300 h-[7vh]  ${
+        className={`bg-white/95 backdrop-blur-sm transition-all duration-300 h-[7vh]  ${
           isScrolled ? "shadow-md" : "shadow-sm"
         }`}
       >
@@ -200,6 +225,6 @@ export function Header() {
           {/* Mobile Navigation */}
         </div>
       </header>
-    </>
+    </div>
   );
 }
