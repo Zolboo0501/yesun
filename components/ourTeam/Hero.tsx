@@ -1,8 +1,7 @@
 "use client";
-import React from "react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../ImageWithFallback";
-import { Flag, Ship, Users } from "lucide-react";
 
 const teamSections = [
   {
@@ -10,9 +9,10 @@ const teamSections = [
     isImageSection: true,
   },
   {
-    title: "Хамтрагч түншүүд",
+    title: "Инженерийн мэндчилгээ",
     subtitle: "ДЭЛГЭРЭНГҮЙ",
-    bgColor: "bg-blue-700",
+    bgColor: "bg-[oklch(0.5_0.19_256)]",
+    desc: "Манай хамт олон “Хөргөлт, агааржуулалт, салхивчийн тоног төхөөрөмж нийлүүлэлт, угсралт”-ын чиглэлээр 29 жил тасралтгүй үйл ажиллагаагаа явуулж байна. Бид түүнчлэн гадаадаас оруулж ирэх импортын бүтээгдэхүүний тоо хэмжээг өчүүхэн боловч багасгах үүднээс зарим нэр төрлийн тоног төхөөрөмжүүдийг өөрсдөө үйлдвэрлэж байна. Мөн өдөр ирэх тусам өөрчлөгдөн хувьсаж буй хүмүүсийн ая тухтай байх хэрэгцээ, шаардлагыг хангах үүднээс байнгын эрэл хайгуул хийн дэлхийн алдартай брэндүүд болох VTS VENTUS, Carrier, Toshiba, Daikin, LG зэрэг брэндийн гэр ахуйн, системийн, техникийн зориулалттай эйркондишнуудыг үйлдвэрээс нь хямд, хурдан шуурхай нийлүүлж, угсарч суурилуулдаг. Та бүхэн манай байгууллагын бүтээгдэхүүн үйлчилгээтэй танилцаж амьдрал ахуй, бизнес хийх орчноо ая тухтай байлгах үүднээс биднийг сонгож, хамтран ажиллана гэдэгт итгэлтэй байна.",
   },
   {
     image: "/images/banner2.webp",
@@ -21,18 +21,17 @@ const teamSections = [
   {
     title: "Захирлийн мэндчилгээ",
     subtitle: "ДЭЛГЭРЭНГҮЙ",
-    bgColor: "bg-blue-700",
-    textColor: "text-white",
+    bgColor: "bg-[oklch(0.5_0.19_49)]",
+    desc: "Манай хамт олон “Хөргөлт, агааржуулалт, салхивчийн тоног төхөөрөмж нийлүүлэлт, угсралт”-ын чиглэлээр 29 жил тасралтгүй үйл ажиллагаагаа явуулж байна. Бид түүнчлэн гадаадаас оруулж ирэх импортын бүтээгдэхүүний тоо хэмжээг өчүүхэн боловч багасгах үүднээс зарим нэр төрлийн тоног төхөөрөмжүүдийг өөрсдөө үйлдвэрлэж байна. Мөн өдөр ирэх тусам өөрчлөгдөн хувьсаж буй хүмүүсийн ая тухтай байх хэрэгцээ, шаардлагыг хангах үүднээс байнгын эрэл хайгуул хийн дэлхийн алдартай брэндүүд болох VTS VENTUS, Carrier, Toshiba, Daikin, LG зэрэг брэндийн гэр ахуйн, системийн, техникийн зориулалттай эйркондишнуудыг үйлдвэрээс нь хямд, хурдан шуурхай нийлүүлж, угсарч суурилуулдаг. Та бүхэн манай байгууллагын бүтээгдэхүүн үйлчилгээтэй танилцаж амьдрал ахуй, бизнес хийх орчноо ая тухтай байлгах үүднээс биднийг сонгож, хамтран ажиллана гэдэгт итгэлтэй байна.",
   },
   {
     image: "/images/banner2.webp",
     isImageSection: true,
   },
   {
-    title: "Түүхэн замнал",
+    title: "Бидний тухай",
     subtitle: "ДЭЛГЭРЭНГҮЙ",
-    bgColor: "bg-red-600",
-    textColor: "text-white",
+    bgColor: "bg-[oklch(0.5_0.19_170)]",
   },
 ];
 
@@ -77,17 +76,26 @@ const Hero = () => {
                   </div>
                 ) : (
                   <div
-                    className={`${section.bgColor} h-80 lg:h-96 flex flex-col items-center justify-center p-8 text-center group-hover:scale-105 transition-transform duration-300`}
+                    className={`${section.bgColor} h-80 lg:h-96 flex flex-col items-center justify-center p-10 text-center group-hover:shadow-2xl transition-all duration-500 relative overflow-hidden`}
                   >
-                    <h3 className={`text-2xl font-bold text-gray-100  mb-2`}>
-                      {section.title}
-                    </h3>
-                    <div className={`w-12 h-0.5 bg-white mb-3`} />
-                    <p
-                      className={`text-sm ${section.textColor} tracking-wider`}
-                    >
-                      {section.subtitle}
-                    </p>
+                    <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+                    <div className="relative z-10">
+                      <h3 className="text-3xl font-bold text-white mb-4 tracking-tight">
+                        {section.title}
+                      </h3>
+                      <div className="w-16 h-1 bg-white/80 mx-auto mb-6 rounded-full" />
+                      {section?.desc && (
+                        <p className="text-sm text-white/90 leading-relaxed line-clamp-4 text-justify mb-6 font-light">
+                          {section.desc}
+                        </p>
+                      )}
+                      <div className="flex flex-row gap-2 items-center justify-center group/btn">
+                        <p className="text-xs text-white font-semibold tracking-widest uppercase">
+                          {section.subtitle}
+                        </p>
+                        <ArrowRight className="w-4 h-4 text-white group-hover/btn:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
                   </div>
                 )}
               </motion.div>

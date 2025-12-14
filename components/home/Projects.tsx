@@ -6,62 +6,58 @@ import Link from "next/link";
 
 const projects = [
   {
-    title: "Шангри-Ла Зочид Буудал",
+    title: "Монгол банкны үндэсний цахим гүйлгээний төв",
+    category: "Агааржуулалт",
+    location: "Улаанбаатар",
+    year: "2019",
+    description: "Барилгын агаар сэлгэлтийн систем",
+    image: "/images/project3.webp",
+  },
+  {
+    title: "Хүннү 2222",
+    category: "Агааржуулалт",
+    location: "Улаанбаатар",
+    year: "2020",
+    description:
+      "Төслийн 2–рээлжийн орон сууцны нэгдсэн граж барилгын агаар сэлгэлт, Хөргөлтийн системийн угсралт",
+    image: "/images/project6.webp",
+  },
+
+  {
+    title: "Хүннү 2222",
+    category: "Агааржуулалт",
+    location: "Улаанбаатар",
+    year: "2020",
+    description:
+      "Төслийн 2–р ээлжийн орон сууц Барилгын агаар сэлгэлтийн систем",
+    image: "/images/project4.webp",
+  },
+  {
+    title: "Чингис хаан музей",
     category: "Агааржуулалт & Хөргөлт",
     location: "Улаанбаатар",
-    year: "2023",
+    year: "2021",
     description:
-      "Зочид буудлын төв агааржуулалт болон хөргөлтийн системийн бүрэн шийдэл",
-    image:
-      "https://images.unsplash.com/photo-1694702740570-0a31ee1525c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjU2MjQ4Mjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "Барилгын Агаар сэлгэлтийн системийн угсралт тоног төхөөрөмж нийлүүлэх, хөргөлтийн системийн угсралт",
+    image: "/images/project2.webp",
   },
   {
-    title: "Төв Шуудан Оффис",
+    title: "Эрдэнэс Таван Толгойн Нүүрс Баяжуулах үйлдвэр",
     category: "Агааржуулалт",
-    location: "Улаанбаатар",
+    location: "Өмнөговь",
     year: "2024",
-    description: "Оффисын орчин үеийн агааржуулалтын систем, автоматжуулалт",
-    image:
-      "https://images.unsplash.com/photo-1559569283-327b99858782?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxodmFjJTIwY29vbGluZyUyMGVxdWlwbWVudHxlbnwxfHx8fDE3NjU2MTU0MjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+    description: "Төслийн үйлдвэрийн барилга агаар сэлгэлт",
+    image: "/images/project.webp",
   },
+
   {
-    title: "МонПласт Үйлдвэр",
-    category: "Хоолойн систем",
-    location: "Дархан",
-    year: "2023",
-    description: "Үйлдвэрийн хоолойн системийн угсралт, суурилуулалт",
-    image:
-      "https://images.unsplash.com/photo-1765218933298-dc55fdfb517a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmR1c3RyaWFsJTIwcGlwZXMlMjBzeXN0ZW18ZW58MXx8fHwxNzY1NjI0OTY0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    title: "Сэнтрал Тауэр",
-    category: "Агааржуулалт & Үйлдвэрлэл",
+    title: "Сансар Гарден",
+    category: "Агааржуулалт & Хөргөлт",
     location: "Улаанбаатар",
     year: "2024",
     description:
-      "Оффисын цогцолборын агааржуулалтын систем болон хоолойн үйлдвэрлэл",
-    image:
-      "https://images.unsplash.com/photo-1694702740570-0a31ee1525c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjU2MjQ4Mjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    title: "Эрдэнэт Үйлдвэр",
-    category: "Хөргөлт & Засвар",
-    location: "Эрдэнэт",
-    year: "2023",
-    description:
-      "Үйлдвэрийн хөргөлтийн системийн суурилуулалт болон засвар үйлчилгээ",
-    image:
-      "https://images.unsplash.com/photo-1559569283-327b99858782?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxodmFjJTIwY29vbGluZyUyMGVxdWlwbWVudHxlbnwxfHx8fDE3NjU2MTU0MjR8MA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
-  {
-    title: "Хаан Банк Төв Оффис",
-    category: "Агааржуулалт",
-    location: "Улаанбаатар",
-    year: "2024",
-    description:
-      "Банкны төв байрны агааржуулалт, хөргөлтийн системийн шинэчлэл",
-    image:
-      "https://images.unsplash.com/photo-1694702740570-0a31ee1525c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjU2MjQ4Mjh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "Орон сууцны хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем",
+    image: "/images/project13.webp",
   },
 ];
 
@@ -148,10 +144,12 @@ export function Projects() {
                   </div>
                 </div>
 
-                <button className="mt-6 text-[#0100FD] hover:text-[#FE0002] transition-colors flex items-center gap-2 group">
-                  <span>Дэлгэрэнгүй үзэх</span>
-                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </button>
+                <Link href={"/projects"} className="hover:cursor-pointer">
+                  <button className="mt-6 text-[#0100FD] hover:text-[#FE0002] transition-colors flex items-center gap-2 group">
+                    <span>Дэлгэрэнгүй үзэх</span>
+                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </Link>
               </div>
             </motion.div>
           ))}
