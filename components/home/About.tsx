@@ -28,18 +28,18 @@ export function About({ hiddenButton }: { hiddenButton?: boolean }) {
               <br />
               <span className="text-[#0100FD]">Таны найдвартай түнш</span>
             </h2>
-            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+            <p className="text-sm text-justify text-gray-600 mb-6 leading-relaxed">
               Манай байгууллага нь “Барилга Хот Байгуулалтын яам” -наас
               олгогдсон тусгай зөвшөөрлийн дагуу 2011 оноос эхлэн байгуулагдсан.
             </p>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+            <p className="text-sm text-justify text-gray-600 mb-8 leading-relaxed">
               Агаар сэлгэх систем болон хөргөлтийн системийн тооцоолол, зураг
               зурах, зөвлөгөө өгөх, агаар сэлгэх болон хөргөлтийн тоног
               төхөөрөмж нийлүүлэх, угсрах үйл ажиллагааны чиглэлээр нийслэл
               болон хөдөө орон нутагт нийт 150 гаруй объектод угсралт,
               суурилуултын ажил үйлчилгээ хийсэн туршлагатай хамт олон юм.
             </p>
-            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+            <p className="text-sm text-justify text-gray-600 mb-8 leading-relaxed">
               Манай хамт олон мэргэжлээрээ өндөр түвшинд бэлтгэгдсэн,
               туршлагатай чадварлаг ажилчид байдаг нь хийж гүйцэтгэсэн ажлын үр
               дүнгээрээ харагддаг билээ.
@@ -48,7 +48,7 @@ export function About({ hiddenButton }: { hiddenButton?: boolean }) {
             {!hiddenButton && (
               <button
                 onClick={() => {}}
-                className="border border-black flex flex-row gap-2 items-center px-8 py-2 hover:bg-gray-200 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="border text-sm border-black flex flex-row gap-2 items-center px-8 py-2 hover:bg-gray-200 transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 Дэлгэрэнгүй
                 <ChevronRight className="w-4 h-4" />

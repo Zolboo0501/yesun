@@ -39,10 +39,10 @@ export function Services() {
               Үйлчилгээ
             </span>
           </div>
-          <h2 className="text-4xl lg:text-5xl text-gray-900 mb-6">
+          <h2 className="text-3xl lg:text-4xl text-gray-900 mb-6">
             Манай <span className="text-[#0100FD]">үйлчилгээ</span>
           </h2>
-          <p className="text-xl text-gray-600 max-w-xl text-end">
+          <p className="text-lg text-gray-600 max-w-xl text-end">
             Бид агааржуулалт, хөргөлтийн системийн бүрэн шийдлийг мэргэжлийн
             түвшинд үзүүлдэг
           </p>
@@ -72,20 +72,13 @@ export function Services() {
                     </div>
                   </div>
                 </div>
-                <div className="p-8">
-                  <h3 className="text-xl text-gray-900 mb-3">
+                <div className="p-6">
+                  <h3 className="text-lg text-gray-900 mb-3">
                     {service.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed mb-4">
+                  <p className="text-gray-600 text-sm leading-relaxed mb-4">
                     {service.description}
                   </p>
-                  <button
-                    onClick={() => {}}
-                    className="border border-[#0100FD] text-[#0100FD] flex flex-row gap-2 items-center px-4 py-2 hover:bg-gray-200 transition-all duration-300 shadow-lg hover:shadow-xl"
-                  >
-                    Дэлгэрэнгүй
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
                 </div>
               </motion.div>
             );

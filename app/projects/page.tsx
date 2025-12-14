@@ -121,7 +121,7 @@ const Projects = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="text-4xl lg:text-5xl text-gray-900 mb-6 gap-2 flex flex-col mt-4"
+            className="text-3xl lg:text-4xl text-gray-900 mb-6 gap-2 flex flex-col mt-4"
           >
             <span className="text-[#0100FD] font-semibold">2019 – 2024 </span>
             ОНУУДЫН АЖЛЫН ТҮҮХ
@@ -131,7 +131,7 @@ const Projects = () => {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-            className="text-xl text-gray-600 max-w-3xl mx-auto"
+            className="text-lg text-gray-600 max-w-3xl mx-auto"
           >
             Бид олон төрлийн төсөл амжилттай хэрэгжүүлсэн туршлагатай
           </motion.p>
@@ -185,14 +185,14 @@ const Projects = () => {
                     } text-left`}
                   >
                     <div className="mb-4">
-                      <span className="text-6xl font-bold text-[#0100FD]">
+                      <span className="text-5xl font-bold text-[#0100FD]">
                         {project.number}.
                       </span>
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">
                       {project.title}
                     </h3>
-                    <p className="text-lg md:text-xl text-gray-600 mb-6">
+                    <p className="text-base md:text-lg text-gray-600 mb-6">
                       {project.subtitle}
                     </p>
                     <div

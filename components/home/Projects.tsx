@@ -89,7 +89,7 @@ export function Projects() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="text-4xl lg:text-5xl text-gray-900 mb-6"
+            className="text-3xl lg:text-4xl text-gray-900 mb-6"
           >
             Амжилттай <span className="text-[#0100FD]">төслүүд</span>
           </motion.h2>
@@ -98,7 +98,7 @@ export function Projects() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-            className="text-xl text-gray-600 max-w-3xl mx-auto"
+            className="text-lg text-gray-600 max-w-3xl mx-auto"
           >
             Бид олон төрлийн төсөл амжилттай хэрэгжүүлсэн туршлагатай
           </motion.p>
@@ -129,10 +129,10 @@ export function Projects() {
               </div>
 
               <div className="p-8">
-                <h3 className="text-2xl text-gray-900 mb-3 group-hover:text-[#0100FD] transition-colors">
+                <h3 className="text-xl text-gray-900 mb-3 group-hover:text-[#0100FD] transition-colors">
                   {project.title}
                 </h3>
-                <p className="text-gray-600 mb-6 leading-relaxed">
+                <p className="text-gray-600 text-sm mb-6 leading-relaxed">
                   {project.description}
                 </p>
 
@@ -158,7 +158,7 @@ export function Projects() {
 
         {/* View All Button */}
         <div className="text-center">
-          <button className="bg-[#0100FD] text-white px-10 py-4 hover:bg-[#0100FD]/90 transition-all shadow-lg hover:shadow-xl">
+          <button className="bg-[#0100FD] text-sm text-white px-10 py-4 hover:bg-[#0100FD]/90 transition-all shadow-lg hover:shadow-xl">
             Бүх төслүүдийг үзэх
           </button>
         </div>

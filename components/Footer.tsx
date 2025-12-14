@@ -34,7 +34,7 @@ export function Footer() {
                 </div>
               </div>
             </div>
-            <p className="text-gray-400 mb-6 leading-relaxed max-w-md">
+            <p className="text-gray-400 mb-6 leading-relaxed max-w-md text-sm">
               Есөн бэлчир нь агааржуулалт, хөргөлтийн төхөөрөмж болон хоолойн
               системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг
               Монголын тэргүүлэгч компани юм.
@@ -59,7 +59,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg mb-6 uppercase tracking-wider">
+            <h3 className="text-base mb-6 uppercase tracking-wider">
               Холбоосууд
             </h3>
             <ul className="space-y-3">
@@ -85,7 +85,7 @@ export function Footer() {
                         if (element)
                           element.scrollIntoView({ behavior: "smooth" });
                       }}
-                      className="text-gray-400 hover:text-white transition-colors"
+                      className="text-gray-400 text-sm hover:text-white transition-colors"
                     >
                       {item}
                     </button>
@@ -97,7 +97,7 @@ export function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-lg mb-6 uppercase tracking-wider">
+            <h3 className="text-base mb-6 uppercase tracking-wider">
               Холбоо барих
             </h3>
             <ul className="space-y-4">

@@ -47,17 +47,17 @@ export function VisionPurpose() {
               ease: "easeOut",
             }}
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-12 leading-tight font-bold">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-12 leading-tight font-bold">
               АЛСЫН ХАРАА БА ЭРХЭМ ЗОРИЛГО
             </h2>
 
             <div className="space-y-8">
               {/* Item 01 */}
               <div>
-                <h3 className="text-xl md:text-2xl text-[#0100FD] mb-4 font-semibold">
+                <h3 className="text-lg md:text-xl text-[#0100FD] mb-4 font-semibold">
                   01. Алсын хараа
                 </h3>
-                <p className="text-base md:text-lg text-gray-700 leading-relaxed text-justify">
+                <p className="text-sm text-gray-700 leading-relaxed text-justify">
                   Улс, нийгмийнхээ хөгжилд үнэтэй хувь оруулсан түүхүйн хүүдсэг
                   нэмж, салбартаа манлайлсан, олон нийтэд нээлттэй ах ахуй нэгж
                   байна.
@@ -66,10 +66,10 @@ export function VisionPurpose() {
 
               {/* Item 02 */}
               <div>
-                <h3 className="text-xl md:text-2xl text-[#0100FD] mb-4 font-semibold">
+                <h3 className="text-lg md:text-xl text-[#0100FD] mb-4 font-semibold">
                   02. Эрхэм зорилго
                 </h3>
-                <p className="text-base md:text-lg text-gray-700 leading-relaxed text-justify">
+                <p className="text-sm text-gray-700 leading-relaxed text-justify">
                   Бид орчин үеийн шийдэл, техник технологийг үйл ажиллагаандаа
                   нэвтрүүлж эрүүл аюулгүй ажиллагаа, хурд, чанар, стандартыг
                   эрхэмлэн ажиллах тэргүүн зорилготой. Бидний хувь нэмэр,

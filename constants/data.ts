@@ -1,7 +1,7 @@
 const menu = [
   {
     title: "Түнш",
-    href: "/co",
+    href: "/partner",
   },
   {
     title: "Бүтээгдэхүүн",

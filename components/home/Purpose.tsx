@@ -17,11 +17,11 @@ export const Purpose = () => {
               ease: "easeOut",
             }}
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-12 leading-tight font-bold">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-12 leading-tight font-bold">
               ЗОРИЛТ
             </h2>
 
-            <p className="text-base md:text-lg text-gray-700 leading-relaxed text-justify">
+            <p className="text-sm text-gray-700 leading-relaxed text-justify">
               Манай компани нь барилгын үйл ажиллагаа эрхлэх үндсэн чиглэлээ
               тууштай баримталж, салбарт хүчин төгөлдөр мөрдөж буй хууль, журам,
               норм стандартыг идэвхтэй хэрэгжүүлэгч байх, барилгын салбарын

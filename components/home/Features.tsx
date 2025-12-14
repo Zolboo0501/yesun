@@ -68,7 +68,7 @@ export function Features() {
                 <div className="inline-flex w-16 h-16 bg-white/10 backdrop-blur-sm  items-center justify-center mb-4 group-hover:bg-white/20 transition-all">
                   <Icon className="w-8 h-8" />
                 </div>
-                <h3 className="text-lg mb-1">{feature.title}</h3>
+                <h3 className="text-base mb-1">{feature.title}</h3>
                 <p className="text-sm text-blue-200">{feature.description}</p>
               </motion.div>
             );

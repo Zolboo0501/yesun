@@ -86,11 +86,11 @@ export function Hero() {
                         : "-translate-x-12 opacity-0"
                     }`}
                   >
-                    <h1 className="text-5xl lg:text-7xl text-white mb-6 leading-tight">
+                    <h1 className="text-3xl lg:text-5xl text-white mb-6 leading-tight">
                       {slide.title}
                     </h1>
 
-                    <p className="text-xl lg:text-2xl text-gray-400 mb-8 leading-relaxed">
+                    <p className="text-lg lg:text-xl text-gray-400 mb-8 leading-relaxed">
                       {slide.description}
                     </p>
                   </div>

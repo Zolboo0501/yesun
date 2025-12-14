@@ -57,7 +57,7 @@ export const Facilities = () => {
                 {/* Number Badge */}
                 <div className="absolute bottom-4 left-4">
                   <div
-                    className={`w-20 h-20 flex items-center justify-center text-white text-3xl font-bold`}
+                    className={`w-16 h-16 flex items-center justify-center text-white text-xl font-bold`}
                     style={{ backgroundColor: facility.color }}
                   >
                     {facility.number}
@@ -68,12 +68,12 @@ export const Facilities = () => {
               {/* Content */}
               <div className="p-6">
                 <h3
-                  className={`text-xl md:text-2xl font-bold mb-4 `}
+                  className={`text-lg md:text-xl font-bold mb-4 `}
                   style={{ color: facility.color }}
                 >
                   {facility.title}
                 </h3>
-                <p className="text-base text-gray-700 leading-relaxed">
+                <p className="text-sm text-gray-700 leading-relaxed text-justify">
                   {facility.description}
                 </p>
               </div>

@@ -61,7 +61,7 @@ export const Advantages = () => {
               ease: "easeOut",
             }}
           >
-            <h2 className="text-3xl md:text-4xl lg:text-5xl text-gray-900 mb-12 leading-tight font-bold">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-12 leading-tight font-bold">
               Манай компанийн <br />
               <span className="text-[#0100FD]">давуу тал</span>
             </h2>
@@ -79,8 +79,8 @@ export const Advantages = () => {
                   }}
                   className="flex items-start gap-3"
                 >
-                  <span className="text-[#0100FD] text-xl shrink-0">•</span>
-                  <span className="text-base md:text-lg text-gray-700 leading-relaxed">
+                  <span className="text-[#0100FD] text-sm shrink-0">•</span>
+                  <span className="text-sm text-gray-700 leading-relaxed">
                     {advantage}
                   </span>
                 </motion.li>
