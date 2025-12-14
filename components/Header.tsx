@@ -12,6 +12,7 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +26,9 @@ export function Header() {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         mobileMenuRef.current &&
-        !mobileMenuRef.current.contains(event.target as Node)
+        !mobileMenuRef.current.contains(event.target as Node) &&
+        toggleButtonRef.current &&
+        !toggleButtonRef.current.contains(event.target as Node)
       ) {
         setIsMobileMenuOpen(false);
       }
@@ -127,6 +130,7 @@ export function Header() {
             {/* Mobile Menu Button */}
             <div className="flex items-center space-x-2 sm:space-x-4">
               <motion.button
+                ref={toggleButtonRef}
                 className="lg:hidden relative z-50"
                 onClick={() => setIsMobileMenuOpen((prev) => !prev)}
                 whileTap={{ scale: 0.9 }}
