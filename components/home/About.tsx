@@ -2,6 +2,7 @@
 import { ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../ImageWithFallback";
+import Link from "next/link";
 
 export function About({ hiddenButton }: { hiddenButton?: boolean }) {
   return (
@@ -46,13 +47,15 @@ export function About({ hiddenButton }: { hiddenButton?: boolean }) {
             </p>
 
             {!hiddenButton && (
-              <button
-                onClick={() => {}}
-                className="border text-sm border-black flex flex-row gap-2 items-center px-8 py-2 hover:bg-gray-200 transition-all duration-300 shadow-lg hover:shadow-xl"
-              >
-                Дэлгэрэнгүй
-                <ChevronRight className="w-4 h-4" />
-              </button>
+              <Link href={"/about"}>
+                <button
+                  onClick={() => {}}
+                  className="border text-sm border-black flex flex-row gap-2 items-center px-8 py-2 hover:bg-gray-200 transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  Дэлгэрэнгүй
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </Link>
             )}
           </motion.div>
 
@@ -78,14 +81,14 @@ export function About({ hiddenButton }: { hiddenButton?: boolean }) {
               <div className="relative flex-1 overflow-hidden shadow-xl">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1694702740570-0a31ee1525c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjU2MjQ4Mjh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                  alt="Modern building"
+                  alt="Modern building2"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="relative flex-1 overflow-hidden shadow-xl">
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1694702740570-0a31ee1525c7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NjU2MjQ4Mjh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                  alt="Modern building"
+                  alt="Modern building3"
                   className="w-full h-full object-cover"
                 />
               </div>

@@ -8,8 +8,8 @@ import {
   MapPinHouse,
   Phone,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import { ImageWithFallback } from "./ImageWithFallback";
 
 export function Footer() {
   return (
@@ -20,12 +20,10 @@ export function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-4 mb-6">
               <div className="relative">
-                <Image
+                <ImageWithFallback
                   src={"/images/yesunLogo.png"}
                   alt="Logo"
-                  width={64}
-                  height={64}
-                  className="shrink-0"
+                  className="shrink-0 w-24 h-24"
                 />
               </div>
               <div>
@@ -35,7 +33,7 @@ export function Footer() {
                 </div>
               </div>
             </div>
-            <p className="text-gray-400 mb-6 leading-relaxed max-w-md text-sm">
+            <p className="text-gray-400 mb-6 leading-relaxed max-w-md text-sm text-justify">
               Есөн бэлчир нь агааржуулалт, хөргөлтийн төхөөрөмж болон хоолойн
               системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг
               Монголын тэргүүлэгч компани юм.
@@ -84,8 +82,13 @@ export function Footer() {
             <ul className="space-y-4">
               <li className="flex items-center gap-3 text-gray-400">
                 <Phone className="w-5 h-5 text-[#0100FD] shrink-0 mt-1" />
-                <div className="text-sm">
-                  <div className="hover:text-white">+976-8888-9085</div>
+                <div className="flex flex-col">
+                  <div className="text-sm">
+                    <div className="hover:text-white">+976-8888-9085</div>
+                  </div>
+                  <div className="text-sm">
+                    <div className="hover:text-white">+976-88114570</div>
+                  </div>
                 </div>
               </li>
               <li className="flex items-center gap-3 text-gray-400">

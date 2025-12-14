@@ -2,16 +2,16 @@
 import { menu } from "@/constants/data";
 import { ChevronDown, Facebook, Mail, Menu, Phone, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { ImageWithFallback } from "./ImageWithFallback";
+
 export function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  console.log(pathname, "pathname");
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -70,11 +70,12 @@ export function Header() {
               className="flex items-center gap-2"
             >
               <div className="relative">
-                <Image
+                <ImageWithFallback
                   src={"/images/yesunLogo.png"}
-                  alt="Logo"
+                  alt="header-logo"
                   width={64}
                   height={64}
+                  className="w-24 h-12"
                 />
               </div>
               <div className="hidden sm:block shrink-0">

@@ -2,6 +2,7 @@
 import { Calendar, ChevronRight, MapPin } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../ImageWithFallback";
+import Link from "next/link";
 
 const projects = [
   {
@@ -157,11 +158,11 @@ export function Projects() {
         </div>
 
         {/* View All Button */}
-        <div className="text-center">
+        <Link className="flex justify-center" href={"/projects"}>
           <button className="bg-[#0100FD] text-sm text-white px-10 py-4 hover:bg-[#0100FD]/90 transition-all shadow-lg hover:shadow-xl">
             Бүх төслүүдийг үзэх
           </button>
-        </div>
+        </Link>
       </div>
     </section>
   );

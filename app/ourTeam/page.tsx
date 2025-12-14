@@ -1,7 +1,12 @@
+import Hero from "@/components/ourTeam/Hero";
 import React from "react";
 
 const OurTeam = () => {
-  return <div>OurTeam</div>;
+  return (
+    <>
+      <Hero />
+    </>
+  );
 };
 
 export default OurTeam;
