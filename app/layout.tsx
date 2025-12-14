@@ -16,7 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`scroll-smooth ${ptSans.variable}`}>
+      <body
+        className={`scroll-smooth ${ptSans.variable}`}
+        suppressHydrationWarning
+      >
         <Header />
         {children}
         <Footer />

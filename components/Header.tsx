@@ -1,16 +1,17 @@
 "use client";
 import { menu } from "@/constants/data";
-import { ChevronDown, Facebook, Mail, Menu, Phone, X } from "lucide-react";
+import { Facebook, Mail, Menu, Phone, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ImageWithFallback } from "./ImageWithFallback";
 
 export function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +20,25 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        mobileMenuRef.current &&
+        !mobileMenuRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    if (mobileMenuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [mobileMenuOpen]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
@@ -141,6 +161,7 @@ export function Header() {
           <AnimatePresence>
             {mobileMenuOpen && (
               <motion.div
+                ref={mobileMenuRef}
                 initial={{ opacity: 0, height: 0, y: -20 }}
                 animate={{
                   opacity: 1,
@@ -167,7 +188,7 @@ export function Header() {
                     ease: [0.4, 0, 1, 1],
                   },
                 }}
-                className="absolute left-1/2 top-[7vh] w-11/12 -translate-x-1/2 overflow-hidden overflow-y-auto bg-white shadow-2xl rounded-2xl border border-gray-100 lg:hidden"
+                className="absolute left-1/2 top-[7vh] w-11/12 -translate-x-1/2 overflow-hidden overflow-y-auto bg-white shadow-2xl  border border-gray-100 lg:hidden"
               >
                 <motion.div
                   className="space-y-2 p-4"
@@ -185,46 +206,48 @@ export function Header() {
                 >
                   {menu.map((menuItem, index) => {
                     return (
-                      <motion.div
+                      <Link
+                        href={menuItem.href}
                         key={index}
-                        variants={{
-                          hidden: { opacity: 0, x: -20 },
-                          visible: {
-                            opacity: 1,
-                            x: 0,
-                            transition: {
-                              type: "spring",
-                              stiffness: 300,
-                              damping: 24,
-                            },
-                          },
-                        }}
+                        onClick={() => setIsMobileMenuOpen(false)}
                       >
-                        <motion.details
-                          className="group"
-                          whileHover={{ scale: 1.02 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 17,
+                        <motion.div
+                          variants={{
+                            hidden: { opacity: 0, x: -20 },
+                            visible: {
+                              opacity: 1,
+                              x: 0,
+                              transition: {
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 24,
+                              },
+                            },
                           }}
                         >
-                          <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-3 font-medium hover:bg-blue-50 transition-colors duration-200 active:scale-95">
-                            <span className="text-sm">{menuItem.title}</span>
-                            <motion.div className="group-open:rotate-180 transition-transform duration-300">
-                              <ChevronDown className="h-4 w-4 text-primary" />
-                            </motion.div>
-                          </summary>
-                          <motion.div
-                            className="space-y-1 pl-4 pt-2"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.1 }}
+                          <motion.details
+                            className="group"
+                            whileHover={{ scale: 1.02 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 400,
+                              damping: 17,
+                            }}
                           >
-                            {/* Submenu items can be added here */}
-                          </motion.div>
-                        </motion.details>
-                      </motion.div>
+                            <summary className="flex cursor-pointer items-center justify-between px-4 py-3 font-medium hover:bg-blue-50 transition-colors duration-200">
+                              <span className="text-sm">{menuItem.title}</span>
+                            </summary>
+                            <motion.div
+                              className="space-y-1 pl-4 pt-2"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ delay: 0.1 }}
+                            >
+                              {/* Submenu items can be added here */}
+                            </motion.div>
+                          </motion.details>
+                        </motion.div>
+                      </Link>
                     );
                   })}
                 </motion.div>
