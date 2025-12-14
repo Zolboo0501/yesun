@@ -9,7 +9,7 @@ const menu = [
   },
   {
     title: "Хамт олон",
-    href: "/ourself",
+    href: "/ourTeam",
   },
   {
     title: "Төслүүд",

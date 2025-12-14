@@ -5,11 +5,13 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
+import { usePathname } from "next/navigation";
 export function Header() {
+  const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  console.log(pathname, "pathname");
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -87,7 +89,13 @@ export function Header() {
               {menu.map(
                 (item: { title: string; href: string }, index: number) => (
                   <Link href={item.href} key={index}>
-                    <button className="text-gray-700 text-sm hover:text-[#0100FD] transition-colors">
+                    <button
+                      className={`text-sm hover:border-b-2 hover:border-[#0100FD] hover:text-[#0100FD] transition-colors ${
+                        pathname.includes(item.href)
+                          ? "border-b-2 border-[#0100FD] text-[#0100FD]"
+                          : "text-gray-700"
+                      }`}
+                    >
                       {item.title}
                     </button>
                   </Link>
