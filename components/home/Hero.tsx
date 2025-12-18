@@ -19,14 +19,6 @@ const slides = [
       "Зочид буудал, худалдааны төв, аж үйлдвэрт зориулсан хөргөлтийн системийн суурилуулалт, засвар үйлчилгээ",
     image: "/images/banner2.webp",
   },
-  {
-    title: "Хоолойн систем",
-    subtitle: "Бүрэн шийдэл",
-    description:
-      "Усан хангамж, халаалт, агааржуулалтын хоолойн системийн угсралт, суурилуулалт, шинэчлэлт",
-    image:
-      "https://images.unsplash.com/photo-1765218933298-dc55fdfb517a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmR1c3RyaWFsJTIwcGlwZXMlMjBzeXN0ZW18ZW58MXx8fHwxNzY1NjI0OTY0fDA&ixlib=rb-4.1.0&q=80&w=1080",
-  },
 ];
 
 export function Hero() {

@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "@/components/ImageWithFallback";
 import { Star } from "lucide-react";
+import Image from "next/image";
 
 const projects = [
   {
@@ -60,8 +61,8 @@ const projects = [
   },
   {
     number: "8",
-    title: "Нисэх гарден орон сууцны хотхон",
-    subtitle: "Агаар сэлгэлтийн систем – 2022 он",
+    title: "Нисэх гарден хотхон",
+    subtitle: "Орон сууцны агаар сэлгэлтийн систем – 2022 он",
     image: "/images/project10.webp",
     rating: 5,
   },
@@ -178,15 +179,53 @@ const Projects = () => {
                 </div>
 
                 <div
-                  className={`w-full lg:w-1/2 ${
+                  className={`w-full  lg:w-1/2 relative ${
                     isOdd ? "lg:order-2 lg:pl-8" : "lg:order-1 lg:pr-8"
                   }`}
                 >
+                  {isOdd ? (
+                    <Image
+                      src="/icons/corner-bottom-right.svg"
+                      width={64}
+                      height={64}
+                      alt="Office"
+                      priority
+                      className="absolute -bottom-8 -right-8"
+                    />
+                  ) : (
+                    <Image
+                      src="/icons/corner-bottom-left.svg"
+                      width={64}
+                      height={64}
+                      alt="Office"
+                      priority
+                      className="absolute -bottom-8 -left-8"
+                    />
+                  )}
                   <div
                     className={`${
-                      isOdd ? "lg:text-left" : "lg:text-right"
-                    } text-left`}
+                      isOdd ? "lg:text-left relative" : "lg:text-right"
+                    } text-left relative`}
                   >
+                    {isOdd ? (
+                      <Image
+                        src="/icons/corner-top-left.svg"
+                        width={64}
+                        height={64}
+                        alt="Office"
+                        priority
+                        className="absolute -top-8 -left-8"
+                      />
+                    ) : (
+                      <Image
+                        src="/icons/corner-top-right.svg"
+                        width={64}
+                        height={64}
+                        alt="Office"
+                        priority
+                        className="absolute -top-8 -right-8"
+                      />
+                    )}
                     <div className="mb-4">
                       <span className="text-5xl font-bold text-[#0100FD]">
                         {project.number}.

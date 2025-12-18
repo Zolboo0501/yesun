@@ -16,6 +16,10 @@ const menu = [
     href: "/projects",
   },
   {
+    title: "Үйлдвэрлэл",
+    href: "/factory",
+  },
+  {
     title: "Холбоо барих",
     href: "/contact",
   },

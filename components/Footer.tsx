@@ -21,9 +21,9 @@ export function Footer() {
             <div className="flex items-center gap-4 mb-6">
               <div className="relative">
                 <ImageWithFallback
-                  src={"/images/yesunLogo.png"}
+                  src={"/images/logo3.png"}
                   alt="Logo"
-                  className="shrink-0 w-24 h-24"
+                  className="shrink-0 w-24 h-16"
                 />
               </div>
               <div>

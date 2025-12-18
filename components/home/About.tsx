@@ -3,12 +3,13 @@ import { ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../ImageWithFallback";
 import Link from "next/link";
+import Image from "next/image";
 
 export function About({ hiddenButton }: { hiddenButton?: boolean }) {
   return (
     <section id="about" className="py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center relative">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}

@@ -17,7 +17,7 @@ export const Purpose = () => {
               ease: "easeOut",
             }}
           >
-            <h2 className="text-2xl md:text-3xl lg:text-4xl text-gray-900 mb-12 leading-tight font-bold">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl text-[#0100FD] mb-12 leading-tight font-bold">
               ЗОРИЛТ
             </h2>
 
@@ -42,13 +42,13 @@ export const Purpose = () => {
               duration: 0.8,
               ease: "easeOut",
             }}
-            className="relative h-[400px] md:h-[500px] lg:h-[600px]"
+            className="relative h-[385px] md:h-[385px] lg:h-[385px]"
           >
-            <div className="relative w-full h-full overflow-hidden shadow-2xl">
+            <div className="relative w-full h-full overflow-hidden shadow-2xl bg-transparent">
               <ImageWithFallback
-                src="/images/person2.jpg"
+                src="/images/banner.jpg"
                 alt="Зорилт"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
           </motion.div>

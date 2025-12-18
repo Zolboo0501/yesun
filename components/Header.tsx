@@ -92,19 +92,14 @@ export function Header() {
               onClick={() => scrollToSection("home")}
               className="flex items-center gap-2"
             >
-              <div className="relative">
+              <div className="relative w-48 sm:w-64 2xl:w-80 ">
                 <ImageWithFallback
-                  src={"/images/yesunLogo.png"}
+                  src={"/images/logo.png"}
                   alt="header-logo"
-                  width={64}
-                  height={64}
-                  className="w-24 h-12"
+                  width={1000}
+                  height={500}
+                  className="h-34 object-contain"
                 />
-              </div>
-              <div className="hidden sm:block shrink-0">
-                <div className="text-lg font-medium text-primary">
-                  Есөн бэлчир ХХК{" "}
-                </div>
               </div>
             </Link>
 
