@@ -17,7 +17,14 @@ const slides = [
     subtitle: "Найдвартай систем",
     description:
       "Зочид буудал, худалдааны төв, аж үйлдвэрт зориулсан хөргөлтийн системийн суурилуулалт, засвар үйлчилгээ",
-    image: "/images/banner2.webp",
+    image: "/images/mainslide2.png",
+  },
+  {
+    title: "Үйлдвэрлэл",
+    subtitle: "Найдвартай систем",
+    description:
+      "Үйлдвэрлэлийн зориулалттай, орчин үеийн дэвшилтэт технологид суурилсан өндөр хүчин чадалтай агаар сэлгэлт, хөргөлтийн системийн суурилуулалт, засвар үйлчилгээ",
+    image: "/images/banner3.jpg",
   },
 ];
 
@@ -69,7 +76,7 @@ export function Hero() {
                 <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent"></div>
               </div>
 
-              <div className="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="relative h-full max-w-7xl mx-auto px-24 sm:px-24 lg:px-24">
                 <div className="grid lg:grid-cols-2 gap-12 h-full items-center">
                   <div
                     className={`transition-all duration-700 delay-300 ${

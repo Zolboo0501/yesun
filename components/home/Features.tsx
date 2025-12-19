@@ -23,8 +23,8 @@ const features = [
   },
   {
     icon: Award,
-    title: "ISO 9001",
-    description: "Олон улсын стандарт",
+    title: "Стандарт",
+    description: "Стандартад нийцсэн технологи",
   },
   {
     icon: Users,
@@ -39,7 +39,7 @@ const features = [
   {
     icon: Headphones,
     title: "Зөвлөгөө",
-    description: "Үнэ төлбөргүй",
+    description: "Инженерийн зөвлөгөө",
   },
 ];
 

@@ -26,7 +26,7 @@ const teamSections = [
     href: "/greeting/director",
   },
   {
-    image: "/images/banner2.webp",
+    image: "/images/banner3.jpg",
     isImageSection: true,
   },
   {

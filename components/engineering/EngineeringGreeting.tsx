@@ -6,7 +6,7 @@ const teamMembers = [
   {
     id: 1,
     name: "Н.Энхмэнд",
-    position: "Гүйцэтгэл захирал & төслийн менежер",
+    position: "Ерөнхий менежер",
     image: "/images/member.jpg",
   },
   {

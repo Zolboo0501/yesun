@@ -4,13 +4,10 @@ const menu = [
     href: "/about",
   },
   {
-    title: "Түнш",
-    href: "/partner",
-  },
-  {
     title: "Хамт олон",
     href: "/ourTeam",
   },
+
   {
     title: "Төслүүд",
     href: "/projects",
@@ -18,6 +15,11 @@ const menu = [
   {
     title: "Үйлдвэрлэл",
     href: "/factory",
+  },
+
+  {
+    title: "Түнш",
+    href: "/partner",
   },
   {
     title: "Холбоо барих",
