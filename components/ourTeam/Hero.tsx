@@ -2,6 +2,7 @@
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../ImageWithFallback";
+import Link from "next/link";
 
 const teamSections = [
   {
@@ -9,10 +10,10 @@ const teamSections = [
     isImageSection: true,
   },
   {
-    title: "Инженерийн мэндчилгээ",
+    title: "Инженер техникийн алба",
     subtitle: "ДЭЛГЭРЭНГҮЙ",
     bgColor: "bg-[oklch(0.5_0.19_256)]",
-    desc: "Манай хамт олон “Хөргөлт, агааржуулалт, салхивчийн тоног төхөөрөмж нийлүүлэлт, угсралт”-ын чиглэлээр 29 жил тасралтгүй үйл ажиллагаагаа явуулж байна. Бид түүнчлэн гадаадаас оруулж ирэх импортын бүтээгдэхүүний тоо хэмжээг өчүүхэн боловч багасгах үүднээс зарим нэр төрлийн тоног төхөөрөмжүүдийг өөрсдөө үйлдвэрлэж байна. Мөн өдөр ирэх тусам өөрчлөгдөн хувьсаж буй хүмүүсийн ая тухтай байх хэрэгцээ, шаардлагыг хангах үүднээс байнгын эрэл хайгуул хийн дэлхийн алдартай брэндүүд болох VTS VENTUS, Carrier, Toshiba, Daikin, LG зэрэг брэндийн гэр ахуйн, системийн, техникийн зориулалттай эйркондишнуудыг үйлдвэрээс нь хямд, хурдан шуурхай нийлүүлж, угсарч суурилуулдаг. Та бүхэн манай байгууллагын бүтээгдэхүүн үйлчилгээтэй танилцаж амьдрал ахуй, бизнес хийх орчноо ая тухтай байлгах үүднээс биднийг сонгож, хамтран ажиллана гэдэгт итгэлтэй байна.",
+    href: "/greeting/engineering",
   },
   {
     image: "/images/banner2.webp",
@@ -22,7 +23,7 @@ const teamSections = [
     title: "Захирлийн мэндчилгээ",
     subtitle: "ДЭЛГЭРЭНГҮЙ",
     bgColor: "bg-[oklch(0.5_0.19_49)]",
-    desc: "Манай хамт олон “Хөргөлт, агааржуулалт, салхивчийн тоног төхөөрөмж нийлүүлэлт, угсралт”-ын чиглэлээр 29 жил тасралтгүй үйл ажиллагаагаа явуулж байна. Бид түүнчлэн гадаадаас оруулж ирэх импортын бүтээгдэхүүний тоо хэмжээг өчүүхэн боловч багасгах үүднээс зарим нэр төрлийн тоног төхөөрөмжүүдийг өөрсдөө үйлдвэрлэж байна. Мөн өдөр ирэх тусам өөрчлөгдөн хувьсаж буй хүмүүсийн ая тухтай байх хэрэгцээ, шаардлагыг хангах үүднээс байнгын эрэл хайгуул хийн дэлхийн алдартай брэндүүд болох VTS VENTUS, Carrier, Toshiba, Daikin, LG зэрэг брэндийн гэр ахуйн, системийн, техникийн зориулалттай эйркондишнуудыг үйлдвэрээс нь хямд, хурдан шуурхай нийлүүлж, угсарч суурилуулдаг. Та бүхэн манай байгууллагын бүтээгдэхүүн үйлчилгээтэй танилцаж амьдрал ахуй, бизнес хийх орчноо ая тухтай байлгах үүднээс биднийг сонгож, хамтран ажиллана гэдэгт итгэлтэй байна.",
+    href: "/greeting/director",
   },
   {
     image: "/images/banner2.webp",
@@ -32,6 +33,7 @@ const teamSections = [
     title: "Манай хамт олон",
     subtitle: "ДЭЛГЭРЭНГҮЙ",
     bgColor: "bg-[oklch(0.5_0.19_170)]",
+    isScroll: true,
   },
 ];
 
@@ -91,20 +93,34 @@ const Hero = () => {
                         {section.title}
                       </h3>
                       <div className="w-16 h-1 bg-white/80 mx-auto mb-6 rounded-full" />
-                      {section?.desc && (
+                      {/* {section?.desc && (
                         <p className="text-sm text-white/90 leading-relaxed line-clamp-4 text-justify mb-6 font-light">
                           {section.desc}
                         </p>
+                      )} */}
+                      {section.isScroll ? (
+                        <div
+                          onClick={() => scrollToSection("ourTeam")}
+                          className="flex flex-row gap-2 items-center justify-center group/btn"
+                        >
+                          <p className="text-xs text-white font-semibold tracking-widest uppercase">
+                            {section.subtitle}
+                          </p>
+                          <ArrowRight className="w-4 h-4 text-white group-hover/btn:translate-x-1 transition-transform" />
+                        </div>
+                      ) : (
+                        section.href && (
+                          <Link
+                            href={section?.href}
+                            className="flex flex-row gap-2 items-center justify-center group/btn"
+                          >
+                            <p className="text-xs text-white font-semibold tracking-widest uppercase">
+                              {section.subtitle}
+                            </p>
+                            <ArrowRight className="w-4 h-4 text-white group-hover/btn:translate-x-1 transition-transform" />
+                          </Link>
+                        )
                       )}
-                      <div
-                        onClick={() => scrollToSection("ourTeam")}
-                        className="flex flex-row gap-2 items-center justify-center group/btn"
-                      >
-                        <p className="text-xs text-white font-semibold tracking-widest uppercase">
-                          {section.subtitle}
-                        </p>
-                        <ArrowRight className="w-4 h-4 text-white group-hover/btn:translate-x-1 transition-transform" />
-                      </div>
                     </div>
                   </div>
                 )}
