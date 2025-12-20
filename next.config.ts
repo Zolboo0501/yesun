@@ -2,8 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["images.unsplash.com"],
-    // or for more control:
     remotePatterns: [
       {
         protocol: "https",
@@ -13,7 +11,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  /* config options here */
+  turbopack: {
+    root: "/Users/zolboo/Documents/yesun",
+  },
 };
 
 export default nextConfig;
