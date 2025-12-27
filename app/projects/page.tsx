@@ -61,7 +61,7 @@ const projects = [
       "Орон сууцны хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем - 2024 он",
     image: "/images/project13.webp",
     rating: 5,
-    personImage: "/images/engineering2.JPG",
+    personImage: "/images/engineering4.JPG",
     person: "Ц.Хосбаяр",
   },
   {

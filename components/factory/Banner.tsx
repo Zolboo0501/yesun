@@ -30,6 +30,11 @@ const partners = [
     name: "BALLU",
     image: "/images/factory4.jpg",
   },
+  {
+    id: 5,
+    name: "BALLU",
+    image: "/images/factory17.jpg",
+  },
 ];
 
 export function Banner() {

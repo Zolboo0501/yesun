@@ -30,6 +30,11 @@ const partners = [
     name: "BALLU",
     image: "/images/factory8.jpg",
   },
+  {
+    id: 5,
+    name: "BALLU",
+    image: "/images/factory18.jpg",
+  },
 ];
 
 export function LeftSide() {
