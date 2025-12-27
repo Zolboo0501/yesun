@@ -90,7 +90,7 @@ export function Banner() {
               <CarouselContent>
                 {partners.map((partner) => (
                   <CarouselItem key={partner.id}>
-                    <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden shadow-xl rounded-lg bg-white p-8">
+                    <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden  rounded-lg bg-white p-8">
                       <ImageWithFallback
                         src={partner.image}
                         alt={partner.name}

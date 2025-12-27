@@ -11,24 +11,24 @@ import { ImageWithFallback } from "../ImageWithFallback";
 
 const partners = [
   {
-    id: 1,
+    id: "factory13",
     name: "KANION",
-    image: "/images/factory9.jpg",
+    image: "/images/factory13.jpg",
   },
   {
-    id: 2,
+    id: "factory14",
     name: "AUX",
-    image: "/images/factory10.jpg",
+    image: "/images/factory14.jpg",
   },
   {
-    id: 3,
+    id: "factory15",
     name: "SHUFT",
-    image: "/images/factory11.jpg",
+    image: "/images/factory15.jpg",
   },
   {
-    id: 4,
+    id: "factory16",
     name: "BALLU",
-    image: "/images/factory12.jpg",
+    image: "/images/factory16.jpg",
   },
 ];
 
@@ -79,10 +79,11 @@ const Full = () => {
             <CarouselContent>
               {partners.map((partner) => (
                 <CarouselItem key={partner.id}>
-                  <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden shadow-xl rounded-lg bg-white p-8">
+                  <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-lg bg-white p-8">
                     <ImageWithFallback
+                      key={`${partner.id}-${partner.image}`}
                       src={partner.image}
-                      alt={partner.name}
+                      alt={partner.id}
                       className="w-full h-full object-contain"
                     />
                   </div>

@@ -206,7 +206,7 @@ const SlideImages = ({
                   width={600}
                   height={600}
                   alt=""
-                  className="h-32 w-[200px] object-contain"
+                  className="h-32 w-[280px] p-4 object-contain"
                 />
               </Link>
             )

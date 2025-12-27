@@ -53,7 +53,7 @@ const Ballu = () => {
               <ImageWithFallback
                 src="/images/ballu.png"
                 alt="Давуу$тал$3"
-                className="w-full h-full object-contain"
+                className="w-full p-12 h-full object-contain"
               />
             </Link>
           </motion.div>
@@ -84,7 +84,7 @@ const Ballu = () => {
               </Link>
             </div>
 
-            <ul className="space-y-4">
+            <ul className="space-y-4 p-4 border-2 border-gray-100 shadow-xs">
               {advantages.map((advantage, index) => (
                 <motion.li
                   key={index}

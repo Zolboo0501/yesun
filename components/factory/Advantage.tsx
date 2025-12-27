@@ -65,7 +65,7 @@ const Advantage = () => {
                 delay: index * 0.2,
                 ease: "easeOut",
               }}
-              className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-300"
+              className="bg-white rounded-lg p-8 shadow-md hover:shadow-xl transition-shadow duration-300"
             >
               <h3 className="text-xl font-bold text-gray-900 mb-6">
                 {principle.title}

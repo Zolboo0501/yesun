@@ -43,7 +43,7 @@ const Shuft = () => {
               </Link>
             </div>
 
-            <ul className="space-y-4">
+            <ul className="space-y-4 p-4 border-2 border-gray-100 shadow-xs">
               {advantages.map((advantage, index) => (
                 <motion.li
                   key={index}

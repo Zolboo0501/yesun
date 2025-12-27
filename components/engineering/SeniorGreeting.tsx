@@ -57,7 +57,7 @@ export function SeniorGreeting() {
           >
             <div className="relative flex-1 overflow-hidden shadow-xl">
               <ImageWithFallback
-                src="/images/engineering5.jpg"
+                src="/images/engineering5.JPG"
                 alt="Modern building"
                 className="w-full h-full object-cover"
               />

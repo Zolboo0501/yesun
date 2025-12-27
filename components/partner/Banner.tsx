@@ -23,21 +23,23 @@ export function Banner() {
               <br />
               <span className="text-[#0100FD]">Таны найдвартай түнш</span>
             </h2>
-            <p className="text-sm text-gray-600 mb-6 leading-relaxed text-justify">
-              Манай компани халаалт, хөргөлт, агааржуулалт ба агаар сэлгэлтийн
-              бүтээгдэхүүнээрээ дэлхийд танигдсан брэндүүдийн албан ёсны байнгын
-              төлөөлөгч юм.
-            </p>
-            <p className="text-sm text-gray-600 mb-8 leading-relaxed text-justify">
-              Чиллер, Агаар боловсруулах төхөөрөмж, Фэнкойл, бүх төрлийн
-              Эйркондишнууд, дулаан солилцуур, Хятадын “KANION” брэндийн бүх
-              төрлийн эйркондишн, Оросын “SHUFT”, ‘BALLU’ брэндийн бүх төрлийн
-              агаар боловсруулах, сэлгэх тоног төхөөрөмж мөн Шведийн “Ostberg”
-              брэндийн төрөл бүрийн сэнс зэрэг Дэлхийн стандартад нийцсэн эрчим
-              хүч болон байгаль орчин, хүний биед сөрөг нөлөөгүй шилдэг
-              бүтээгдэхүүнүүдийг Монгол улсынхаа зах зээлд нийлүүлэн угсарч,
-              суурилуулсаар байна.
-            </p>
+            <div className="p-4 border-2 border-gray-100 shadow-xs ">
+              <p className="text-sm text-gray-600 mb-6 leading-relaxed text-justify">
+                Манай компани халаалт, хөргөлт, агааржуулалт ба агаар сэлгэлтийн
+                бүтээгдэхүүнээрээ дэлхийд танигдсан брэндүүдийн албан ёсны
+                байнгын төлөөлөгч юм.
+              </p>
+              <p className="text-sm text-gray-600 mb-8 leading-relaxed text-justify">
+                Чиллер, Агаар боловсруулах төхөөрөмж, Фэнкойл, бүх төрлийн
+                Эйркондишнууд, дулаан солилцуур, Хятадын “KANION” брэндийн бүх
+                төрлийн эйркондишн, Оросын “SHUFT”, ‘BALLU’ брэндийн бүх төрлийн
+                агаар боловсруулах, сэлгэх тоног төхөөрөмж мөн Шведийн “Ostberg”
+                брэндийн төрөл бүрийн сэнс зэрэг Дэлхийн стандартад нийцсэн
+                эрчим хүч болон байгаль орчин, хүний биед сөрөг нөлөөгүй шилдэг
+                бүтээгдэхүүнүүдийг Монгол улсынхаа зах зээлд нийлүүлэн угсарч,
+                суурилуулсаар байна.
+              </p>
+            </div>
           </motion.div>
 
           {/* Right Image Grid */}
@@ -60,7 +62,7 @@ export function Banner() {
               <ImageWithFallback
                 src="/images/kanon.webp"
                 alt="Partner 1"
-                className="w-full h-full object-contain"
+                className="w-full h-full p-12 object-contain"
               />
             </Link>
 
@@ -72,7 +74,7 @@ export function Banner() {
               <ImageWithFallback
                 src="/images/aux.png"
                 alt="Partner 2"
-                className="w-full h-full object-contain"
+                className="w-full p-12 h-full object-contain"
               />
             </Link>
 
@@ -84,7 +86,7 @@ export function Banner() {
               <ImageWithFallback
                 src="/images/shuft.png"
                 alt="Partner 3"
-                className="w-full h-full object-contain"
+                className="w-full p-12 h-full object-contain"
               />
             </Link>
 
@@ -96,7 +98,7 @@ export function Banner() {
               <ImageWithFallback
                 src="/images/ballu.png"
                 alt="Partner 4"
-                className="w-full h-full object-contain"
+                className="w-full p-12 h-full object-contain"
               />
             </Link>
           </motion.div>
