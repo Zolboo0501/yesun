@@ -59,7 +59,7 @@ export function Banner() {
               <br />
               <span className="text-[#0100FD]">үйлдвэрлэлийн шийдэл</span>
             </h2>
-            <p className="text-sm text-gray-600 mb-6 leading-relaxed text-justify">
+            <p className="text-sm text-gray-600 mb-6 leading-relaxed text-justify p-4 border-2 border-gray-100 shadow-xs">
               Манай компани нь агаар сэлгэлт, хөргөлтийн системийн чиглэлээр
               орчин үеийн дэвшилтэт технологид суурилсан цогц шийдлүүдийг санал
               болгодог үндэсний үйлдвэрлэгч юм. Бид зураг төсөл боловсруулах,

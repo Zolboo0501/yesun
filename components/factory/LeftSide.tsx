@@ -102,6 +102,7 @@ export function LeftSide() {
               duration: 0.8,
               ease: "easeOut",
             }}
+            className="p-4 border-2 border-gray-100 shadow-xs"
           >
             <p className="text-sm text-gray-600 mb-6 leading-relaxed text-justify">
               Бид олон улсын стандарт, норм дүрмийг мөрдөн ажиллаж, бүтээгдэхүүн
