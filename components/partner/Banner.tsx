@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import { ImageWithFallback } from "../ImageWithFallback";
+import Link from "next/link";
 
 export function Banner() {
   return (
@@ -51,40 +52,53 @@ export function Banner() {
             className="relative grid grid-cols-2 grid-rows-3 gap-2 h-[600px]"
           >
             {/* Left Top - Large (spans 2 rows) */}
-            <div className="relative row-span-2 overflow-hidden shadow-xl">
+
+            <Link
+              href={"https://www.kanionco.com/"}
+              className="relative row-span-2 overflow-hidden shadow-xl"
+            >
               <ImageWithFallback
                 src="/images/kanon.webp"
                 alt="Partner 1"
                 className="w-full h-full object-contain"
               />
-            </div>
+            </Link>
 
             {/* Right Top */}
-            <div className="relative overflow-hidden shadow-xl">
+            <Link
+              href={"https://www.auxcool.com"}
+              className="relative overflow-hidden shadow-xl"
+            >
               <ImageWithFallback
                 src="/images/aux.png"
                 alt="Partner 2"
                 className="w-full h-full object-contain"
               />
-            </div>
+            </Link>
 
             {/* Right Bottom */}
-            <div className="relative row-span-2 overflow-hidden shadow-xl">
+            <Link
+              href={"https://www.shuft.ru/"}
+              className="relative row-span-2 overflow-hidden shadow-xl"
+            >
               <ImageWithFallback
                 src="/images/shuft.png"
                 alt="Partner 3"
                 className="w-full h-full object-contain"
               />
-            </div>
+            </Link>
 
             {/* Left Bottom */}
-            <div className="relative overflow-hidden shadow-xl">
+            <Link
+              href={"https://www.ballu.com/"}
+              className="relative overflow-hidden shadow-xl"
+            >
               <ImageWithFallback
                 src="/images/ballu.png"
                 alt="Partner 4"
                 className="w-full h-full object-contain"
               />
-            </div>
+            </Link>
           </motion.div>
         </div>
       </div>

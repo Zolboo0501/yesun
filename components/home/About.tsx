@@ -1,9 +1,8 @@
 "use client";
 import { ChevronRight } from "lucide-react";
 import { motion } from "motion/react";
-import { ImageWithFallback } from "../ImageWithFallback";
 import Link from "next/link";
-import Image from "next/image";
+import { ImageWithFallback } from "../ImageWithFallback";
 
 export function About({ hiddenButton }: { hiddenButton?: boolean }) {
   return (

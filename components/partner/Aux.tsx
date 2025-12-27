@@ -74,27 +74,36 @@ const Aux = () => {
             }}
             className="grid grid-cols-2 gap-4"
           >
-            <div className="relative h-64 md:h-80 overflow-hidden shadow-xl">
+            <Link
+              href={"https://www.auxcool.com"}
+              className="relative h-64 md:h-80 overflow-hidden shadow-xl"
+            >
               <ImageWithFallback
                 src="/images/aux3.jpg"
                 alt="Давуу-тал-1"
                 className="w-full h-full object-cover"
               />
-            </div>
-            <div className="relative h-64 md:h-80 overflow-hidden shadow-xl">
+            </Link>
+            <Link
+              href={"https://www.auxcool.com"}
+              className="relative h-64 md:h-80 overflow-hidden shadow-xl"
+            >
               <ImageWithFallback
                 src="/images/aux2.webp"
                 alt="Давуу-тал-2"
                 className="w-full h-full object-cover"
               />
-            </div>
-            <div className="relative h-64 md:h-80 overflow-hidden shadow-xl col-span-2">
+            </Link>
+            <Link
+              href={"https://www.auxcool.com"}
+              className="relative h-64 md:h-80 overflow-hidden shadow-xl col-span-2"
+            >
               <ImageWithFallback
                 src="/images/aux.png"
                 alt="Давуу-тал-3"
                 className="w-full h-full object-contain"
               />
-            </div>
+            </Link>
           </motion.div>
         </div>
       </div>

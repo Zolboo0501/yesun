@@ -76,27 +76,36 @@ const Shuft = () => {
             }}
             className="grid grid-cols-2 gap-4"
           >
-            <div className="relative h-64 md:h-80 overflow-hidden shadow-xl">
+            <Link
+              href={"https://www.shuft.ru/"}
+              className="relative h-64 md:h-80 overflow-hidden shadow-xl"
+            >
               <ImageWithFallback
                 src="/images/shuft3.jpg"
                 alt="Давуу#тал#1"
                 className="w-full h-full object-contain"
               />
-            </div>
-            <div className="relative h-64 md:h-80 overflow-hidden shadow-xl">
+            </Link>
+            <Link
+              href={"https://www.shuft.ru/"}
+              className="relative h-64 md:h-80 overflow-hidden shadow-xl"
+            >
               <ImageWithFallback
                 src="/images/shuft2.webp"
                 alt="Давуу#тал#2"
                 className="w-full h-full object-contain"
               />
-            </div>
-            <div className="relative h-64 md:h-80 overflow-hidden shadow-xl col-span-2">
+            </Link>
+            <Link
+              href={"https://www.shuft.ru/"}
+              className="relative h-64 md:h-80 overflow-hidden shadow-xl col-span-2"
+            >
               <ImageWithFallback
                 src="/images/shuft.png"
                 alt="Давуу#тал#3"
                 className="w-full h-full object-contain"
               />
-            </div>
+            </Link>
           </motion.div>
         </div>
       </div>

@@ -12,6 +12,8 @@ const projects = [
     subtitle: "Барилгын агаар сэлгэлтийн систем - 2019 он",
     image: "/images/project3.webp",
     rating: 5,
+    personImage: "/images/engineering4.JPG",
+    person: "Ц.Хосбаяр",
   },
   {
     number: "2",
@@ -20,6 +22,8 @@ const projects = [
       "Төслийн 2–рээлжийн орон сууцны нэгдсэн граж барилгын агаар сэлгэлт, Хөргөлтийн системийн угсралт - 2020 он",
     image: "/images/project6.webp",
     rating: 5,
+    personImage: "/images/engineering4.JPG",
+    person: "Ц.Хосбаяр",
   },
   {
     number: "3",
@@ -28,6 +32,8 @@ const projects = [
       "Төслийн 2–р ээлжийн орон сууц Барилгын агаар сэлгэлтийн систем - 2020 он",
     image: "/images/project4.webp",
     rating: 5,
+    personImage: "/images/engineering4.JPG",
+    person: "Ц.Хосбаяр",
   },
   {
     number: "4",
@@ -36,6 +42,8 @@ const projects = [
     subtitle:
       "Барилгын Агаар сэлгэлтийн системийн угсралт тоног төхөөрөмж нийлүүлэх, хөргөлтийн системийн угсралт - 2021 он",
     image: "/images/project2.webp",
+    personImage: "/images/engineering2.JPG",
+    person: "Д.Хангай",
   },
   {
     number: "5",
@@ -43,6 +51,8 @@ const projects = [
     subtitle: "Төслийн үйлдвэрийн барилга агаар сэлгэлт - 2024 он",
     image: "/images/project.webp",
     rating: 5,
+    personImage: "/images/engineering2.JPG",
+    person: "Д.Хангай",
   },
   {
     number: "6",
@@ -51,6 +61,8 @@ const projects = [
       "Орон сууцны хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем - 2024 он",
     image: "/images/project13.webp",
     rating: 5,
+    personImage: "/images/engineering2.JPG",
+    person: "Ц.Хосбаяр",
   },
   {
     number: "7",
@@ -58,6 +70,8 @@ const projects = [
     subtitle: "Барилгын агаар сэлгэлтийн систем - 2024 он",
     image: "/images/project11.webp",
     rating: 5,
+    personImage: "/images/engineering4.JPG",
+    person: "Ц.Хосбаяр",
   },
   {
     number: "8",
@@ -65,6 +79,9 @@ const projects = [
     subtitle: "Орон сууцны агаар сэлгэлтийн систем – 2022 он",
     image: "/images/project10.webp",
     rating: 5,
+
+    personImage: "/images/woman.png",
+    person: "М.Далайсайхан",
   },
   {
     number: "9",
@@ -72,6 +89,8 @@ const projects = [
     subtitle:
       "Төслийн 3 – р ээлжийн Канад “Сургууль спорт комплекс” барилгын агаар сэлгэлт, Хөргөлтийн системийн тоног төхөөрөмж нийлүүлэх, угсралт - 2022 он",
     image: "/images/project9.webp",
+    personImage: "/images/engineering2.JPG",
+    person: "Д.Хангай",
     rating: 5,
   },
   {
@@ -81,6 +100,8 @@ const projects = [
       "хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем болон нэгдсэн гражын агаар сэлгэлт - 2022 он",
     image: "/images/project7.webp",
     rating: 5,
+    personImage: "/images/engineering2.JPG",
+    person: "Д.Хангай",
   },
   {
     number: "11",
@@ -89,6 +110,8 @@ const projects = [
       "Хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем болон нэгдсэн гражын агаар сэлгэлт - 2023 он",
     image: "/images/project8.webp",
     rating: 5,
+    personImage: "/images/engineering4.JPG",
+    person: "Ц.Хосбаяр",
   },
   {
     number: "12",
@@ -96,6 +119,8 @@ const projects = [
     subtitle:
       "төслийн ажилчдын байр, оффис барилга агаар сэлгэлт, хөргөлтийн систем - 2024 он",
     image: "/images/project12.webp",
+    personImage: "/images/engineering2.JPG",
+    person: "Д.Хангай",
     rating: 5,
   },
 ];
@@ -173,13 +198,13 @@ const Projects = () => {
                     <ImageWithFallback
                       src={project.image}
                       alt={project.title}
-                      className="w-full h-[400px] object-cover group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-[250px] sm:h-[300px] md:h-[350px] lg:h-[400px] object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                   </div>
                 </div>
 
                 <div
-                  className={`w-full  lg:w-1/2 relative ${
+                  className={`w-full lg:w-1/2 relative ${
                     isOdd ? "lg:order-2 lg:pl-8" : "lg:order-1 lg:pr-8"
                   }`}
                 >
@@ -190,7 +215,7 @@ const Projects = () => {
                       height={64}
                       alt="Office"
                       priority
-                      className="absolute -bottom-8 -right-8"
+                      className="absolute -bottom-10 right-0 lg:-bottom-8 lg:-right-8"
                     />
                   ) : (
                     <Image
@@ -199,7 +224,7 @@ const Projects = () => {
                       height={64}
                       alt="Office"
                       priority
-                      className="absolute -bottom-8 -left-8"
+                      className="absolute -bottom-12 -left-4 lg:-bottom-8 lg:-left-8"
                     />
                   )}
                   <div
@@ -214,7 +239,7 @@ const Projects = () => {
                         height={64}
                         alt="Office"
                         priority
-                        className="absolute -top-8 -left-8"
+                        className="absolute -top-6 -left-2 lg:-top-8 lg:-left-8"
                       />
                     ) : (
                       <Image
@@ -223,18 +248,64 @@ const Projects = () => {
                         height={64}
                         alt="Office"
                         priority
-                        className="absolute -top-8 -right-8"
+                        className="absolute -top-6 -right-2 lg:-top-8 lg:-right-8"
                       />
                     )}
-                    <div className="mb-4">
-                      <span className="text-5xl font-bold text-[#0100FD]">
-                        {project.number}.
-                      </span>
-                    </div>
-                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">
+                    <>
+                      {!isOdd && project.personImage ? (
+                        <div className="mb-4 flex flex-row justify-between gap-2 sm:gap-4">
+                          <div className="flex flex-row gap-2 sm:gap-4 items-center lg:-translate-x-6 lg:-translate-y-6">
+                            <Image
+                              src={project.personImage}
+                              alt={project.person}
+                              width={200}
+                              height={200}
+                              className="rounded-md w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 object-contain border-2 border-white shadow-lg"
+                            />
+                            <div className="flex flex-col items-start gap-1">
+                              <span className="text-xs text-gray-600">
+                                Гүйцэтгэсэн инженер:
+                              </span>
+                              <span className="text-[#0100FD] text-sm font-semibold">
+                                {project.person}
+                              </span>
+                            </div>
+                          </div>
+                          <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0100FD]">
+                            {project.number}.
+                          </span>
+                        </div>
+                      ) : (
+                        project.personImage && (
+                          <div className="mb-4 flex flex-row justify-between gap-2 sm:gap-4">
+                            <span className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0100FD]">
+                              {project.number}.
+                            </span>
+                            <div className="flex flex-row gap-2 sm:gap-4 items-center lg:translate-x-6 lg:-translate-y-6">
+                              <div className="flex flex-col items-start lg:items-end gap-1">
+                                <span className="text-xs text-gray-600">
+                                  Гүйцэтгэсэн инженер:
+                                </span>
+                                <span className="text-[#0100FD] text-sm font-semibold">
+                                  {project.person}
+                                </span>
+                              </div>
+                              <Image
+                                src={project.personImage}
+                                alt={project.person || "image"}
+                                width={200}
+                                height={200}
+                                className="rounded-md w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 object-contain border-2 border-white shadow-lg"
+                              />
+                            </div>
+                          </div>
+                        )
+                      )}
+                    </>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">
                       {project.title}
                     </h3>
-                    <p className="text-base md:text-lg text-gray-600 mb-6">
+                    <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-4 sm:mb-6">
                       {project.subtitle}
                     </p>
                     <div
@@ -245,7 +316,7 @@ const Projects = () => {
                       {[...Array(project.rating)].map((_, i) => (
                         <Star
                           key={i}
-                          className="w-5 h-5 fill-[#FFA500] text-[#FFA500]"
+                          className="w-4 h-4 sm:w-5 sm:h-5 fill-[#FFA500] text-[#FFA500]"
                         />
                       ))}
                     </div>
