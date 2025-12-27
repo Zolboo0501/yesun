@@ -10,8 +10,51 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ImageWithFallback } from "./ImageWithFallback";
+import Image from "next/image";
 
-export function Footer() {
+const imgSources = [
+  {
+    image: "/images/kanon.webp",
+    href: "https://www.kanionco.com/",
+  },
+  {
+    image: "/images/aux.png",
+    href: "https://www.auxcool.com",
+  },
+  { image: "/images/ballu.png", href: "https://www.ballu.ru/" },
+  { image: "/images/shuft.png", href: "https://www.shuft.com/" },
+  {
+    image: "/images/kanon.webp",
+    href: "https://www.kanionco.com/",
+  },
+  {
+    image: "/images/aux.png",
+    href: "https://www.auxcool.com",
+  },
+  { image: "/images/ballu.png", href: "https://www.ballu.ru/" },
+  { image: "/images/shuft.png", href: "https://www.shuft.com/" },
+  {
+    image: "/images/kanon.webp",
+    href: "https://www.kanionco.com/",
+  },
+  {
+    image: "/images/aux.png",
+    href: "https://www.auxcool.com",
+  },
+  { image: "/images/ballu.png", href: "https://www.ballu.ru/" },
+  { image: "/images/shuft.png", href: "https://www.shuft.com/" },
+];
+
+const Footer = () => {
+  return (
+    <>
+      <SlideImages images={imgSources} />
+      <FooterView />
+    </>
+  );
+};
+
+function FooterView() {
   return (
     <footer className="bg-gray-900 text-white" id="footer">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -138,3 +181,40 @@ export function Footer() {
     </footer>
   );
 }
+
+const SlideImages = ({
+  images,
+}: {
+  images: { image: string; href: string }[];
+}) => {
+  return (
+    <div
+      className={`flex w-full flex-col items-center justify-center gap-10 border-b-2 border-black py-20`}
+    >
+      <div className="relative w-full overflow-hidden">
+        <div className="animate-infinite-scroll flex w-max gap-12">
+          {[...images, ...images, ...images, ...images].map(
+            (imgSource: { image: string; href: string }, index: number) => (
+              <Link
+                key={`row1-${index}`}
+                href={imgSource.href}
+                rel="noopener noreferrer"
+                className="mx-[30px] shrink-0"
+              >
+                <Image
+                  src={imgSource.image}
+                  width={600}
+                  height={600}
+                  alt=""
+                  className="h-32 w-[200px] object-contain"
+                />
+              </Link>
+            )
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export { Footer };
