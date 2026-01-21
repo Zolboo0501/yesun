@@ -8,6 +8,8 @@ const teamMembers = [
     name: "Н.Энхмэнд",
     position: "Ерөнхий менежер",
     image: "/images/member.jpg",
+    description:
+      "Ерөнхий менежерээр анх үүсгэн байгуулагдсан 2011 оноос хойш ажиллаж байна.",
   },
   {
     id: 2,
