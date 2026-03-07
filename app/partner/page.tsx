@@ -1,3 +1,4 @@
+import AirOne from "@/components/partner/AirOne";
 import Aux from "@/components/partner/Aux";
 import Ballu from "@/components/partner/Ballu";
 import { Banner } from "@/components/partner/Banner";
@@ -12,6 +13,7 @@ const Partner = () => {
       <Aux />
       <Ballu />
       <Shuft />
+      <AirOne />
     </>
   );
 };

@@ -42,7 +42,6 @@ export function Banner() {
             </div>
           </motion.div>
 
-          {/* Right Image Grid */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -51,56 +50,65 @@ export function Banner() {
               duration: 0.8,
               ease: "easeOut",
             }}
-            className="relative grid grid-cols-2 grid-rows-3 gap-2 h-[600px]"
+            className="relative flex flex-col  h-[500px] gap-2 flex"
           >
-            {/* Left Top - Large (spans 2 rows) */}
+            <div className="grid grid-cols-3 gap-2">
+              <Link
+                href={"https://www.kanionco.com/"}
+                className="relative overflow-hidden shadow-xl bg-white"
+              >
+                <ImageWithFallback
+                  src="/images/kanon.webp"
+                  alt="KANION"
+                  className="w-full h-full p-8 object-contain"
+                />
+              </Link>
 
-            <Link
-              href={"https://www.kanionco.com/"}
-              className="relative row-span-2 overflow-hidden shadow-xl"
-            >
-              <ImageWithFallback
-                src="/images/kanon.webp"
-                alt="Partner 1"
-                className="w-full h-full p-12 object-contain"
-              />
-            </Link>
+              <Link
+                href={"https://www.auxcool.com"}
+                className="relative overflow-hidden shadow-xl bg-white"
+              >
+                <ImageWithFallback
+                  src="/images/aux.png"
+                  alt="AUX"
+                  className="w-full p-8 h-full object-contain"
+                />
+              </Link>
 
-            {/* Right Top */}
-            <Link
-              href={"https://www.auxcool.com"}
-              className="relative overflow-hidden shadow-xl"
-            >
-              <ImageWithFallback
-                src="/images/aux.png"
-                alt="Partner 2"
-                className="w-full p-12 h-full object-contain"
-              />
-            </Link>
+              <Link
+                href={"https://www.shuft.ru/"}
+                className="relative overflow-hidden shadow-xl bg-white"
+              >
+                <ImageWithFallback
+                  src="/images/shuft.png"
+                  alt="SHUFT"
+                  className="w-full p-8 h-full object-contain"
+                />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Link
+                href={"https://www.ballu.com/"}
+                className="relative overflow-hidden shadow-xl bg-white"
+              >
+                <ImageWithFallback
+                  src="/images/ballu.png"
+                  alt="BALLU"
+                  className="w-full p-8 h-full object-contain"
+                />
+              </Link>
 
-            {/* Right Bottom */}
-            <Link
-              href={"https://www.shuft.ru/"}
-              className="relative row-span-2 overflow-hidden shadow-xl"
-            >
-              <ImageWithFallback
-                src="/images/shuft.png"
-                alt="Partner 3"
-                className="w-full p-12 h-full object-contain"
-              />
-            </Link>
-
-            {/* Left Bottom */}
-            <Link
-              href={"https://www.ballu.com/"}
-              className="relative overflow-hidden shadow-xl"
-            >
-              <ImageWithFallback
-                src="/images/ballu.png"
-                alt="Partner 4"
-                className="w-full p-12 h-full object-contain"
-              />
-            </Link>
+              <Link
+                href={"https://aironn.com.tr/"}
+                className="relative col-span-1 overflow-hidden shadow-xl bg-white"
+              >
+                <ImageWithFallback
+                  src="/images/aironn.png"
+                  alt="AIRONN"
+                  className="w-full p-8 h-full object-contain"
+                />
+              </Link>
+            </div>
           </motion.div>
         </div>
       </div>

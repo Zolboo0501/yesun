@@ -8,6 +8,28 @@ export const metadata: Metadata = {
   title: "Есөн Бэлчир ХХК - Агаар сэлгэлт ба Хөргөлтийн Систем",
   description:
     "Есөн бэлчир нь агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг Монголын тэргүүлэгч компани юм.",
+  keywords: [
+    "агаар сэрүүцэгч",
+    "эйркондишн",
+    "агаар сэлгэлт",
+    "халаалтын систем",
+    "хөргөлтийн систем",
+    "агаар сэрүүцэгч Улаанбаатар",
+    "эйркондишн Монгол",
+    "чиллер",
+    "фэнкойл",
+    "агаар боловсруулах",
+    "KANION",
+    "AUX",
+    "BALLU",
+    "SHUFT",
+    "AIRONN",
+    "галын сэнс",
+    "агаар сэрүүцэгч суурилуулалт",
+    "эйркондишн засвар",
+    "агаарын чанар",
+    "Есөн Бэлчир",
+  ],
   icons: {
     icon: "/images/logo3.png",
   },
@@ -34,6 +56,20 @@ export const metadata: Metadata = {
       "Есөн бэлчир нь агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг Монголын тэргүүлэгч компани юм.",
     images: ["/images/logo3.png"],
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://www.yesunbelchir.mn",
+  },
 };
 
 export default function RootLayout({
@@ -42,7 +78,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="mn">
       <body
         className={`scroll-smooth ${ptSans.variable}`}
         suppressHydrationWarning

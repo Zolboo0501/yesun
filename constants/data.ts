@@ -22,9 +22,14 @@ const menu = [
     href: "/partner",
   },
   {
+    title: "Бүтээгдэхүүн",
+    href: "/products",
+  },
+  {
     title: "Холбоо барих",
     href: "/contact",
   },
 ];
+
 
 export { menu };
