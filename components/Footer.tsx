@@ -27,6 +27,8 @@ const imgSources = [
     image: "/images/kanon.webp",
     href: "https://www.kanionco.com/",
   },
+
+  { image: "/images/aironn.png", href: "https://www.aironn.com.tr/" },
   {
     image: "/images/aux.png",
     href: "https://www.auxcool.com",
@@ -209,7 +211,7 @@ const SlideImages = ({
                   className="h-32 w-[280px] p-4 object-contain"
                 />
               </Link>
-            )
+            ),
           )}
         </div>
       </div>

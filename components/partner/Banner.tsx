@@ -99,7 +99,7 @@ export function Banner() {
               </Link>
 
               <Link
-                href={"https://aironn.com.tr/"}
+                href={"https://aironn.com.tr/en"}
                 className="relative col-span-1 overflow-hidden shadow-xl bg-white"
               >
                 <ImageWithFallback

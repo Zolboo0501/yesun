@@ -33,7 +33,7 @@ const AirOne = () => {
             className="grid grid-cols-2 gap-4"
           >
             <Link
-              href={"https://aironn.com.tr/"}
+              href={"https://www.aironn.com.tr/en/products/axial-fans"}
               className="relative h-64 md:h-80 overflow-hidden shadow-xl"
             >
               <ImageWithFallback
@@ -43,7 +43,7 @@ const AirOne = () => {
               />
             </Link>
             <Link
-              href={"https://aironn.com.tr/"}
+              href={"https://www.aironn.com.tr/en/products/axial-fans"}
               className="relative h-64 md:h-80 overflow-hidden shadow-xl"
             >
               <ImageWithFallback
@@ -53,7 +53,7 @@ const AirOne = () => {
               />
             </Link>
             <Link
-              href={"https://aironn.com.tr/"}
+              href={"https://aironn.com.tr/en"}
               className="relative h-64 md:h-80 overflow-hidden shadow-xl col-span-2"
             >
               <ImageWithFallback
@@ -80,10 +80,10 @@ const AirOne = () => {
                   5.
                 </span>
                 <br />
-                AIRONN
+                AIRONN <span className="text-base">(галын сэнс)</span>
               </h2>
               <Link
-                href={"https://aironn.com.tr"}
+                href={"https://aironn.com.tr/en"}
                 className="text-base text-[#0100FD] underline tracking-wider"
               >
                 aironn.com
