@@ -86,7 +86,7 @@ export function Banner() {
                 />
               </Link>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-3 gap-2">
               <Link
                 href={"https://www.ballu.com/"}
                 className="relative overflow-hidden shadow-xl bg-white"
@@ -105,6 +105,16 @@ export function Banner() {
                 <ImageWithFallback
                   src="/images/aironn.png"
                   alt="AIRONN"
+                  className="w-full p-8 h-full object-contain"
+                />
+              </Link>
+              <Link
+                href={"https://lavfill.en.alibaba.com/"}
+                className="relative col-span-1 overflow-hidden shadow-xl bg-white"
+              >
+                <ImageWithFallback
+                  src="/images/lavfill.jpg"
+                  alt="Lavfill"
                   className="w-full p-8 h-full object-contain"
                 />
               </Link>
