@@ -46,7 +46,7 @@ export const Purpose = () => {
           >
             <div className="relative w-full h-full overflow-hidden shadow-2xl bg-transparent">
               <ImageWithFallback
-                src="/images/banner.jpg"
+                src="/images/banner.JPG"
                 alt="Зорилт"
                 className="w-full h-full object-contain"
               />

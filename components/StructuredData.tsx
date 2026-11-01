@@ -1,11 +1,14 @@
+import { contact, siteUrl } from "@/constants/data";
+
 export function StructuredData() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Есөн Бэлчир ХХК",
     "description": "Агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээ",
-    "url": "https://www.yesunbelchir.mn",
-    "telephone": "+976-XXXX-XXXX",
+    "url": siteUrl,
+    "telephone": contact.phone,
+    "email": contact.email,
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Улаанбаатар",
@@ -16,13 +19,10 @@ export function StructuredData() {
       "latitude": 47.8864,
       "longitude": 106.9057
     },
-    "image": "https://www.yesunbelchir.mn/images/logo3.png",
+    "image": `${siteUrl}/images/logo3.png`,
     "priceRange": "$$",
-    "openingHours": "Mo-Fr 09:00-18:00",
-    "sameAs": [
-      "https://www.facebook.com/yesunbelchir",
-      "https://www.instagram.com/yesunbelchir"
-    ],
+    "openingHours": "Mo-Sa 09:00-19:00",
+    "sameAs": [contact.facebook],
     "brand": [
       {
         "@type": "Brand",

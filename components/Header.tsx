@@ -1,5 +1,5 @@
 "use client";
-import { menu } from "@/constants/data";
+import { contact, menu } from "@/constants/data";
 import { Facebook, Mail, Menu, Phone, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
@@ -57,24 +57,29 @@ export function Header() {
       <div className="h-[4vh] bg-linear-to-l from-[#0100FD] w-full  to-[black]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full lg:px-8 h-full flex items-center">
           <div className="w-full flex flex-row justify-end">
-            <button
+            <a
+              href={contact.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
               className="border-r border-white px-4 flex justify-center items-center"
-              onClick={() => scrollToSection("footer")}
             >
               <Facebook color="white" size={16} />
-            </button>
-            <button
+            </a>
+            <a
+              href={`mailto:${contact.email}`}
+              aria-label="Имэйл"
               className="border-r border-white px-4 flex justify-center items-center"
-              onClick={() => scrollToSection("footer")}
             >
               <Mail color="white" size={16} />
-            </button>
-            <button
+            </a>
+            <a
+              href={`tel:${contact.phone}`}
+              aria-label="Утас"
               className="pl-4 flex justify-center items-center"
-              onClick={() => scrollToSection("footer")}
             >
               <Phone color="white" size={16} />
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -224,8 +229,8 @@ export function Header() {
                             },
                           }}
                         >
-                          <motion.details
-                            className="group"
+                          <motion.div
+                            className="flex items-center px-4 py-3 font-medium hover:bg-blue-50 transition-colors duration-200"
                             whileHover={{ scale: 1.02 }}
                             transition={{
                               type: "spring",
@@ -233,18 +238,8 @@ export function Header() {
                               damping: 17,
                             }}
                           >
-                            <summary className="flex cursor-pointer items-center justify-between px-4 py-3 font-medium hover:bg-blue-50 transition-colors duration-200">
-                              <span className="text-sm">{menuItem.title}</span>
-                            </summary>
-                            <motion.div
-                              className="space-y-1 pl-4 pt-2"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ delay: 0.1 }}
-                            >
-                              {/* Submenu items can be added here */}
-                            </motion.div>
-                          </motion.details>
+                            <span className="text-sm">{menuItem.title}</span>
+                          </motion.div>
                         </motion.div>
                       </Link>
                     );

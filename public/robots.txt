@@ -2,11 +2,10 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /_next/
 Disallow: /admin/
 
 # Sitemap location
-Sitemap: https://www.yesunbelchir.mn/sitemap.xml
+Sitemap: https://yusunbelchir.mn/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1

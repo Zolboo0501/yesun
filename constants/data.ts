@@ -31,4 +31,12 @@ const menu = [
   },
 ];
 
-export { menu };
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://yusunbelchir.mn";
+
+const contact = {
+  facebook: "https://www.facebook.com/profile.php?id=100063493841008",
+  email: "yusunbelchir@gmail.com",
+  phone: "+976-8888-9085",
+};
+
+export { contact, menu, siteUrl };
