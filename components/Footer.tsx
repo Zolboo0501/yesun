@@ -1,222 +1,237 @@
 "use client";
-import { menu } from "@/constants/data";
-import {
-  Clock,
-  Mail,
-  MapPin,
-  MapPinHouse,
-  Phone,
-} from "lucide-react";
-import { Facebook } from "./FacebookIcon";
-import Link from "next/link";
-import { ImageWithFallback } from "./ImageWithFallback";
+import { contact, menu } from "@/constants/data";
+import { rise, stagger } from "@/lib/reveal";
+import { ArrowUpRight } from "lucide-react";
+import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 
-const imgSources = [
-  {
-    image: "/images/kanon.webp",
-    href: "https://www.kanionco.com/",
-  },
-  {
-    image: "/images/aux.png",
-    href: "https://www.auxcool.com",
-  },
-  { image: "/images/ballu.png", href: "https://www.ballu.ru/" },
-  { image: "/images/shuft.png", href: "https://www.shuft.com/" },
-  {
-    image: "/images/kanon.webp",
-    href: "https://www.kanionco.com/",
-  },
-
-  { image: "/images/aironn.png", href: "https://www.aironn.com.tr/" },
-  {
-    image: "/images/aux.png",
-    href: "https://www.auxcool.com",
-  },
-  { image: "/images/ballu.png", href: "https://www.ballu.ru/" },
-  { image: "/images/shuft.png", href: "https://www.shuft.com/" },
-  {
-    image: "/images/kanon.webp",
-    href: "https://www.kanionco.com/",
-  },
-  {
-    image: "/images/aux.png",
-    href: "https://www.auxcool.com",
-  },
-  { image: "/images/ballu.png", href: "https://www.ballu.ru/" },
-  { image: "/images/shuft.png", href: "https://www.shuft.com/" },
+// fit: per-logo scale for files with large built-in margins.
+const partners: { name: string; image: string; href: string; fit?: string }[] = [
+  { name: "KANION", image: "/images/kanon.webp", href: "https://www.kanionco.com/" },
+  { name: "AUX", image: "/images/aux.png", href: "https://www.auxcool.com" },
+  { name: "BALLU", image: "/images/ballu.png", href: "https://www.ballu.ru/" },
+  { name: "SHUFT", image: "/images/shuft.png", href: "https://www.shuft.com/" },
+  { name: "AIRONN", image: "/images/aironn.png", href: "https://www.aironn.com.tr/" },
+  { name: "LAVFILL", image: "/images/lavfill.jpg", href: "https://lavfill.en.alibaba.com/", fit: "scale-[2.2]" },
 ];
 
-const Footer = () => {
+const places = [
+  {
+    label: "Оффис",
+    lines: ["Хан-Уул дүүрэг, 15-р хороо", "Наадам центр, 2 давхар"],
+    href: "https://maps.app.goo.gl/WNwFbL8zdkjAG2sG8?g_st=ic",
+  },
+  {
+    label: "Үйлдвэр",
+    lines: ["Хан-Уул дүүрэг, 10-р хороо", "Морингийн зам 42"],
+    href: "https://www.google.com/maps/place/Есөн+Бэлчир+ХХК+үйлдвэр+%2FFactory%2F/@47.856987,106.7556404,344m/data=!3m1!1e3!4m6!3m5!1s0x5d96eb00274f4edd:0x1877f58312c82a8c!8m2!3d47.8570456!4d106.7557945!16s%2Fg%2F11vs7nhrgh?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D",
+  },
+];
+
+const label = "font-mono text-[11px] uppercase tracking-[0.16em]";
+const linkFocus =
+  "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand";
+
+const Footer = () => (
+  <>
+    <Partners />
+    <FooterView />
+  </>
+);
+
+function Partners() {
   return (
-    <>
-      <SlideImages images={imgSources} />
-      <FooterView />
-    </>
-  );
-};
-
-function FooterView() {
-  return (
-    <footer className="bg-gray-900 text-white" id="footer">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          {/* Company Info */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="relative">
-                <ImageWithFallback
-                  src={"/images/logo3.png"}
-                  alt="Logo"
-                  className="shrink-0 w-24 h-16"
-                />
-              </div>
-              <div>
-                <div className="text-2xl mb-1">Есөн бэлчир ХХК</div>
-                <div className="text-sm text-gray-400">
-                  Агааржуулалт ба Хөргөлтийн Систем
-                </div>
-              </div>
-            </div>
-            <p className="text-gray-400 mb-6 leading-relaxed max-w-md text-sm text-justify">
-              Есөн бэлчир нь агааржуулалт, хөргөлтийн төхөөрөмж болон хоолойн
-              системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг
-              Монголын тэргүүлэгч компани юм.
-            </p>
-            <div className="flex items-center gap-4">
-              <Link
-                href="https://www.facebook.com/profile.php?id=100063493841008"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-[#0100FD] transition-colors"
-              >
-                <Facebook className="w-5 h-5" />
-              </Link>
-              <Link
-                href="mailto:yusunbelchir@gmail.com"
-                className="w-12 h-12 bg-gray-800 rounded-xl flex items-center justify-center hover:bg-[#0100FD] transition-colors"
-              >
-                <Mail className="w-5 h-5" />
-              </Link>
-            </div>
+    <section aria-labelledby="partners-title" className="bg-white py-24 text-ink lg:py-32">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <motion.div
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="grid gap-10 lg:grid-cols-12 lg:gap-8"
+        >
+          <div className="lg:col-span-4">
+            <motion.p variants={rise} className={`${label} text-brand`}>
+              Түнш брэндүүд
+            </motion.p>
+            <motion.h2
+              id="partners-title"
+              variants={rise}
+              className="mt-5 text-[clamp(1.75rem,1.2rem+2vw,3rem)] font-semibold leading-none tracking-[-0.04em]"
+            >
+              Албан ёсны 6 түнш
+            </motion.h2>
+            <motion.p variants={rise} className="mt-5 max-w-[40ch] text-step-body leading-relaxed">
+              Хөргөлт, агаар сэлгэлтийн төхөөрөмжийг үйлдвэрлэгчээс нь шууд
+              нийлүүлдэг.
+            </motion.p>
           </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-base mb-6 uppercase tracking-wider">
-              Холбоосууд
-            </h3>
-            <ul className="space-y-3 flex flex-col">
-              {menu.map((item, index: number) => {
-                return (
-                  <Link key={index} href={item.href}>
-                    <button className="text-gray-400 text-sm hover:text-white transition-colors">
-                      {item.title}
-                    </button>
-                  </Link>
-                );
-              })}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3 className="text-base mb-6 uppercase tracking-wider">
-              Холбоо барих
-            </h3>
-            <ul className="space-y-4">
-              <li className="flex items-center gap-3 text-gray-400">
-                <Phone className="w-5 h-5 text-[#0100FD] shrink-0 mt-1" />
-                <div className="flex flex-col">
-                  <div className="text-sm">
-                    <div className="hover:text-white">+976-8888-9085</div>
-                  </div>
-                  <div className="text-sm">
-                    <div className="hover:text-white">+976-88114570</div>
-                  </div>
-                </div>
-              </li>
-              <li className="flex items-center gap-3 text-gray-400">
-                <Mail className="w-5 h-5 text-[#0100FD] shrink-0 mt-1" />
-                <div className="text-sm hover:text-white">
-                  yusunbelchir@gmail.com
-                </div>
-              </li>
-              <li className="flex items-start gap-3 text-gray-400">
-                <MapPinHouse className="w-5 h-5 text-[#0100FD] shrink-0 mt-1" />
-                <Link
-                  href="https://maps.app.goo.gl/WNwFbL8zdkjAG2sG8?g_st=ic"
+          <motion.ul
+            variants={rise}
+            className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:col-span-8"
+          >
+            {partners.map((partner) => (
+              <li key={partner.name}>
+                <a
+                  href={partner.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm transition-colors hover:text-white"
+                  aria-label={`${partner.name} (шинэ цонхонд нээгдэнэ)`}
+                  className={`group grid aspect-[3/2] place-items-center bg-panel p-8 transition-colors hover:bg-[#dfe2e7] ${linkFocus}`}
                 >
-                  Оффис: Хан уул дүүрэг 15-р хороо наадам
-                  <br />
-                  центрийн 2-р давхарт
-                </Link>
+                  {/* multiply drops the white ground some logo files carry */}
+                  <Image
+                    src={partner.image}
+                    alt={partner.name}
+                    width={320}
+                    height={160}
+                    sizes="(min-width: 1024px) 18vw, 40vw"
+                    className={`max-h-16 w-auto object-contain mix-blend-multiply grayscale transition-[filter] duration-500 group-hover:grayscale-0 ${partner.fit ?? ""}`}
+                  />
+                </a>
               </li>
-              <li className="flex items-start gap-3 text-gray-400 group">
-                <MapPin className="w-5 h-5 text-[#0100FD] shrink-0 mt-1" />
-                <Link
-                  href="https://www.google.com/maps/place/Есөн+Бэлчир+ХХК+үйлдвэр+%2FFactory%2F/@47.856987,106.7556404,344m/data=!3m1!1e3!4m6!3m5!1s0x5d96eb00274f4edd:0x1877f58312c82a8c!8m2!3d47.8570456!4d106.7557945!16s%2Fg%2F11vs7nhrgh?entry=ttu&g_ep=EgoyMDI1MTIwOS4wIKXMDSoASAFQAw%3D%3D"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Үйлдвэр: ХУД - 10 хороо,
-                  <br />
-                  Морингийн зам 42
-                </Link>
-              </li>
-              <li className="flex items-start gap-3 text-gray-400">
-                <Clock className="w-5 h-5 text-[#0100FD] shrink-0 mt-1" />
-                <div className="text-sm hover:text-white">
-                  Цагийн хуваарь : 9:00 - 19:00
-                  <br />
-                  Даваа - Бямба
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
+            ))}
+          </motion.ul>
+        </motion.div>
       </div>
-    </footer>
+    </section>
   );
 }
 
-const SlideImages = ({
-  images,
-}: {
-  images: { image: string; href: string }[];
-}) => {
+function FooterView() {
   return (
-    <div
-      className={`flex w-full flex-col items-center justify-center gap-10 border-b-2 border-black py-20`}
-    >
-      <div className="relative w-full overflow-hidden">
-        <div className="animate-infinite-scroll flex w-max gap-12">
-          {[...images, ...images, ...images, ...images].map(
-            (imgSource: { image: string; href: string }, index: number) => (
+    <footer id="footer" className="relative overflow-hidden bg-ink text-white">
+      <div className="mx-auto max-w-7xl px-4 pt-24 sm:px-6 lg:px-8 lg:pt-32">
+        <div className="grid gap-16 lg:grid-cols-12 lg:gap-8">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.4 }}
+            className="lg:col-span-6"
+          >
+            <motion.p variants={rise} className={`${label} text-white/60`}>
+              Холбоо барих
+            </motion.p>
+            <motion.h2
+              variants={rise}
+              className="mt-5 max-w-[14ch] text-[clamp(2.25rem,1.4rem+3.4vw,5rem)] font-semibold leading-[0.95] tracking-[-0.045em]"
+            >
+              Төслөө бидэнтэй ярилцъя.
+            </motion.h2>
+            <motion.div variants={rise} className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Link
-                key={`row1-${index}`}
-                href={imgSource.href}
-                rel="noopener noreferrer"
-                className="mx-[30px] shrink-0"
+                href="/contact"
+                className={`group inline-flex items-center gap-3 bg-brand px-6 py-4 ${label} text-white transition-colors hover:bg-white hover:text-ink active:scale-[0.98] ${linkFocus}`}
               >
-                <Image
-                  src={imgSource.image}
-                  width={600}
-                  height={600}
-                  alt=""
-                  className="h-32 w-[280px] p-4 object-contain"
-                />
+                Төсөл ярилцах
+                <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
-            ),
-          )}
+              <a
+                href={`tel:${contact.phone}`}
+                className={`${label} underline decoration-1 underline-offset-[6px] transition-colors hover:text-white/70 ${linkFocus}`}
+              >
+                {contact.phone}
+              </a>
+            </motion.div>
+          </motion.div>
+
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid grid-cols-2 gap-x-8 gap-y-10 text-step-small lg:col-span-5 lg:col-start-8"
+          >
+            <motion.div variants={rise}>
+              <p className={`${label} text-white/50`}>Утас</p>
+              <ul className="mt-3 space-y-1">
+                {[contact.phone, contact.phone2].map((phone) => (
+                  <li key={phone}>
+                    <a href={`tel:${phone}`} className={`transition-colors hover:text-white/70 ${linkFocus}`}>
+                      {phone}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+            <motion.div variants={rise} className="max-sm:col-span-2 max-sm:row-start-1">
+              <p className={`${label} text-white/50`}>Имэйл</p>
+              <a
+                href={`mailto:${contact.email}`}
+                className={`mt-3 block break-words transition-colors hover:text-white/70 ${linkFocus}`}
+              >
+                {contact.email}
+              </a>
+            </motion.div>
+            {places.map((place) => (
+              <motion.div key={place.label} variants={rise}>
+                <p className={`${label} text-white/50`}>{place.label}</p>
+                <a
+                  href={place.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`group mt-3 block leading-relaxed transition-colors hover:text-white/70 ${linkFocus}`}
+                >
+                  {place.lines.map((line) => (
+                    <span key={line} className="block">
+                      {line}
+                    </span>
+                  ))}
+                  <span className={`mt-1 inline-flex items-center gap-1 ${label} text-white/50 group-hover:text-white`}>
+                    Газрын зураг
+                    <ArrowUpRight className="size-3.5" />
+                  </span>
+                </a>
+              </motion.div>
+            ))}
+            <motion.div variants={rise}>
+              <p className={`${label} text-white/50`}>Цагийн хуваарь</p>
+              <p className="mt-3 leading-relaxed">
+                Даваа – Бямба
+                <br />
+                9:00 – 19:00
+              </p>
+            </motion.div>
+            <motion.nav variants={rise} aria-label="Footer цэс">
+              <p className={`${label} text-white/50`}>Цэс</p>
+              <ul className="mt-3 space-y-1">
+                {menu.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className={`transition-colors hover:text-white/70 ${linkFocus}`}>
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </motion.nav>
+          </motion.div>
+        </div>
+
+        <div className={`mt-24 flex flex-wrap justify-between gap-4 ${label} text-white/50 lg:mt-32`}>
+          <span>© {new Date().getFullYear()} Есөн Бэлчир ХХК</span>
+          <a
+            href={contact.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center gap-1 transition-colors hover:text-white ${linkFocus}`}
+          >
+            Facebook
+            <ArrowUpRight className="size-3.5" />
+          </a>
         </div>
       </div>
-    </div>
+
+      {/* The name closes the page, cropped by the bottom edge. */}
+      <p
+        aria-hidden
+        className="pointer-events-none mt-6 translate-y-[24%] select-none whitespace-nowrap px-3 text-[14.5vw] font-semibold uppercase leading-[0.8] tracking-[-0.05em]"
+      >
+        Есөн Бэлчир
+      </p>
+    </footer>
   );
-};
+}
 
 export { Footer };

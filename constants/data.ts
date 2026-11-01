@@ -37,6 +37,7 @@ const contact = {
   facebook: "https://www.facebook.com/profile.php?id=100063493841008",
   email: "yusunbelchir@gmail.com",
   phone: "+976-8888-9085",
+  phone2: "+976-8811-4570",
 };
 
 export { contact, menu, siteUrl };

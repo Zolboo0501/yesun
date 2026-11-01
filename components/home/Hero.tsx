@@ -1,119 +1,206 @@
 "use client";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
-import { ImageWithFallback } from "../ImageWithFallback";
+import { contact } from "@/constants/data";
+import { ArrowUpRight } from "lucide-react";
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
+import dynamic from "next/dynamic";
+import Link from "next/link";
+import { useRef } from "react";
 
-const slides = [
+const HeroScene = dynamic(() => import("./HeroScene"), {
+  ssr: false,
+  loading: () => null,
+});
+
+type Step = { tag: string; title: string; text: string; cta?: boolean };
+
+// One step per camera shot in HeroScene, same order.
+const steps: Step[] = [
   {
-    title: "Агааржуулалтын систем",
-    subtitle: "Мэргэжлийн шийдэл",
-    description:
-      "Барилга байгууламж, үйлдвэр, оффист зориулсан орчин үеийн агааржуулалтын системийн бүрэн шийдэл",
-
-    image: "/images/banner.webp",
+    tag: "Есөн Бэлчир",
+    title: "Цэвэр агаарыг инженерчилнэ.",
+    text: "Агаар сэлгэлт, хөргөлтийн системийг тооцоолж, үйлдвэрлэж, угсардаг инженерийн компани.",
   },
   {
-    title: "Хөргөлтийн төхөөрөмж",
-    subtitle: "Найдвартай систем",
-    description:
-      "Зочид буудал, худалдааны төв, аж үйлдвэрт зориулсан хөргөлтийн системийн суурилуулалт, засвар үйлчилгээ",
-    image: "/images/mainslide2.png",
+    tag: "Тооцоолол",
+    title: "Өрөө бүрээр тооцоолно.",
+    text: "Агаарын солилцоо, хөргөлтийн ачааллыг тооцоолж, зураг төслийг өөрсдөө боловсруулдаг. 2011 оноос хойш Барилга, хот байгуулалтын яамны тусгай зөвшөөрөлтэй.",
   },
   {
-    title: "Үйлдвэрлэл",
-    subtitle: "Найдвартай систем",
-    description:
-      "Үйлдвэрлэлийн зориулалттай, орчин үеийн дэвшилтэт технологид суурилсан өндөр хүчин чадалтай агаар сэлгэлт, хөргөлтийн системийн суурилуулалт, засвар үйлчилгээ",
-    image: "/images/banner3.jpg",
+    tag: "Үйлдвэрлэл",
+    title: "Сувгаа өөрсдөө хийнэ.",
+    text: "Агаарын суваг, бөөлгийг 1 800 м² талбайтай, 12 тоног төхөөрөмжтэй өөрсдийн үйлдвэрт хийдэг.",
+  },
+  {
+    tag: "Төхөөрөмж",
+    title: "Дэлхийн 6 брэнд.",
+    text: "KANION, AUX, BALLU, SHUFT, AIRONN, LAVFILL брэндийн хөргөлт, агаар сэлгэлтийн төхөөрөмжийг албан ёсоор нийлүүлнэ.",
+  },
+  {
+    tag: "Угсралт",
+    title: "150 гаруй объект.",
+    text: "Оффис, үйлдвэр, зочид буудал, худалдааны төвд нийслэл болон орон нутагт угсралт хийсэн.",
+  },
+  {
+    tag: "Үйлчилгээ",
+    title: "Баталгаатай ажиллуулна.",
+    text: "Угсралтдаа 1–3 жилийн чанарын баталгаа гаргаж, яаралтай үед 24/7 засвар үйлчилгээ үзүүлнэ.",
+    cta: true,
   },
 ];
 
+const last = steps.length - 1;
+const pad = (n: number) => String(n).padStart(2, "0");
+
 export function Hero() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const section = useRef<HTMLElement>(null);
+  // Start drawing straight away; the observer only pauses it once the hero is scrolled past.
+  const active = useInView(section, { initial: true });
+  const reducedMotion = useReducedMotion() ?? false;
 
-  const handleSlideChange = (index: number) => {
-    setIsAnimating(true);
-    setCurrentSlide(index);
-    setTimeout(() => setIsAnimating(false), 500);
-  };
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      handleSlideChange((currentSlide + 1) % slides.length);
-    }, 6000);
-    return () => clearInterval(timer);
-  }, [currentSlide]);
-
-  const nextSlide = () => {
-    handleSlideChange((currentSlide + 1) % slides.length);
-  };
-
-  const prevSlide = () => {
-    handleSlideChange((currentSlide - 1 + slides.length) % slides.length);
-  };
+  const { scrollYProgress } = useScroll({
+    target: section,
+    offset: ["start start", "end end"],
+  });
+  // Each step holds still for the first and last fifth of its scroll, then travels.
+  const step = useTransform(scrollYProgress, (v) => {
+    const x = v * last;
+    const i = Math.min(Math.floor(x), last - 1);
+    const f = Math.min(Math.max((x - i - 0.2) / 0.6, 0), 1);
+    return i + f;
+  });
+  const counter = useTransform(step, (s) => pad(Math.round(s) + 1));
 
   return (
-    <section id="home" className="relative overflow-hidden">
-      <div className="relative h-screen">
-        {slides.map((slide, index) => {
-          return (
-            <div
-              key={index}
-              className={`absolute inset-0 transition-all duration-1000 ${
-                index === currentSlide
-                  ? "opacity-100 scale-100"
-                  : "opacity-0 scale-105"
-              }`}
-            >
-              <div className="absolute inset-0">
-                <ImageWithFallback
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/60 to-transparent"></div>
-                <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent"></div>
-              </div>
+    <section
+      id="home"
+      ref={section}
+      aria-label="Есөн Бэлчир: агаар сэлгэлт, хөргөлтийн систем"
+      className="relative bg-panel text-ink"
+      style={{ height: `${steps.length * 100}svh` }}
+    >
+      <div className="sticky top-[11vh] h-[calc(100svh-11vh)] overflow-hidden">
+        <div className="absolute inset-0">
+          <HeroScene
+            progress={step}
+            active={active}
+            reducedMotion={reducedMotion}
+          />
+        </div>
 
-              <div className="relative h-full max-w-7xl mx-auto px-24 sm:px-24 lg:px-24">
-                <div className="grid lg:grid-cols-2 gap-12 h-full items-center">
-                  <div
-                    className={`transition-all duration-700 delay-300 ${
-                      index === currentSlide && !isAnimating
-                        ? "translate-x-0 opacity-100"
-                        : "-translate-x-12 opacity-0"
-                    }`}
-                  >
-                    <h1 className="text-3xl lg:text-5xl text-white mb-6 leading-tight">
-                      {slide.title}
-                    </h1>
-
-                    <p className="text-lg lg:text-xl text-gray-400 mb-8 leading-relaxed">
-                      {slide.description}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          );
-        })}
-
-        <button
-          onClick={prevSlide}
-          className="absolute left-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 backdrop-blur-md hover:bg-white/20  flex items-center justify-center transition-all group z-10"
-          aria-label="Previous slide"
+        {/* Technical frame around the stage, as on a spec sheet. */}
+        <p
+          aria-hidden
+          className="pointer-events-none absolute left-4 top-6 rotate-180 font-mono text-[11px] uppercase tracking-[0.2em] text-soft [writing-mode:vertical-rl] max-lg:hidden"
         >
-          <ChevronLeft className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-        </button>
-        <button
-          onClick={nextSlide}
-          className="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 bg-white/10 backdrop-blur-md hover:bg-white/20  flex items-center justify-center transition-all group z-10"
-          aria-label="Next slide"
+          ЕБ / 2011
+        </p>
+        <p
+          aria-hidden
+          className="pointer-events-none absolute right-5 top-5 font-mono text-[11px] tracking-[0.12em] text-soft"
         >
-          <ChevronRight className="w-7 h-7 text-white group-hover:scale-110 transition-transform" />
-        </button>
+          47.9184° N&nbsp;&nbsp;106.9177° E
+        </p>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-5 left-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em] text-soft"
+        >
+          Гүйлгэж танилцана
+          <span className="relative h-px w-16 bg-ink/15">
+            <motion.span
+              style={{ scaleX: scrollYProgress }}
+              className="absolute inset-0 origin-left bg-brand"
+            />
+          </span>
+        </div>
+        <p
+          aria-hidden
+          className="pointer-events-none absolute bottom-5 right-5 font-mono text-[11px] uppercase tracking-[0.16em] text-soft"
+        >
+          <span className="max-sm:hidden">Систем бэлэн&nbsp;&nbsp;&nbsp;</span>
+          <motion.span>{counter}</motion.span> / {pad(steps.length)}
+        </p>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute right-6 top-1/2 h-40 w-px -translate-y-1/2 bg-ink/15 max-lg:hidden"
+        >
+          <motion.div
+            style={{ scaleY: scrollYProgress }}
+            className="absolute -left-px top-0 h-full w-[3px] origin-top bg-brand"
+          />
+        </div>
+
+        {steps.map((s, i) => (
+          <StepCopy key={s.tag} step={s} index={i} progress={step} />
+        ))}
       </div>
     </section>
+  );
+}
+
+function StepCopy({
+  step,
+  index,
+  progress,
+}: {
+  step: Step;
+  index: number;
+  progress: MotionValue<number>;
+}) {
+  const opacity = useTransform(progress, (s) =>
+    Math.max(0, 1 - Math.abs(s - index) * 2.5),
+  );
+  const y = useTransform(progress, (s) => (index - s) * 60);
+  const visibility = useTransform(opacity, (o) =>
+    o > 0.02 ? "visible" : "hidden",
+  );
+  const Heading = index === 0 ? "h1" : "h2";
+
+  return (
+    <motion.div
+      style={{ opacity, y, visibility }}
+      className="absolute inset-x-0 bottom-12 bg-panel px-4 pt-5 sm:px-6 lg:bottom-[16%] lg:left-[5vw] lg:right-auto lg:w-[46vw] lg:bg-transparent lg:p-0"
+    >
+      <div className="relative lg:bg-panel/85 lg:p-10">
+        {/* Corner brackets */}
+        <span aria-hidden className="pointer-events-none absolute left-0 top-0 size-3.5 border-l-2 border-t-2 border-brand max-lg:hidden" />
+        <span aria-hidden className="pointer-events-none absolute right-0 top-0 size-3.5 border-r-2 border-t-2 border-brand max-lg:hidden" />
+        <span aria-hidden className="pointer-events-none absolute bottom-0 left-0 size-3.5 border-b-2 border-l-2 border-brand max-lg:hidden" />
+        <span aria-hidden className="pointer-events-none absolute bottom-0 right-0 size-3.5 border-b-2 border-r-2 border-brand max-lg:hidden" />
+
+        <p className="font-mono text-xs uppercase tracking-[0.18em] text-brand">
+          {pad(index + 1)} / {step.tag}
+        </p>
+        <Heading className="mt-4 text-balance text-[clamp(2.25rem,1.4rem+3vw,4.5rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
+          {step.title}
+        </Heading>
+        <p className="mt-5 max-w-[44ch] text-step-body leading-relaxed text-ink/80">
+          {step.text}
+        </p>
+        {step.cta && (
+          <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <Link
+              href="/contact"
+              className="group inline-flex items-center gap-3 bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-white transition-colors hover:bg-brand active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            >
+              Инженертэй холбогдох
+              <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+            <a
+              href={`tel:${contact.phone}`}
+              className="font-mono text-xs uppercase tracking-[0.16em] underline decoration-1 underline-offset-[6px] transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            >
+              {contact.phone}
+            </a>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }

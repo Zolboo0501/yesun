@@ -1,166 +1,185 @@
 "use client";
-import { Calendar, ChevronRight, MapPin } from "lucide-react";
+import { rise, stagger } from "@/lib/reveal";
+import { ArrowUpRight } from "lucide-react";
 import { motion } from "motion/react";
-import { ImageWithFallback } from "../ImageWithFallback";
+import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 const projects = [
   {
-    title: "Монгол банкны үндэсний цахим гүйлгээний төв",
-    category: "Агааржуулалт",
-    location: "Улаанбаатар",
-    year: "2019",
-    description: "Барилгын агаар сэлгэлтийн систем",
-    image: "/images/project3.webp",
+    year: "2024",
+    title: "Эрдэнэс Таван Толгойн нүүрс баяжуулах үйлдвэр",
+    work: "Үйлдвэрийн барилгын агаар сэлгэлт",
+    location: "Өмнөговь",
+    image: "/images/project.webp",
   },
   {
-    title: "Хүннү 2222",
-    category: "Агааржуулалт",
+    year: "2024",
+    title: "Нийслэлийн нутгийн захиргааны төв цогцолбор",
+    work: "Барилгын агаар сэлгэлтийн систем",
     location: "Улаанбаатар",
-    year: "2020",
-    description:
-      "Төслийн 2–рээлжийн орон сууцны нэгдсэн граж барилгын агаар сэлгэлт, Хөргөлтийн системийн угсралт",
-    image: "/images/project6.webp",
-  },
-
-  {
-    title: "Хүннү 2222",
-    category: "Агааржуулалт",
-    location: "Улаанбаатар",
-    year: "2020",
-    description:
-      "Төслийн 2–р ээлжийн орон сууц Барилгын агаар сэлгэлтийн систем",
-    image: "/images/project4.webp",
+    image: "/images/project11.webp",
   },
   {
-    title: "Чингис хаан музей",
-    category: "Агааржуулалт & Хөргөлт",
+    year: "2024",
+    title: "Сансар Гарден",
+    work: "2 блокийн агаар сэлгэлт, хөргөлтийн систем",
     location: "Улаанбаатар",
+    image: "/images/project13.webp",
+  },
+  {
+    year: "2023",
+    title: "Platinum Tower",
+    work: "Агаар сэлгэлт, хөргөлт, нэгдсэн гражын агаар сэлгэлт",
+    location: "Улаанбаатар",
+    image: "/images/project8.webp",
+  },
+  {
+    year: "2022",
+    title: "Одод хотхон",
+    work: "Агаар сэлгэлт, хөргөлт, нэгдсэн гражын агаар сэлгэлт",
+    location: "Улаанбаатар",
+    image: "/images/project7.webp",
+  },
+  {
+    year: "2022",
+    title: "Нисэх гарден хотхон",
+    work: "Орон сууцны агаар сэлгэлтийн систем",
+    location: "Улаанбаатар",
+    image: "/images/project10.webp",
+  },
+  {
     year: "2021",
-    description:
-      "Барилгын Агаар сэлгэлтийн системийн угсралт тоног төхөөрөмж нийлүүлэх, хөргөлтийн системийн угсралт",
+    title: "Чингис хаан музей",
+    work: "Агаар сэлгэлт, хөргөлтийн угсралт, тоног төхөөрөмж",
+    location: "Улаанбаатар",
     image: "/images/project2.webp",
   },
   {
-    title: "Эрдэнэс Таван Толгойн Нүүрс Баяжуулах үйлдвэр",
-    category: "Агааржуулалт",
-    location: "Өмнөговь",
-    year: "2024",
-    description: "Төслийн үйлдвэрийн барилга агаар сэлгэлт",
-    image: "/images/project.webp",
-  },
-
-  {
-    title: "Сансар Гарден",
-    category: "Агааржуулалт & Хөргөлт",
+    year: "2020",
+    title: "Хүннү 2222",
+    work: "Орон сууцны агаар сэлгэлтийн систем",
     location: "Улаанбаатар",
-    year: "2024",
-    description:
-      "Орон сууцны хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем",
-    image: "/images/project13.webp",
+    image: "/images/project4.webp",
   },
 ];
 
 export function Projects() {
+  // Desktop: hovering or focusing a row swaps the large picture beside the list.
+  const [active, setActive] = useState(0);
+
   return (
-    <section id="projects" className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
+    <section id="projects" className="bg-panel py-24 text-ink lg:py-36">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-16"
+          variants={stagger}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.4 }}
+          className="flex flex-wrap items-end justify-between gap-6"
         >
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-            className="inline-block px-4 py-2 bg-black text-sm uppercase tracking-wider text-white"
-          >
-            Төслүүд
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="text-3xl lg:text-4xl text-gray-900 mb-6"
-          >
-            Амжилттай <span className="text-[#0100FD]">төслүүд</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-            className="text-lg text-gray-600 max-w-3xl mx-auto"
-          >
-            Бид олон төрлийн төсөл амжилттай хэрэгжүүлсэн туршлагатай
-          </motion.p>
+          <div>
+            <motion.p
+              variants={rise}
+              className="font-mono text-xs uppercase tracking-[0.18em] text-brand"
+            >
+              08 / Төслүүд
+            </motion.p>
+            <motion.h2
+              variants={rise}
+              className="mt-5 text-[clamp(2rem,1.2rem+3vw,4rem)] font-semibold leading-none tracking-[-0.04em]"
+            >
+              Хэрэгжүүлсэн төслүүд
+            </motion.h2>
+          </div>
+          <motion.div variants={rise}>
+            <Link
+              href="/projects"
+              className="group inline-flex items-center gap-2 border-b-2 border-ink pb-1 font-mono text-xs uppercase tracking-[0.16em] transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+            >
+              Бүх төслүүд
+              <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </Link>
+          </motion.div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-3 gap-8 mb-12">
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 0 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="group bg-white overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="relative h-64 overflow-hidden">
-                <ImageWithFallback
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent"></div>
-                <div className="absolute top-4 left-4">
-                  <span className="inline-block bg-black text-white text-xs px-4 py-2 uppercase tracking-wider">
-                    {project.category}
+        <div className="mt-14 grid gap-10 lg:mt-20 lg:grid-cols-12 lg:gap-8">
+          <motion.ol
+            variants={stagger}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.1 }}
+            className="border-b border-ink/10 lg:col-span-7"
+          >
+            {projects.map((project, i) => (
+              <motion.li key={project.title} variants={rise}>
+                <Link
+                  href="/projects"
+                  onMouseEnter={() => setActive(i)}
+                  onFocus={() => setActive(i)}
+                  className="group grid grid-cols-[4rem_1fr] items-start gap-4 border-t border-ink/10 py-6 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand sm:grid-cols-[4.5rem_1fr_auto] sm:gap-6"
+                >
+                  <div className="size-16 overflow-hidden bg-white lg:hidden">
+                    <Image
+                      src={project.image}
+                      alt=""
+                      width={128}
+                      height={128}
+                      sizes="64px"
+                      className="size-full object-cover"
+                    />
+                  </div>
+                  <span className="hidden pt-1.5 font-mono text-xs tracking-[0.14em] text-soft tabular-nums lg:block">
+                    {project.year}
                   </span>
-                </div>
-              </div>
-
-              <div className="p-8">
-                <h3 className="text-xl text-gray-900 mb-3 group-hover:text-[#0100FD] transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                  {project.description}
-                </p>
-
-                <div className="flex items-center justify-between text-sm text-gray-500 pb-6 border-b border-gray-100">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#0100FD]" />
-                    <span>{project.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-[#0100FD]" />
-                    <span>{project.year}</span>
-                  </div>
-                </div>
-
-                <Link href={"/projects"} className="hover:cursor-pointer">
-                  <button className="mt-6 text-[#0100FD] hover:text-[#FE0002] transition-colors flex items-center gap-2 group">
-                    <span>Дэлгэрэнгүй үзэх</span>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  <span>
+                    <span
+                      className={`block text-xl font-semibold leading-tight tracking-[-0.02em] transition-colors sm:text-2xl ${
+                        active === i ? "lg:text-brand" : ""
+                      }`}
+                    >
+                      {project.title}
+                    </span>
+                    <span className="mt-2 block text-step-small leading-relaxed text-soft">
+                      <span className="lg:hidden">{project.year} · </span>
+                      {project.work}
+                    </span>
+                  </span>
+                  <span className="hidden items-center gap-2 pt-1.5 font-mono text-xs uppercase tracking-[0.14em] text-soft sm:flex">
+                    {project.location}
+                    <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
+                  </span>
                 </Link>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+              </motion.li>
+            ))}
+          </motion.ol>
 
-        {/* View All Button */}
-        <Link className="flex justify-center" href={"/projects"}>
-          <button className="bg-[#0100FD] text-sm text-white px-10 py-4 hover:bg-[#0100FD]/90 transition-all shadow-lg hover:shadow-xl">
-            Бүх төслүүдийг үзэх
-          </button>
-        </Link>
+          <div className="hidden lg:col-span-5 lg:block">
+            <figure className="sticky top-[calc(11vh+2rem)]">
+              <div className="relative aspect-[4/5] overflow-hidden bg-white">
+                {projects.map((project, i) => (
+                  <Image
+                    key={project.image}
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    sizes="40vw"
+                    className={`object-cover transition-[opacity,scale] duration-700 ${
+                      active === i ? "scale-100 opacity-100" : "scale-[1.04] opacity-0"
+                    }`}
+                  />
+                ))}
+              </div>
+              <figcaption className="mt-3 flex justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.14em] text-soft">
+                <span>{projects[active].title}</span>
+                <span className="tabular-nums">
+                  {String(active + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
+                </span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
       </div>
     </section>
   );

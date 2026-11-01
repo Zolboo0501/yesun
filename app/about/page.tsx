@@ -14,7 +14,7 @@ export const metadata = pageMetadata(
 const AboutPage = () => {
   return (
     <>
-      <About hiddenButton={true} />
+      <About standalone />
       <VisionPurpose />
       <Purpose />
       <Advantages />

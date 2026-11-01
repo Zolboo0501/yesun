@@ -55,7 +55,7 @@ export function Header() {
   return (
     <div className="sticky top-0 z-50">
       {/* Main Header */}
-      <div className="h-[4vh] bg-linear-to-l from-[#0100FD] w-full  to-[black]">
+      <div className="h-[4vh] w-full bg-ink">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full lg:px-8 h-full flex items-center">
           <div className="w-full flex flex-row justify-end">
             <a
@@ -86,7 +86,7 @@ export function Header() {
       </div>
 
       <header
-        className={`bg-white/95 backdrop-blur-sm transition-all duration-300 h-[7vh]  ${
+        className={`bg-white transition-all duration-300 h-[7vh]  ${
           isScrolled ? "shadow-md" : "shadow-sm"
         }`}
       >
