@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "motion/react";
-import { ChevronRight, Settings, Snowflake, Wind, Wrench } from "lucide-react";
+import { Settings, Snowflake, Wind, Wrench } from "lucide-react";
 
 const services = [
   {

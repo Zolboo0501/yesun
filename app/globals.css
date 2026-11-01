@@ -44,8 +44,6 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --spacing-128: 32rem;
   --spacing-144: 36rem;
-  --font-family-fester: var(--font-fester);
-  --font-family-mulish: var(--font-mulish);
 }
 
 :root {
