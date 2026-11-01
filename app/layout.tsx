@@ -1,13 +1,22 @@
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { siteUrl } from "@/constants/data";
+import { shareMetadata, siteName } from "@/lib/metadata";
 import type { Metadata } from "next";
 import { ptSans } from "./fonts";
 import "./globals.css";
 
+const defaultTitle = "Есөн Бэлчир ХХК - Агаар сэлгэлт ба Хөргөлтийн Систем";
+const defaultDescription =
+  "Есөн бэлчир нь агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг Монголын тэргүүлэгч компани юм.";
+
 export const metadata: Metadata = {
-  title: "Есөн Бэлчир ХХК - Агаар сэлгэлт ба Хөргөлтийн Систем",
-  description:
-    "Есөн бэлчир нь агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг Монголын тэргүүлэгч компани юм.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: defaultTitle,
+    template: `%s | ${siteName}`,
+  },
+  description: defaultDescription,
   keywords: [
     "эйркондишн",
     "air conditioning",
@@ -64,29 +73,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/images/logo3.png",
   },
-  openGraph: {
-    title: "Есөн Бэлчир ХХК - Агаар сэлгэлт ба Хөргөлтийн Систем",
-    description:
-      "Есөн бэлчир нь агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг Монголын тэргүүлэгч компани юм.",
-    siteName: "Есөн Бэлчир ХХК",
-    images: [
-      {
-        url: "/images/logo3.png",
-        width: 1200,
-        height: 630,
-        alt: "Есөн Бэлчир ХХК",
-      },
-    ],
-    locale: "mn_MN",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Есөн Бэлчир ХХК - Агаар сэлгэлт ба Хөргөлтийн Систем",
-    description:
-      "Есөн бэлчир нь агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг Монголын тэргүүлэгч компани юм.",
-    images: ["/images/logo3.png"],
-  },
+  ...shareMetadata(defaultTitle, defaultDescription, "/"),
   robots: {
     index: true,
     follow: true,
@@ -97,9 +84,6 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  },
-  alternates: {
-    canonical: "https://www.yesunbelchir.mn",
   },
 };
 
