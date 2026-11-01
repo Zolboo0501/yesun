@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { motion } from "motion/react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { ImageWithFallback } from "../ImageWithFallback";
 
 const partners = [
@@ -33,7 +33,9 @@ const partners = [
 ];
 
 const Full = () => {
-  const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: false }));
+  const [plugin] = useState(() =>
+    Autoplay({ delay: 4000, stopOnInteraction: false }),
+  );
   const [slideIndex, setSlideIndex] = useState(0);
 
   return (
@@ -68,7 +70,7 @@ const Full = () => {
           className="relative w-full"
         >
           <Carousel
-            plugins={[plugin.current]}
+            plugins={[plugin]}
             setApi={(api) => {
               api?.on("select", () => {
                 setSlideIndex(api.selectedScrollSnap());

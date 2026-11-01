@@ -5,7 +5,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { ImageWithFallback } from "../ImageWithFallback";
 
 const productImages = [
@@ -17,7 +17,7 @@ const productImages = [
 const Banner = () => {
   const [slideIndex, setSlideIndex] = useState(0);
 
-  const plugin = useRef(
+  const [plugin] = useState(() =>
     Autoplay({
       delay: 2000,
       stopOnInteraction: true,
@@ -50,7 +50,7 @@ const Banner = () => {
         </div>
         <div className="flex flex-6 relative flex-col">
           <Carousel
-            plugins={[plugin.current]}
+            plugins={[plugin]}
             setApi={(api) => {
               api?.on("select", () => {
                 setSlideIndex(api.selectedScrollSnap());

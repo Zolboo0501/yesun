@@ -2,12 +2,12 @@
 import { menu } from "@/constants/data";
 import {
   Clock,
-  Facebook,
   Mail,
   MapPin,
   MapPinHouse,
   Phone,
 } from "lucide-react";
+import { Facebook } from "./FacebookIcon";
 import Link from "next/link";
 import { ImageWithFallback } from "./ImageWithFallback";
 import Image from "next/image";

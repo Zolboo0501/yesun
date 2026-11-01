@@ -1,6 +1,7 @@
 "use client";
 import { contact, menu } from "@/constants/data";
-import { Facebook, Mail, Menu, Phone, X } from "lucide-react";
+import { Mail, Menu, Phone, X } from "lucide-react";
+import { Facebook } from "./FacebookIcon";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
