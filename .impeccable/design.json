@@ -1,0 +1,303 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-04T00:00:00Z",
+  "title": "Design System: Есөн Бэлчир",
+  "extensions": {
+    "colorMeta": {
+      "brand": {
+        "role": "primary",
+        "displayName": "Electric Signal Blue",
+        "canonical": "oklch(44.9% 0.311 264.1)",
+        "tonalRamp": [
+          "oklch(15% 0.311 264.1)",
+          "oklch(25% 0.311 264.1)",
+          "oklch(35% 0.311 264.1)",
+          "oklch(45% 0.311 264.1)",
+          "oklch(55% 0.311 264.1)",
+          "oklch(65% 0.311 264.1)",
+          "oklch(80% 0.311 264.1)",
+          "oklch(95% 0.311 264.1)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Blueprint Ink",
+        "canonical": "oklch(17.7% 0.034 269.6)",
+        "tonalRamp": [
+          "oklch(15% 0.034 269.6)",
+          "oklch(25% 0.034 269.6)",
+          "oklch(35% 0.034 269.6)",
+          "oklch(45% 0.034 269.6)",
+          "oklch(55% 0.034 269.6)",
+          "oklch(65% 0.034 269.6)",
+          "oklch(80% 0.034 269.6)",
+          "oklch(95% 0.034 269.6)"
+        ]
+      },
+      "soft": {
+        "role": "neutral",
+        "displayName": "Drafting Slate",
+        "canonical": "oklch(46.6% 0.035 262.3)",
+        "tonalRamp": [
+          "oklch(15% 0.035 262.3)",
+          "oklch(25% 0.035 262.3)",
+          "oklch(35% 0.035 262.3)",
+          "oklch(45% 0.035 262.3)",
+          "oklch(55% 0.035 262.3)",
+          "oklch(65% 0.035 262.3)",
+          "oklch(80% 0.035 262.3)",
+          "oklch(95% 0.035 262.3)"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Plaster Panel",
+        "canonical": "oklch(93.9% 0.005 258.3)",
+        "tonalRamp": [
+          "oklch(15% 0.005 258.3)",
+          "oklch(25% 0.005 258.3)",
+          "oklch(35% 0.005 258.3)",
+          "oklch(45% 0.005 258.3)",
+          "oklch(55% 0.005 258.3)",
+          "oklch(65% 0.005 258.3)",
+          "oklch(80% 0.005 258.3)",
+          "oklch(95% 0.005 258.3)"
+        ]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "oklch(25.1% 0.009 255.6)",
+        "tonalRamp": [
+          "oklch(15% 0.009 255.6)",
+          "oklch(25% 0.009 255.6)",
+          "oklch(35% 0.009 255.6)",
+          "oklch(45% 0.009 255.6)",
+          "oklch(55% 0.009 255.6)",
+          "oklch(65% 0.009 255.6)",
+          "oklch(80% 0.009 255.6)",
+          "oklch(95% 0.009 255.6)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "White",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(15% 0 0)",
+          "oklch(25% 0 0)",
+          "oklch(35% 0 0)",
+          "oklch(45% 0 0)",
+          "oklch(55% 0 0)",
+          "oklch(65% 0 0)",
+          "oklch(80% 0 0)",
+          "oklch(95% 0 0)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero step headings (first is the h1) and the footer closing headline."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section h2s in Products and Projects; Company runs a slightly smaller variant."
+      },
+      "selector": {
+        "displayName": "Selector",
+        "purpose": "The three Company system words that are themselves radio controls."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "Confirmed proof values in the facts list, tabular numerals."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Selected system name and Products lead line."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All supporting paragraphs, 44-56ch measure."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Footer contact lists and WebGL fallback text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Mono uppercase buttons, secondary links and meta lines."
+      },
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Mono technical-frame annotations around scroll stages and footer column labels."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "ease-swap",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1) 500ms",
+        "purpose": "Company system panel swap: fade, 6px rise and 4px blur-out; skipped under reduced motion."
+      },
+      {
+        "name": "ease-rise",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1) 700ms, stagger 80ms",
+        "purpose": "Footer and Partners entrance rise (24px)."
+      },
+      {
+        "name": "selector-color",
+        "value": "color 500ms",
+        "purpose": "Company system words fading between 55%, 80% and full ink."
+      },
+      {
+        "name": "press",
+        "value": "scale(0.98)",
+        "purpose": "Active state of primary buttons."
+      },
+      {
+        "name": "step-hold",
+        "value": "hold 20% / travel 60% / hold 20% of each step's scroll",
+        "purpose": "Scroll-stage pacing in Hero (100svh per step) and Products (70svh per step)."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "bake",
+        "purpose": "R3F rigs snap to the scroll pose with no sway; Company air drawn once as still streamlines; copy swaps without transition."
+      },
+      {
+        "name": "offscreen-gate",
+        "value": "IntersectionObserver",
+        "purpose": "R3F frameloop 'never' and Company rAF cancelled while off screen; Products scene mounts one screen early."
+      },
+      {
+        "name": "lite-path",
+        "value": "(pointer: coarse) or width < 768px",
+        "purpose": "No SSAO, multisampling 0, dpr capped at 1.5 (1.75 otherwise)."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "lite",
+        "value": "768px"
+      },
+      {
+        "name": "lg",
+        "value": "1024px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Ink-filled square CTA with arrow on panel or white grounds; brand on hover.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Инженертэй холбогдох <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 12px; padding: 16px 24px; border: 0; border-radius: 0; background: #0b1020; color: #ffffff; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: 0.16em; text-decoration: none; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4,0,0.2,1), color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary svg { transition: transform 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary:hover { background: #0100fd; color: #ffffff; } .ds-btn-primary:hover svg { transform: translate(2px,-2px); } .ds-btn-primary:active { transform: scale(0.98); } .ds-btn-primary:focus-visible { outline: 2px solid #0100fd; outline-offset: 4px; }"
+    },
+    {
+      "name": "Primary Button on Dark",
+      "kind": "button",
+      "refersTo": "button-primary-on-dark",
+      "description": "White-filled square CTA with arrow on graphite or ink grounds; brand on hover.",
+      "html": "<div class=\"ds-dark-ground\"><a class=\"ds-btn-primary-dark\" href=\"#\">Бүх төсөл <svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7 7h10v10\"/><path d=\"M7 17 17 7\"/></svg></a></div>",
+      "css": ".ds-dark-ground { background: #1f2226; padding: 24px; } .ds-btn-primary-dark { display: inline-flex; align-items: center; gap: 12px; padding: 16px 24px; border: 0; border-radius: 0; background: #ffffff; color: #0b1020; font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: 0.16em; text-decoration: none; cursor: pointer; transition: background-color 150ms cubic-bezier(0.4,0,0.2,1), color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary-dark svg { transition: transform 150ms cubic-bezier(0.4,0,0.2,1); } .ds-btn-primary-dark:hover { background: #0100fd; color: #ffffff; } .ds-btn-primary-dark:hover svg { transform: translate(2px,-2px); } .ds-btn-primary-dark:active { transform: scale(0.98); } .ds-btn-primary-dark:focus-visible { outline: 2px solid #ffffff; outline-offset: 4px; }"
+    },
+    {
+      "name": "Secondary Link",
+      "kind": "custom",
+      "refersTo": "link-secondary",
+      "description": "Mono uppercase underlined link beside the primary button.",
+      "html": "<a class=\"ds-link-secondary\" href=\"#\">Компанийн танилцуулга</a>",
+      "css": ".ds-link-secondary { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: 0.16em; color: #0b1020; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; transition: color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-link-secondary:hover { color: #0100fd; } .ds-link-secondary:focus-visible { outline: 2px solid #0100fd; outline-offset: 4px; }"
+    },
+    {
+      "name": "System Selector",
+      "kind": "custom",
+      "refersTo": "system-option",
+      "description": "Giant-word radiogroup; the selected word ends in a brand square.",
+      "html": "<div class=\"ds-selector\" role=\"radiogroup\" aria-label=\"Систем\"><button class=\"ds-option\" role=\"radio\" aria-checked=\"true\">Сэлгэлт<span class=\"ds-square\" aria-hidden=\"true\"></span></button><button class=\"ds-option\" role=\"radio\" aria-checked=\"false\" tabindex=\"-1\">Хөргөлт</button><button class=\"ds-option\" role=\"radio\" aria-checked=\"false\" tabindex=\"-1\">Шүүлт</button></div>",
+      "css": ".ds-selector { display: flex; flex-direction: column; align-items: flex-start; background: #e9ebee; padding: 24px; } .ds-option { background: none; border: 0; padding: 0; cursor: pointer; text-align: left; font-family: 'Golos Text', ui-sans-serif, system-ui, sans-serif; font-size: clamp(3rem, 1.6rem + 5.6vw, 6rem); font-weight: 600; line-height: 0.95; letter-spacing: -0.04em; color: rgb(11 16 32 / 0.55); transition: color 500ms; } .ds-option:hover { color: rgb(11 16 32 / 0.8); } .ds-option[aria-checked='true'] { color: #0b1020; } .ds-option:focus-visible { outline: 2px solid #0100fd; outline-offset: 4px; } .ds-square { display: inline-block; width: 0.14em; height: 0.14em; margin-left: 0.1em; background: #0100fd; }"
+    },
+    {
+      "name": "Facts List",
+      "kind": "custom",
+      "refersTo": "fact",
+      "description": "Two-column list of confirmed figures under hairlines.",
+      "html": "<dl class=\"ds-facts\"><div><dt>Байгуулагдсан</dt><dd>2011</dd></div><div><dt>Угсралт хийсэн объект</dt><dd>150+</dd></div><div><dt>Үйлдвэрийн талбай</dt><dd>1 800 м²</dd></div><div><dt>Яаралтай үйлчилгээ</dt><dd>24/7</dd></div></dl>",
+      "css": ".ds-facts { display: grid; grid-template-columns: 1fr 1fr; column-gap: 32px; margin: 0; color: #0b1020; font-family: 'Golos Text', ui-sans-serif, system-ui, sans-serif; } .ds-facts div { display: flex; flex-direction: column-reverse; justify-content: flex-end; border-top: 1px solid rgb(11 16 32 / 0.15); padding: 16px 0; } .ds-facts dd { margin: 0; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; } .ds-facts dt { margin-top: 4px; font-size: 14px; color: #4f5a6e; }"
+    },
+    {
+      "name": "Scroll Stage Copy",
+      "kind": "card",
+      "refersTo": "",
+      "description": "Step copy over a pinned scene: translucent ground, brand corner brackets, display heading, body and CTA.",
+      "html": "<div class=\"ds-stage\"><div class=\"ds-stage-copy\"><span class=\"ds-br tl\"></span><span class=\"ds-br tr\"></span><span class=\"ds-br bl\"></span><span class=\"ds-br br\"></span><h2 class=\"ds-stage-h\">Сувгаа өөрсдөө хийнэ.</h2><p class=\"ds-stage-p\">Агаарын суваг, бөөлгийг 1 800 м² талбайтай, 12 тоног төхөөрөмжтэй өөрсдийн үйлдвэрт хийдэг.</p></div></div>",
+      "css": ".ds-stage { background: #e9ebee; padding: 32px; } .ds-stage-copy { position: relative; max-width: 560px; padding: 40px; background: rgb(233 235 238 / 0.85); color: #0b1020; font-family: 'Golos Text', ui-sans-serif, system-ui, sans-serif; } .ds-br { position: absolute; width: 14px; height: 14px; border: 0 solid #0100fd; } .ds-br.tl { left: 0; top: 0; border-left-width: 2px; border-top-width: 2px; } .ds-br.tr { right: 0; top: 0; border-right-width: 2px; border-top-width: 2px; } .ds-br.bl { left: 0; bottom: 0; border-left-width: 2px; border-bottom-width: 2px; } .ds-br.br { right: 0; bottom: 0; border-right-width: 2px; border-bottom-width: 2px; } .ds-stage-h { margin: 0; font-size: clamp(2.25rem, 1.4rem + 3vw, 4.5rem); font-weight: 600; line-height: 0.95; letter-spacing: -0.045em; text-wrap: balance; } .ds-stage-p { margin: 20px 0 0; max-width: 44ch; font-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem); line-height: 1.625; color: rgb(11 16 32 / 0.8); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Engineered Air",
+    "overview": "The site shows the company's subject, air moving through a building, as something you can see. It does not illustrate it. Each scroll stage is a working view: an x-rayed office, a run of fabricated duct pieces, a wall with daylight and air streams on it, and a wall of delivered buildings. Around them sits the plain apparatus of an engineering drawing: cool grey and graphite grounds, near-black ink type, small mono uppercase labels, square buttons, and one saturated electric blue used sparingly.\n\nThe layout is calm and sparse. A section carries one headline, one or two sentences, real figures and one call to action. The 3D or WebGL image does the persuading. Type is set large and tight. Everything else is small, mono and quiet. The house draws no rounded corners and no shadows; depth comes from the rendered scenes and from alternating light and dark grounds.\n\nThe world is local and factual. All copy is Mongolian. Every figure shown is one the client has confirmed.",
+    "keyCharacteristics": [
+      "Grounds alternate light and dark: panel (Hero), graphite (Products), panel (Company), graphite (Projects), then white (Partners) and ink (footer).",
+      "One accent, electric brand blue. It appears as small squares, hairline progress rules, corner brackets, focus outlines and the hover fill of buttons.",
+      "Semibold Golos Text headlines with tight negative tracking, sized with clamp().",
+      "JetBrains Mono uppercase, tracked at 0.16em, is the voice of every label, button and technical annotation.",
+      "Square corners throughout. No shadows.",
+      "The scenes are driven by scroll, are paused when off screen, hold still under reduced motion, and run a lighter path on phones."
+    ],
+    "rules": [
+      {
+        "name": "The One Signal Rule",
+        "body": "Brand blue only marks things: a point, a rule, a bracket, a focus ring or a hover. It covers a few square millimetres of any screen. If it fills an area larger than a button, it is wrong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Alternating Ground Rule",
+        "body": "Consecutive home sections change ground between light (panel or white) and dark (graphite or ink). A new section takes the opposite ground from the one before it.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tight Statement Rule",
+        "body": "Headlines are semibold, sized with clamp(), balanced with text-wrap, and tracked between -0.04em and -0.045em. Never set a heading at regular weight or with neutral tracking.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mono Voice Rule",
+        "body": "Anything that acts or annotates (buttons, links, meta, counters) is mono uppercase with wide tracking. Running text is never mono.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lit-Not-Lifted Rule",
+        "body": "Depth comes from light in the scene, never from shadows on the interface. Panels over a scene are translucent ground, not floating cards.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** use the ink-filled primary button on panel or white grounds and the white-filled one on graphite or ink grounds. Both turn brand on hover.",
+      "**Do** pair one primary button with at most one underlined mono secondary link.",
+      "**Do** alternate grounds section by section: panel, graphite, panel, graphite.",
+      "**Do** keep brand blue to squares, hairline rules, corner brackets, focus rings and hover fills.",
+      "**Do** set headings semibold with a clamp() size and -0.04em to -0.045em tracking.",
+      "**Do** gate every rAF loop or R3F frameloop with an IntersectionObserver (`useInView` or a raw observer), and load heavy scenes about one screen before they arrive.",
+      "**Do** make reduced motion produce a still picture: R3F rigs snap to the scroll pose and drop ambient sway; the Company air is baked once as still streamlines; the copy swaps without the blur-in.",
+      "**Do** run the lite path on coarse pointers or widths under 768px: no SSAO, no multisampling, and a device pixel ratio capped at 1.5.",
+      "**Do** keep a readable fallback when WebGL is missing: the plain wall and all content stay.",
+      "**Do** write all copy in Mongolian, and use only figures the client has confirmed."
+    ],
+    "donts": [
+      "**Don't** put kicker or eyebrow labels, or section or step numbers, above headings.",
+      "**Don't** use gradient text.",
+      "**Don't** round corners or add box-shadows to house components.",
+      "**Don't** invent testimonials, reviews or ratings, and never present the projects page's stars as client ratings.",
+      "**Don't** add a second accent colour. The shadcn coral `--secondary` and `--primary` in globals.css are legacy values, not part of this system.",
+      "**Don't** let a scene capture the page wheel, or block page scroll on touch."
+    ]
+  }
+}

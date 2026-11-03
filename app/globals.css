@@ -10,6 +10,7 @@
   --color-soft: #4f5a6e;
   --color-panel: #e9ebee;
   --color-brand: #0100fd;
+  --color-graphite: #1f2226;
   --text-step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
   --text-step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
   --radius-sm: calc(var(--radius) - 4px);

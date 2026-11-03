@@ -1,188 +1,123 @@
 "use client";
-import { rise, stagger } from "@/lib/reveal";
+import { ConcaveCarousel, type ConcaveCarouselItem } from "@/components/react-bits/concave-carousel";
 import { ArrowUpRight } from "lucide-react";
-import { motion } from "motion/react";
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 
-const projects = [
+// The carousel sizes its panels in JS, so the breakpoint is read here; the server renders the desktop size.
+const wideQuery = "(min-width: 1024px)";
+const subscribe = (change: () => void) => {
+  const query = window.matchMedia(wideQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+};
+
+// Photos are the project photos resized to 1280px for the carousel (public/images/carousel).
+// The wall runs from the museum to the mine, with repeat clients spaced apart.
+const projects: ConcaveCarouselItem[] = [
   {
-    year: "2024",
-    title: "Эрдэнэс Таван Толгойн нүүрс баяжуулах үйлдвэр",
-    work: "Үйлдвэрийн барилгын агаар сэлгэлт",
-    location: "Өмнөговь",
-    image: "/images/project.webp",
-  },
-  {
-    year: "2024",
-    title: "Нийслэлийн нутгийн захиргааны төв цогцолбор",
-    work: "Барилгын агаар сэлгэлтийн систем",
-    location: "Улаанбаатар",
-    image: "/images/project11.webp",
-  },
-  {
-    year: "2024",
-    title: "Сансар Гарден",
-    work: "2 блокийн агаар сэлгэлт, хөргөлтийн систем",
-    location: "Улаанбаатар",
-    image: "/images/project13.webp",
-  },
-  {
-    year: "2023",
-    title: "Platinum Tower",
-    work: "Агаар сэлгэлт, хөргөлт, нэгдсэн гражын агаар сэлгэлт",
-    location: "Улаанбаатар",
-    image: "/images/project8.webp",
-  },
-  {
-    year: "2022",
-    title: "Одод хотхон",
-    work: "Агаар сэлгэлт, хөргөлт, нэгдсэн гражын агаар сэлгэлт",
-    location: "Улаанбаатар",
-    image: "/images/project7.webp",
-  },
-  {
-    year: "2022",
-    title: "Нисэх гарден хотхон",
-    work: "Орон сууцны агаар сэлгэлтийн систем",
-    location: "Улаанбаатар",
-    image: "/images/project10.webp",
-  },
-  {
-    year: "2021",
+    src: "/images/carousel/project2.webp",
     title: "Чингис хаан музей",
-    work: "Агаар сэлгэлт, хөргөлтийн угсралт, тоног төхөөрөмж",
-    location: "Улаанбаатар",
-    image: "/images/project2.webp",
+    subtitle: "Сэлгэлт, хөргөлт, тоног төхөөрөмж · 2021",
+    alt: "Чингис хаан үндэсний музей",
   },
   {
-    year: "2020",
+    src: "/images/carousel/project8.webp",
+    title: "Platinum Tower",
+    subtitle: "Сэлгэлт, хөргөлт, нэгдсэн граж · 2023",
+    alt: "Platinum Tower орон сууц",
+  },
+  {
+    src: "/images/carousel/project9.webp",
     title: "Хүннү 2222",
-    work: "Орон сууцны агаар сэлгэлтийн систем",
-    location: "Улаанбаатар",
-    image: "/images/project4.webp",
+    subtitle: "Канад сургууль, спорт цогцолбор · 2022",
+    alt: "Хүннү 2222 төслийн Канад сургууль, спорт цогцолбор",
+  },
+  {
+    src: "/images/carousel/project11.webp",
+    title: "Нийслэлийн захиргааны төв",
+    subtitle: "Цогцолборын агаар сэлгэлт · 2024",
+    alt: "Нийслэлийн нутгийн захиргааны төв цогцолбор",
+  },
+  {
+    src: "/images/carousel/project12.webp",
+    title: "Эрдэнэс Таван Толгой",
+    subtitle: "Ажилчдын байр, оффис, хөргөлт · 2024",
+    alt: "Эрдэнэс Таван Толгойн ажилчдын байр, оффис барилга",
+  },
+  {
+    src: "/images/carousel/project7.webp",
+    title: "Одод хотхон",
+    subtitle: "Сэлгэлт, хөргөлт, нэгдсэн граж · 2022",
+    alt: "Одод хотхон орон сууцны хотхон",
+  },
+  {
+    src: "/images/carousel/project13.webp",
+    title: "Сансар Гарден",
+    subtitle: "2 блокийн сэлгэлт, хөргөлт · 2024",
+    alt: "Сансар Гарден орон сууцны хотхон",
+  },
+  {
+    src: "/images/carousel/project4.webp",
+    title: "Хүннү 2222",
+    subtitle: "2-р ээлжийн орон сууц · 2020",
+    alt: "Хүннү 2222 төслийн 2-р ээлжийн орон сууц",
+  },
+  {
+    src: "/images/carousel/project10.webp",
+    title: "Нисэх гарден хотхон",
+    subtitle: "Орон сууцны агаар сэлгэлт · 2022",
+    alt: "Нисэх гарден хотхон",
+  },
+  {
+    src: "/images/carousel/project.webp",
+    title: "Эрдэнэс Таван Толгой",
+    subtitle: "Нүүрс баяжуулах үйлдвэр, агаар сэлгэлт · 2024",
+    alt: "Эрдэнэс Таван Толгойн нүүрс баяжуулах үйлдвэр",
   },
 ];
 
 export function Projects() {
-  // Desktop: hovering or focusing a row swaps the large picture beside the list.
-  const [active, setActive] = useState(0);
-
+  const wide = useSyncExternalStore(subscribe, () => window.matchMedia(wideQuery).matches, () => true);
   return (
-    <section id="projects" className="bg-panel py-24 text-ink lg:py-36">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.4 }}
-          className="flex flex-wrap items-end justify-between gap-6"
-        >
-          <div>
-            <motion.p
-              variants={rise}
-              className="font-mono text-xs uppercase tracking-[0.18em] text-brand"
-            >
-              08 / Төслүүд
-            </motion.p>
-            <motion.h2
-              variants={rise}
-              className="mt-5 text-[clamp(2rem,1.2rem+3vw,4rem)] font-semibold leading-none tracking-[-0.04em]"
-            >
-              Хэрэгжүүлсэн төслүүд
-            </motion.h2>
-          </div>
-          <motion.div variants={rise}>
-            <Link
-              href="/projects"
-              className="group inline-flex items-center gap-2 border-b-2 border-ink pb-1 font-mono text-xs uppercase tracking-[0.16em] transition-colors hover:border-brand hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
-            >
-              Бүх төслүүд
-              <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-          </motion.div>
-        </motion.div>
-
-        <div className="mt-14 grid gap-10 lg:mt-20 lg:grid-cols-12 lg:gap-8">
-          <motion.ol
-            variants={stagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.1 }}
-            className="border-b border-ink/10 lg:col-span-7"
+    <section id="projects" aria-labelledby="projects-title" className="bg-graphite pt-24 text-white lg:pt-32">
+      <div className="mx-auto flex max-w-7xl flex-wrap items-end justify-between gap-8 px-4 sm:px-6 lg:px-8">
+        <div>
+          <h2
+            id="projects-title"
+            className="text-balance text-[clamp(2rem,1.3rem+2.6vw,3.75rem)] font-semibold leading-[0.98] tracking-[-0.04em]"
           >
-            {projects.map((project, i) => (
-              <motion.li key={project.title} variants={rise}>
-                <Link
-                  href="/projects"
-                  onMouseEnter={() => setActive(i)}
-                  onFocus={() => setActive(i)}
-                  className="group grid grid-cols-[4rem_1fr] items-start gap-4 border-t border-ink/10 py-6 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand sm:grid-cols-[4.5rem_1fr_auto] sm:gap-6"
-                >
-                  <div className="size-16 overflow-hidden bg-white lg:hidden">
-                    <Image
-                      src={project.image}
-                      alt=""
-                      width={128}
-                      height={128}
-                      sizes="64px"
-                      className="size-full object-cover"
-                    />
-                  </div>
-                  <span className="hidden pt-1.5 font-mono text-xs tracking-[0.14em] text-soft tabular-nums lg:block">
-                    {project.year}
-                  </span>
-                  <span>
-                    <span
-                      className={`block text-xl font-semibold leading-tight tracking-[-0.02em] transition-colors sm:text-2xl ${
-                        active === i ? "lg:text-brand" : ""
-                      }`}
-                    >
-                      {project.title}
-                    </span>
-                    <span className="mt-2 block text-step-small leading-relaxed text-soft">
-                      <span className="lg:hidden">{project.year} · </span>
-                      {project.work}
-                    </span>
-                  </span>
-                  <span className="hidden items-center gap-2 pt-1.5 font-mono text-xs uppercase tracking-[0.14em] text-soft sm:flex">
-                    {project.location}
-                    <ArrowUpRight className="size-4 opacity-0 transition-opacity group-hover:opacity-100" />
-                  </span>
-                </Link>
-              </motion.li>
-            ))}
-          </motion.ol>
-
-          <div className="hidden lg:col-span-5 lg:block">
-            <figure className="sticky top-[calc(11vh+2rem)]">
-              <div className="relative aspect-[4/5] overflow-hidden bg-white">
-                {projects.map((project, i) => (
-                  <Image
-                    key={project.image}
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    sizes="40vw"
-                    className={`object-cover transition-[opacity,scale] duration-700 ${
-                      active === i ? "scale-100 opacity-100" : "scale-[1.04] opacity-0"
-                    }`}
-                  />
-                ))}
-              </div>
-              <figcaption className="mt-3 flex justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.14em] text-soft">
-                <span>{projects[active].title}</span>
-                <span className="tabular-nums">
-                  {String(active + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
-                </span>
-              </figcaption>
-            </figure>
-          </div>
+            Музейгээс уурхай хүртэл.
+          </h2>
+          <p className="mt-5 max-w-[54ch] text-step-body leading-relaxed text-white/70">
+            Төрийн байгууллага, орон сууц, үйлдвэр, музейд агаар сэлгэлт, хөргөлтийн систем угсарсан 150 гаруй
+            объектоос заримыг нь энд харуулав. Чирж эргүүлээд төсөл бүртэй танилцаарай.
+          </p>
         </div>
+        <Link
+          href="/projects"
+          className="group inline-flex items-center gap-3 bg-white px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors hover:bg-brand hover:text-white active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+        >
+          Бүх төсөл
+          <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+        </Link>
+      </div>
+
+      {/* The wall of projects: drag or use the arrow keys; the page wheel stays the page's.
+          Phones step instead of drifting, so the slide the counter names rests centred with its caption whole. */}
+      <div className="mt-6 h-[min(64svh,560px)] w-full lg:mt-10 lg:h-[min(80svh,780px)]">
+        <ConcaveCarousel
+          items={projects}
+          aspect={1.45}
+          size={wide ? 0.6 : 0.52}
+          autoplay={wide ? "drift" : "step"}
+          speed={0.1}
+          wheel={false}
+          dpr={1.5}
+          className="text-white"
+          ariaLabel="Хэрэгжүүлсэн төслүүд. Чирж эсвэл сумны товчоор эргүүлнэ, Space товч хөдөлгөөнийг зогсооно."
+        />
       </div>
     </section>
   );
 }
-
-export default Projects;

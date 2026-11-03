@@ -1,5 +1,6 @@
-import { About } from "@/components/home/About";
+import { Company } from "@/components/home/Company";
 import { Hero } from "@/components/home/Hero";
+import { Products } from "@/components/home/Products";
 import { Projects } from "@/components/home/Projects";
 import { StructuredData } from "@/components/StructuredData";
 import type { Metadata } from "next";
@@ -13,7 +14,8 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <StructuredData />
       <Hero />
-      <About />
+      <Products />
+      <Company />
       <Projects />
     </div>
   );

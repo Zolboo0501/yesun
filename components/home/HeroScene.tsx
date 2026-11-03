@@ -10,9 +10,19 @@ import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLigh
 
 RectAreaLightUniformsLib.init();
 
-// Built by scripts/office_hvac.py in Blender: an office under a walnut slat ceiling, and the HVAC above it.
+// Built by scripts/scene3d/build_scene.py from scene.json: an office under a walnut slat ceiling, and the HVAC above it.
 const MODEL = "/models/hvac/office.glb";
-const DRACO = "/draco/";
+const DRACO = "/draco/"; // three's Draco decoder, copied into public/draco/
+
+// The light's mood, kept with the spec's look. Warm amber pendants and a low sun read as a calm, premium office;
+// for a cooler, technical space use neutral pendants (#f4f1ec) and a whiter sun (#ffffff).
+const MOOD = {
+  background: "#8f8a83", // what reflections see beyond the room
+  sun: "#fff2df",
+  sunIntensity: 3.8,
+  daylight: "#eaf1ff", // the glazing
+  pendant: "#ffcf94",
+};
 
 type Vec = [number, number, number];
 type Shot = {
@@ -21,24 +31,27 @@ type Shot = {
   fov: number;
   /** how far right of the copy the subject sits on desktop, as a share of the width */
   shift: number;
-  /** walnut slats in place (1) or faded out to show the ducts above (0) */
-  slats: number;
-  /** concrete slab shown (1) or faded out for views from above (0) */
+  /** feature ceiling in place (1) or faded out to show the ducts above (0) */
+  ceiling: number;
+  /** slab shown (1) or faded out for views from above (0) */
   slab: number;
   /** whole HVAC system pulled apart into its components (1) */
   sys: number;
   /** air handling unit opened up: casing off, fan, motor, coil and filter drawn out (1) */
   ahu: number;
 };
-// One camera shot per story step, in the order Hero renders them. Every camera
-// sits outside the room or above the slab, so moving between shots never cuts through a wall.
+// One camera shot per story step, in the order Hero renders them. Every camera sits outside the
+// room or above the slab, so moving between shots never cuts through a wall. Three.js axes:
+// x = Blender x, y = Blender z (up), z = -Blender y. The room spans x -5.2..5.2, z -3.6..4.6,
+// the ceiling is at y 3.0 and the slab at 4.0; the AHU sits around (-2.45, 3.5, 0).
+// Change them only to change the story; the room layout is fixed, so these hold for any spec.
 const shots: Shot[] = [
-  { pos: [1.4, 1.55, 6.2], target: [-0.9, 2.0, -1.0], fov: 46, shift: 0.06, slats: 1, slab: 1, sys: 0, ahu: 0 },
-  { pos: [7.4, 11.2, 10.4], target: [-0.6, 4.0, 0], fov: 32, shift: 0.17, slats: 1, slab: 0, sys: 1, ahu: 0 },
-  { pos: [2.7, 4.4, 1.7], target: [0.75, 3.42, -0.15], fov: 34, shift: 0.15, slats: 1, slab: 0, sys: 0, ahu: 0 },
-  { pos: [-1.3, 4.15, 5.6], target: [-2.75, 3.75, 0.3], fov: 40, shift: 0.17, slats: 1, slab: 0, sys: 0, ahu: 1 },
-  { pos: [2.2, 1.3, 5.2], target: [0.4, 3.0, 0.5], fov: 44, shift: 0.12, slats: 0, slab: 1, sys: 0, ahu: 0 },
-  { pos: [-2.6, 1.6, 6.4], target: [0.2, 1.85, -1.0], fov: 46, shift: 0.06, slats: 1, slab: 1, sys: 0, ahu: 0 },
+  { pos: [1.4, 1.55, 6.2], target: [-0.9, 2.0, -1.0], fov: 46, shift: 0.06, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+  { pos: [7.4, 11.2, 10.4], target: [-0.6, 4.0, 0], fov: 32, shift: 0.17, ceiling: 1, slab: 0, sys: 1, ahu: 0 },
+  { pos: [2.7, 4.4, 1.7], target: [0.75, 3.42, -0.15], fov: 34, shift: 0.15, ceiling: 1, slab: 0, sys: 0, ahu: 0 },
+  { pos: [-1.3, 4.15, 5.6], target: [-2.75, 3.75, 0.3], fov: 40, shift: 0.17, ceiling: 1, slab: 0, sys: 0, ahu: 1 },
+  { pos: [2.2, 1.3, 5.2], target: [0.4, 3.0, 0.5], fov: 44, shift: 0.12, ceiling: 0, slab: 1, sys: 0, ahu: 0 },
+  { pos: [-2.6, 1.6, 6.4], target: [0.2, 1.85, -1.0], fov: 46, shift: 0.06, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
 ];
 
 type Input = { dragging: boolean; lastX: number; yaw: number; px: number; py: number };
@@ -94,9 +107,9 @@ export default function HeroScene({ progress, active, reducedMotion }: SceneProp
         aria-label="Цонхоор нар тусах оффис, модон сороот тааз, таазны дээрх агаар сэлгэлт, хөргөлтийн систем"
       >
         <Environment resolution={256} environmentIntensity={0.9}>
-          <color attach="background" args={["#8f8a83"]} />
+          <color attach="background" args={[MOOD.background]} />
           {/* the window wall, the white ceiling and a warm floor bounce, as seen by reflections */}
-          <Lightformer intensity={5} position={[-9, 1.5, 0]} rotation-y={Math.PI / 2} scale={[12, 3, 1]} color="#eef4ff" />
+          <Lightformer intensity={5} position={[-9, 1.5, 0]} rotation-y={Math.PI / 2} scale={[12, 3, 1]} color={MOOD.daylight} />
           <Lightformer intensity={1.2} position={[0, 6, 0]} rotation-x={Math.PI / 2} scale={[10, 8, 1]} color="#fff4e6" />
           <Lightformer intensity={0.8} position={[0, -3, 0]} rotation-x={-Math.PI / 2} scale={[10, 8, 1]} color="#c89f7a" />
           <Lightformer intensity={1} position={[9, 2, 0]} rotation-y={-Math.PI / 2} scale={[10, 3, 1]} color="#fff1e0" />
@@ -106,8 +119,8 @@ export default function HeroScene({ progress, active, reducedMotion }: SceneProp
         <directionalLight
           castShadow
           position={[-12, 6.5, 2.5]}
-          intensity={3.8}
-          color="#fff2df"
+          intensity={MOOD.sunIntensity}
+          color={MOOD.sun}
           shadow-mapSize={[2048, 2048]}
           shadow-camera-left={-8}
           shadow-camera-right={8}
@@ -120,10 +133,10 @@ export default function HeroScene({ progress, active, reducedMotion }: SceneProp
           shadow-radius={4}
         />
         {/* soft daylight from the glazing */}
-        <rectAreaLight position={[-5.0, 1.5, 0]} rotation={[0, -Math.PI / 2, 0]} width={8} height={2.6} intensity={2.2} color="#eaf1ff" />
-        {/* warm pools under the pendants, and a work light in the plenum */}
-        <pointLight position={[-1.2, 2.05, 0]} intensity={4} distance={4.5} color="#ffcf94" />
-        <pointLight position={[1.75, 2.15, 0.6]} intensity={2.5} distance={3.5} color="#ffcf94" />
+        <rectAreaLight position={[-5.0, 1.5, 0]} rotation={[0, -Math.PI / 2, 0]} width={8} height={2.6} intensity={2.2} color={MOOD.daylight} />
+        {/* pools under the pendants, and a work light in the plenum */}
+        <pointLight position={[-1.2, 2.05, 0]} intensity={4} distance={4.5} color={MOOD.pendant} />
+        <pointLight position={[1.75, 2.15, 0.6]} intensity={2.5} distance={3.5} color={MOOD.pendant} />
         <pointLight position={[0, 3.6, 1.5]} intensity={3} distance={6} color="#f4f1ec" />
 
         <Suspense fallback={null}>
@@ -173,9 +186,9 @@ const toThree = (v: unknown) =>
     ? new THREE.Vector3(Number(v[0]), Number(v[2]), -Number(v[1]))
     : new THREE.Vector3();
 
-// Shadows: everything solid casts except the slats and the slab (they would black out the
-// plenum); the room shell casts too, which is what keeps the sun to patches by the windows.
-const NO_CAST = new Set(["slats", "slab", "glass", "meeting_glass", "city"]);
+// Shadows: everything solid casts except the feature ceiling and the slab (they would black out
+// the plenum); the room shell casts too, which is what keeps the sun to patches by the windows.
+const NO_CAST = new Set(["ceiling_reveal", "slab", "glass", "meeting_glass", "city"]);
 const NO_RECEIVE = new Set(["glass", "meeting_glass", "city"]);
 
 type Parts = ReturnType<typeof findParts>;
@@ -202,12 +215,12 @@ function findParts(scene: THREE.Object3D) {
     }
   });
 
-  // Each slat gets its own material so it can fade on its own beat.
-  const slats = (scene.getObjectByName("slats")?.children ?? []).map((slat) => {
-    const mesh = slat as THREE.Mesh;
+  // Each slat or ceiling tile gets its own material so it can fade on its own beat, centre out.
+  const ceiling = (scene.getObjectByName("ceiling_reveal")?.children ?? []).map((piece) => {
+    const mesh = piece as THREE.Mesh;
     const material = (mesh.material as THREE.MeshStandardMaterial).clone();
     mesh.material = material;
-    return { mesh, material, home: slat.position.clone(), delay: Math.min(Math.abs(slat.position.x) / 3.3, 1) };
+    return { mesh, material, home: piece.position.clone(), delay: Math.min(Math.abs(piece.position.x) / 3.3, 1) };
   });
 
   // Exploded-view parts carry their offsets from Blender as glTF extras.
@@ -238,7 +251,7 @@ function findParts(scene: THREE.Object3D) {
   const slabMaterial = slab?.material as THREE.MeshStandardMaterial | undefined;
   if (slabMaterial) slabMaterial.transparent = true;
   return {
-    slats,
+    ceiling,
     exploding,
     fading,
     slab,
@@ -266,7 +279,7 @@ function Rig({
   const { scene } = useGLTF(MODEL, DRACO);
   const group = useRef<THREE.Group>(null);
   const offset = useRef({ w: 0, h: 0, x: 0, y: 0 });
-  const state = useRef({ slats: 1, slab: 1, sys: 0, ahu: 0 });
+  const state = useRef({ ceiling: 1, slab: 1, sys: 0, ahu: 0 });
   // The parts the story moves, looked up on the first frame.
   const partsRef = useRef<Parts | null>(null);
 
@@ -301,22 +314,22 @@ function Rig({
     );
     cam.lookAt(look);
 
-    // Slats, slab and the exploded views ease towards the current step's state.
+    // Ceiling, slab and the exploded views ease towards the current step's state.
     const s = state.current;
     const slow = animate ? 2 : 1000;
-    s.slats = damp(s.slats, lerp(a.slats, b.slats, t), slow, delta);
+    s.ceiling = damp(s.ceiling, lerp(a.ceiling, b.ceiling, t), slow, delta);
     s.slab = damp(s.slab, lerp(a.slab, b.slab, t), k, delta);
     s.sys = damp(s.sys, lerp(a.sys, b.sys, t), slow, delta);
     s.ahu = damp(s.ahu, lerp(a.ahu, b.ahu, t), slow, delta);
 
-    const hidden = 1 - s.slats;
-    for (const slat of parts.slats) {
-      const e = staged(hidden, slat.delay);
-      slat.mesh.position.set(slat.home.x, slat.home.y + e * 0.18, slat.home.z);
-      slat.material.opacity = 1 - e;
-      slat.material.transparent = e > 0.001;
-      slat.material.depthWrite = e < 0.5;
-      slat.mesh.visible = e < 0.99;
+    const hidden = 1 - s.ceiling;
+    for (const piece of parts.ceiling) {
+      const e = staged(hidden, piece.delay);
+      piece.mesh.position.set(piece.home.x, piece.home.y + e * 0.18, piece.home.z);
+      piece.material.opacity = 1 - e;
+      piece.material.transparent = e > 0.001;
+      piece.material.depthWrite = e < 0.5;
+      piece.mesh.visible = e < 0.99;
     }
     for (const part of parts.exploding) {
       const es = staged(s.sys, part.delay);
