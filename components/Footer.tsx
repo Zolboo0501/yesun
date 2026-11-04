@@ -2,7 +2,8 @@
 import { contact, menu } from "@/constants/data";
 import { rise, stagger } from "@/lib/reveal";
 import { ArrowUpRight } from "lucide-react";
-import { motion } from "motion/react";
+import { MotionConfig, motion } from "motion/react";
+import { Facebook } from "./FacebookIcon";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -99,138 +100,178 @@ function Partners() {
   );
 }
 
+// The panel's raised shoulders (after footer-2): it rises into the photo at both corners and dips between them.
+const SHOULDER = "M0 0H451.601C467.78 0 483.071 7.75893 491.954 21.2815C558.518 122.612 538.359 153.074 614 153H0V0Z";
+
+function Shoulder({ right = false }: { right?: boolean }) {
+  return (
+    <svg
+      aria-hidden
+      viewBox="0 0 614 153"
+      className={`absolute top-px z-10 h-auto w-[min(250px,32vw)] -translate-y-full fill-ink ${right ? "right-0 -scale-x-100" : "left-0"}`}
+    >
+      <path d={SHOULDER} />
+    </svg>
+  );
+}
+
+// Confirmed by the client (PRODUCT.md); they close the page as the company's credentials.
+const credentials = ["2011 оноос", "БХБЯ-ны тусгай зөвшөөрөлтэй", "150+ объект"];
+
 function FooterView() {
   return (
-    <footer id="footer" className="relative overflow-hidden bg-ink text-white">
-      <div className="mx-auto max-w-7xl px-4 pt-24 sm:px-6 lg:px-8 lg:pt-32">
-        <div className="grid gap-16 lg:grid-cols-12 lg:gap-8">
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.4 }}
-            className="lg:col-span-6"
-          >
-            <motion.p variants={rise} className={`${label} text-white/60`}>
-              Холбоо барих
-            </motion.p>
-            <motion.h2
-              variants={rise}
-              className="mt-5 max-w-[14ch] text-[clamp(2.25rem,1.4rem+3.4vw,5rem)] font-semibold leading-[0.95] tracking-[-0.045em]"
-            >
-              Төслөө бидэнтэй ярилцъя.
-            </motion.h2>
-            <motion.div variants={rise} className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-              <Link
-                href="/contact"
-                className={`group inline-flex items-center gap-3 bg-brand px-6 py-4 ${label} text-white transition-colors hover:bg-white hover:text-ink active:scale-[0.98] ${linkFocus}`}
-              >
-                Төсөл ярилцах
-                <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </Link>
-              <a
-                href={`tel:${contact.phone}`}
-                className={`${label} underline decoration-1 underline-offset-[6px] transition-colors hover:text-white/70 ${linkFocus}`}
-              >
-                {contact.phone}
-              </a>
-            </motion.div>
-          </motion.div>
+    // the entrances keep their fade but drop the rise for visitors who ask for less motion
+    <MotionConfig reducedMotion="user">
+      <footer id="footer" className="relative overflow-hidden bg-ink text-white">
+        {/* Ductwork the company installed: the photo shows only above the panel and between its shoulders. */}
+        <div className="absolute inset-0">
+          <Image src="/images/banner.webp" alt="" fill sizes="100vw" className="object-cover object-[50%_35%]" />
+          <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(11_16_32/0.05),rgb(11_16_32/0.5)_60%)]" />
+        </div>
 
-          <motion.div
-            variants={stagger}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.2 }}
-            className="grid grid-cols-2 gap-x-8 gap-y-10 text-step-small lg:col-span-5 lg:col-start-8"
-          >
-            <motion.div variants={rise}>
-              <p className={`${label} text-white/50`}>Утас</p>
-              <ul className="mt-3 space-y-1">
-                {[contact.phone, contact.phone2].map((phone) => (
-                  <li key={phone}>
-                    <a href={`tel:${phone}`} className={`transition-colors hover:text-white/70 ${linkFocus}`}>
-                      {phone}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-            <motion.div variants={rise} className="max-sm:col-span-2 max-sm:row-start-1">
-              <p className={`${label} text-white/50`}>Имэйл</p>
-              <a
-                href={`mailto:${contact.email}`}
-                className={`mt-3 block break-words transition-colors hover:text-white/70 ${linkFocus}`}
+        <div className="relative">
+          <div className="h-32 sm:h-40 md:h-52" />
+
+          <div className="relative bg-ink">
+            <Shoulder />
+            <Shoulder right />
+
+            <div className="mx-auto max-w-7xl px-4 pb-10 pt-12 sm:px-6 lg:px-8 lg:pt-16">
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.3 }}
+                className="flex flex-col items-center text-center"
               >
-                {contact.email}
-              </a>
-            </motion.div>
-            {places.map((place) => (
-              <motion.div key={place.label} variants={rise}>
-                <p className={`${label} text-white/50`}>{place.label}</p>
-                <a
-                  href={place.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`group mt-3 block leading-relaxed transition-colors hover:text-white/70 ${linkFocus}`}
+                <motion.p
+                  variants={rise}
+                  className="text-[clamp(2.75rem,1.5rem+5vw,6rem)] font-semibold leading-[0.9] tracking-[-0.045em]"
                 >
-                  {place.lines.map((line) => (
-                    <span key={line} className="block">
-                      {line}
-                    </span>
-                  ))}
-                  <span className={`mt-1 inline-flex items-center gap-1 ${label} text-white/50 group-hover:text-white`}>
-                    Газрын зураг
-                    <ArrowUpRight className="size-3.5" />
+                  Есөн Бэлчир
+                </motion.p>
+                <motion.h2
+                  variants={rise}
+                  className="mt-4 text-[clamp(1.25rem,1rem+1vw,1.875rem)] font-medium tracking-[-0.02em] text-white/80"
+                >
+                  Төслөө бидэнтэй ярилцъя.
+                </motion.h2>
+                <motion.div
+                  variants={rise}
+                  className="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-4"
+                >
+                  <Link
+                    href="/contact"
+                    className={`group inline-flex items-center gap-3 bg-white px-6 py-4 ${label} text-ink transition-colors hover:bg-brand hover:text-white active:scale-[0.98] ${linkFocus}`}
+                  >
+                    Инженертэй холбогдох
+                    <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </Link>
+                  <a
+                    href={`tel:${contact.phone}`}
+                    className={`${label} underline decoration-1 underline-offset-[6px] transition-colors hover:text-white/70 ${linkFocus}`}
+                  >
+                    {contact.phone}
+                  </a>
+                  <span aria-hidden className="text-white/30 max-sm:hidden">
+                    —
                   </span>
-                </a>
+                  {/* an address reads better in its own case than in capitals */}
+                  <a
+                    href={`mailto:${contact.email}`}
+                    className={`font-mono text-xs tracking-[0.04em] underline decoration-1 underline-offset-[6px] transition-colors hover:text-white/70 ${linkFocus}`}
+                  >
+                    {contact.email}
+                  </a>
+                </motion.div>
               </motion.div>
-            ))}
-            <motion.div variants={rise}>
-              <p className={`${label} text-white/50`}>Цагийн хуваарь</p>
-              <p className="mt-3 leading-relaxed">
-                Даваа – Бямба
-                <br />
-                9:00 – 19:00
-              </p>
-            </motion.div>
-            <motion.nav variants={rise} aria-label="Footer цэс">
-              <p className={`${label} text-white/50`}>Цэс</p>
-              <ul className="mt-3 space-y-1">
-                {menu.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className={`transition-colors hover:text-white/70 ${linkFocus}`}>
-                      {item.title}
-                    </Link>
-                  </li>
+
+              <motion.div
+                variants={stagger}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, amount: 0.2 }}
+                className="mt-16 grid grid-cols-2 gap-x-8 gap-y-10 border-t border-white/10 pt-10 text-step-small lg:mt-20 lg:grid-cols-4"
+              >
+                <motion.div variants={rise}>
+                  <p className={`${label} text-white/50`}>Утас</p>
+                  <ul className="mt-3 space-y-1">
+                    {[contact.phone, contact.phone2].map((phone) => (
+                      <li key={phone}>
+                        <a href={`tel:${phone}`} className={`transition-colors hover:text-white/70 ${linkFocus}`}>
+                          {phone}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                  <p className={`mt-6 ${label} text-white/50`}>Цагийн хуваарь</p>
+                  <p className="mt-3 leading-relaxed">
+                    Даваа – Бямба
+                    <br />
+                    9:00 – 19:00
+                  </p>
+                </motion.div>
+                {places.map((place) => (
+                  <motion.div key={place.label} variants={rise}>
+                    <p className={`${label} text-white/50`}>{place.label}</p>
+                    <a
+                      href={place.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`group mt-3 block leading-relaxed transition-colors hover:text-white/70 ${linkFocus}`}
+                    >
+                      {place.lines.map((line) => (
+                        <span key={line} className="block">
+                          {line}
+                        </span>
+                      ))}
+                      <span className={`mt-1 inline-flex items-center gap-1 ${label} text-white/50 group-hover:text-white`}>
+                        Газрын зураг
+                        <ArrowUpRight className="size-3.5" />
+                      </span>
+                    </a>
+                  </motion.div>
                 ))}
-              </ul>
-            </motion.nav>
-          </motion.div>
-        </div>
+                <motion.nav variants={rise} aria-label="Footer цэс">
+                  <p className={`${label} text-white/50`}>Цэс</p>
+                  <ul className="mt-3 grid grid-cols-1 gap-y-1">
+                    {menu.map((item) => (
+                      <li key={item.href}>
+                        <Link href={item.href} className={`transition-colors hover:text-white/70 ${linkFocus}`}>
+                          {item.title}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.nav>
+              </motion.div>
 
-        <div className={`mt-24 flex flex-wrap justify-between gap-4 ${label} text-white/50 lg:mt-32`}>
-          <span>© {new Date().getFullYear()} Есөн Бэлчир ХХК</span>
-          <a
-            href={contact.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`inline-flex items-center gap-1 transition-colors hover:text-white ${linkFocus}`}
-          >
-            Facebook
-            <ArrowUpRight className="size-3.5" />
-          </a>
+              <div
+                className={`mt-16 flex flex-col-reverse items-center gap-6 border-t border-white/10 pt-8 text-center ${label} text-white/50 sm:flex-row sm:items-end sm:justify-between sm:text-left`}
+              >
+                <div className="flex items-center gap-5">
+                  <span>© {new Date().getFullYear()} Есөн Бэлчир ХХК</span>
+                  <a
+                    href={contact.facebook}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Facebook (шинэ цонхонд нээгдэнэ)"
+                    className={`text-white/70 transition-colors hover:text-white ${linkFocus}`}
+                  >
+                    <Facebook className="size-5" />
+                  </a>
+                </div>
+                <ul className="space-y-1 sm:text-right">
+                  {credentials.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      {/* The name closes the page, cropped by the bottom edge. */}
-      <p
-        aria-hidden
-        className="pointer-events-none mt-6 translate-y-[24%] select-none whitespace-nowrap px-3 text-[14.5vw] font-semibold uppercase leading-[0.8] tracking-[-0.05em]"
-      >
-        Есөн Бэлчир
-      </p>
-    </footer>
+      </footer>
+    </MotionConfig>
   );
 }
 

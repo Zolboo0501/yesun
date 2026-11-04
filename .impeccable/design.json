@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-11-04T00:00:00Z",
+  "generatedAt": "2026-11-04T12:00:00Z",
   "title": "Design System: Есөн Бэлчир",
   "extensions": {
     "colorMeta": {
@@ -79,6 +79,18 @@
           "oklch(95% 0.009 255.6)"
         ]
       },
+      "mist": {
+        "role": "neutral",
+        "displayName": "Mist",
+        "canonical": "oklch(76.2% 0.010 259.5)",
+        "tonalRamp": [
+          "oklch(55% 0.010 259.5)",
+          "oklch(65% 0.010 259.5)",
+          "oklch(76.2% 0.010 259.5)",
+          "oklch(85% 0.010 259.5)",
+          "oklch(92% 0.010 259.5)"
+        ]
+      },
       "white": {
         "role": "neutral",
         "displayName": "White",
@@ -98,15 +110,11 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Hero step headings (first is the h1) and the footer closing headline."
+        "purpose": "Hero step headings (first is the h1) and the footer's centred wordmark."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Section h2s in Products and Projects; Company runs a slightly smaller variant."
-      },
-      "selector": {
-        "displayName": "Selector",
-        "purpose": "The three Company system words that are themselves radio controls."
+        "purpose": "Section and step headings in Products, Company and Projects."
       },
       "figure": {
         "displayName": "Figure",
@@ -114,7 +122,7 @@
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Selected system name and Products lead line."
+        "purpose": "Products lead line."
       },
       "body": {
         "displayName": "Body",
@@ -126,7 +134,7 @@
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Mono uppercase buttons, secondary links and meta lines."
+        "purpose": "Mono uppercase buttons, secondary links, meta lines and the Company brand list."
       },
       "micro": {
         "displayName": "Micro",
@@ -136,19 +144,9 @@
     "shadows": [],
     "motion": [
       {
-        "name": "ease-swap",
-        "value": "cubic-bezier(0.16, 1, 0.3, 1) 500ms",
-        "purpose": "Company system panel swap: fade, 6px rise and 4px blur-out; skipped under reduced motion."
-      },
-      {
         "name": "ease-rise",
         "value": "cubic-bezier(0.22, 1, 0.36, 1) 700ms, stagger 80ms",
-        "purpose": "Footer and Partners entrance rise (24px)."
-      },
-      {
-        "name": "selector-color",
-        "value": "color 500ms",
-        "purpose": "Company system words fading between 55%, 80% and full ink."
+        "purpose": "Footer and Partners entrance rise (24px); the footer wraps it in MotionConfig with reducedMotion set to user, so it only fades for visitors who ask for less motion."
       },
       {
         "name": "press",
@@ -156,19 +154,24 @@
         "purpose": "Active state of primary buttons."
       },
       {
+        "name": "air-gather",
+        "value": "per-stream smoothstep((travel - 0.12 - delay) / 0.6), scroll damped λ 4",
+        "purpose": "Company air streams draw a figure beside each part that fits it (a skyline of buildings, a duct elbow, a fan, a warranty shield with a check); between parts they run as one current downhill, side to side, from the part being left to the next part below it, each band leaving after its own delay, drawn out along the path, and redrawing itself into the next figure as it gathers in the half the next part leaves free (left, right, left, right at lg; ±12% sway on phones)."
+      },
+      {
         "name": "step-hold",
         "value": "hold 20% / travel 60% / hold 20% of each step's scroll",
-        "purpose": "Scroll-stage pacing in Hero (100svh per step) and Products (70svh per step)."
+        "purpose": "Scroll-stage pacing in Hero (100svh per step) and Products (70svh)."
       },
       {
         "name": "reduced-motion",
         "value": "bake",
-        "purpose": "R3F rigs snap to the scroll pose with no sway; Company air drawn once as still streamlines; copy swaps without transition."
+        "purpose": "R3F rigs snap to the scroll pose with no sway; the Company streams render one still frame per part, redrawn only when the part changes."
       },
       {
         "name": "offscreen-gate",
         "value": "IntersectionObserver",
-        "purpose": "R3F frameloop 'never' and Company rAF cancelled while off screen; Products scene mounts one screen early."
+        "purpose": "R3F frameloop 'never' while off screen; the Products and Company scenes mount one screen early."
       },
       {
         "name": "lite-path",
@@ -217,14 +220,6 @@
       "css": ".ds-link-secondary { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: 0.16em; color: #0b1020; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; transition: color 150ms cubic-bezier(0.4,0,0.2,1); } .ds-link-secondary:hover { color: #0100fd; } .ds-link-secondary:focus-visible { outline: 2px solid #0100fd; outline-offset: 4px; }"
     },
     {
-      "name": "System Selector",
-      "kind": "custom",
-      "refersTo": "system-option",
-      "description": "Giant-word radiogroup; the selected word ends in a brand square.",
-      "html": "<div class=\"ds-selector\" role=\"radiogroup\" aria-label=\"Систем\"><button class=\"ds-option\" role=\"radio\" aria-checked=\"true\">Сэлгэлт<span class=\"ds-square\" aria-hidden=\"true\"></span></button><button class=\"ds-option\" role=\"radio\" aria-checked=\"false\" tabindex=\"-1\">Хөргөлт</button><button class=\"ds-option\" role=\"radio\" aria-checked=\"false\" tabindex=\"-1\">Шүүлт</button></div>",
-      "css": ".ds-selector { display: flex; flex-direction: column; align-items: flex-start; background: #e9ebee; padding: 24px; } .ds-option { background: none; border: 0; padding: 0; cursor: pointer; text-align: left; font-family: 'Golos Text', ui-sans-serif, system-ui, sans-serif; font-size: clamp(3rem, 1.6rem + 5.6vw, 6rem); font-weight: 600; line-height: 0.95; letter-spacing: -0.04em; color: rgb(11 16 32 / 0.55); transition: color 500ms; } .ds-option:hover { color: rgb(11 16 32 / 0.8); } .ds-option[aria-checked='true'] { color: #0b1020; } .ds-option:focus-visible { outline: 2px solid #0100fd; outline-offset: 4px; } .ds-square { display: inline-block; width: 0.14em; height: 0.14em; margin-left: 0.1em; background: #0100fd; }"
-    },
-    {
       "name": "Facts List",
       "kind": "custom",
       "refersTo": "fact",
@@ -243,9 +238,9 @@
   ],
   "narrative": {
     "northStar": "The Engineered Air",
-    "overview": "The site shows the company's subject, air moving through a building, as something you can see. It does not illustrate it. Each scroll stage is a working view: an x-rayed office, a run of fabricated duct pieces, a wall with daylight and air streams on it, and a wall of delivered buildings. Around them sits the plain apparatus of an engineering drawing: cool grey and graphite grounds, near-black ink type, small mono uppercase labels, square buttons, and one saturated electric blue used sparingly.\n\nThe layout is calm and sparse. A section carries one headline, one or two sentences, real figures and one call to action. The 3D or WebGL image does the persuading. Type is set large and tight. Everything else is small, mono and quiet. The house draws no rounded corners and no shadows; depth comes from the rendered scenes and from alternating light and dark grounds.\n\nThe world is local and factual. All copy is Mongolian. Every figure shown is one the client has confirmed.",
+    "overview": "The site shows the company's subject, air moving through a building, as something you can see. It does not illustrate it. Each scroll stage is a working view: an x-rayed office, a run of fabricated duct pieces, translucent streams of air that wander between the company's four parts and gather beside each one, and a wall of delivered buildings. Around them sits the plain apparatus of an engineering drawing: cool grey and graphite grounds, near-black ink type, small mono uppercase labels, square buttons, and one saturated electric blue used sparingly.\n\nThe layout is calm and sparse. A section carries one headline, one or two sentences, real figures and one call to action. The 3D or WebGL image does the persuading. Type is set large and tight. Everything else is small, mono and quiet. The house draws no rounded corners and no shadows; depth comes from the rendered scenes and from alternating light and dark grounds.\n\nThe world is local and factual. All copy is Mongolian. Every figure shown is one the client has confirmed.",
     "keyCharacteristics": [
-      "Grounds alternate light and dark: panel (Hero), graphite (Products), panel (Company), graphite (Projects), then white (Partners) and ink (footer).",
+      "Grounds alternate light and dark: panel (Hero), graphite (Products), mist (Company), graphite (Projects), then white (Partners) and ink (footer).",
       "One accent, electric brand blue. It appears as small squares, hairline progress rules, corner brackets, focus outlines and the hover fill of buttons.",
       "Semibold Golos Text headlines with tight negative tracking, sized with clamp().",
       "JetBrains Mono uppercase, tracked at 0.16em, is the voice of every label, button and technical annotation.",
@@ -255,7 +250,7 @@
     "rules": [
       {
         "name": "The One Signal Rule",
-        "body": "Brand blue only marks things: a point, a rule, a bracket, a focus ring or a hover. It covers a few square millimetres of any screen. If it fills an area larger than a button, it is wrong.",
+        "body": "Brand blue only marks things: a point, a rule, a bracket, a focus ring or a hover. It covers a few square millimetres of any screen. If an interface fill is larger than a button, it is wrong. This rule covers the interface, not the light inside a rendered scene: the Company air is white filaments on mist, and carries no brand blue at all.",
         "section": "colors"
       },
       {
@@ -286,9 +281,9 @@
       "**Do** keep brand blue to squares, hairline rules, corner brackets, focus rings and hover fills.",
       "**Do** set headings semibold with a clamp() size and -0.04em to -0.045em tracking.",
       "**Do** gate every rAF loop or R3F frameloop with an IntersectionObserver (`useInView` or a raw observer), and load heavy scenes about one screen before they arrive.",
-      "**Do** make reduced motion produce a still picture: R3F rigs snap to the scroll pose and drop ambient sway; the Company air is baked once as still streamlines; the copy swaps without the blur-in.",
+      "**Do** make reduced motion produce a still picture: R3F rigs snap to the scroll pose and drop ambient sway; the Company streams render one still frame per part, redrawn only when the part changes.",
       "**Do** run the lite path on coarse pointers or widths under 768px: no SSAO, no multisampling, and a device pixel ratio capped at 1.5.",
-      "**Do** keep a readable fallback when WebGL is missing: the plain wall and all content stay.",
+      "**Do** keep a readable fallback when WebGL is missing: the section ground and all content stay.",
       "**Do** write all copy in Mongolian, and use only figures the client has confirmed."
     ],
     "donts": [

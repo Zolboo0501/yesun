@@ -7,6 +7,7 @@ colors:
   panel: "#e9ebee"
   brand: "#0100fd"
   graphite: "#1f2226"
+  mist: "#aeb2b8"
   white: "#ffffff"
 typography:
   display:
@@ -20,12 +21,6 @@ typography:
     fontSize: "clamp(2rem, 1.3rem + 2.6vw, 3.75rem)"
     fontWeight: 600
     lineHeight: 0.98
-    letterSpacing: "-0.04em"
-  selector:
-    fontFamily: "Golos Text, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "clamp(3rem, min(1.6rem + 5.6vw, 10svh), 6rem)"
-    fontWeight: 600
-    lineHeight: 0.95
     letterSpacing: "-0.04em"
   figure:
     fontFamily: "Golos Text, ui-sans-serif, system-ui, sans-serif"
@@ -95,9 +90,6 @@ components:
     typography: "{typography.label}"
   link-secondary-hover:
     textColor: "{colors.brand}"
-  system-option:
-    textColor: "{colors.ink}"
-    typography: "{typography.selector}"
   fact:
     textColor: "{colors.ink}"
     typography: "{typography.figure}"
@@ -111,14 +103,14 @@ Scope: this records the home page (`app/page.tsx`) as it ships: Hero, Products, 
 
 **Creative North Star: "The Engineered Air"**
 
-The site shows the company's subject, air moving through a building, as something you can see. It does not illustrate it. Each scroll stage is a working view: an x-rayed office, a run of fabricated duct pieces, a wall with daylight and air streams on it, and a wall of delivered buildings. Around them sits the plain apparatus of an engineering drawing: cool grey and graphite grounds, near-black ink type, small mono uppercase labels, square buttons, and one saturated electric blue used sparingly.
+The site shows the company's subject, air moving through a building, as something you can see. It does not illustrate it. Each scroll stage is a working view: an x-rayed office, a run of fabricated duct pieces, translucent streams of air that wander between the company's four parts and gather beside each one, and a wall of delivered buildings. Around them sits the plain apparatus of an engineering drawing: cool grey and graphite grounds, near-black ink type, small mono uppercase labels, square buttons, and one saturated electric blue used sparingly.
 
 The layout is calm and sparse. A section carries one headline, one or two sentences, real figures and one call to action. The 3D or WebGL image does the persuading. Type is set large and tight. Everything else is small, mono and quiet. The house draws no rounded corners and no shadows; depth comes from the rendered scenes and from alternating light and dark grounds.
 
 The world is local and factual. All copy is Mongolian. Every figure shown is one the client has confirmed.
 
 **Key Characteristics:**
-- Grounds alternate light and dark: panel (Hero), graphite (Products), panel (Company), graphite (Projects), then white (Partners) and ink (footer).
+- Grounds alternate light and dark: panel (Hero), graphite (Products), mist (Company), graphite (Projects), then white (Partners) and ink (footer).
 - One accent, electric brand blue. It appears as small squares, hairline progress rules, corner brackets, focus outlines and the hover fill of buttons.
 - Semibold Golos Text headlines with tight negative tracking, sized with clamp().
 - JetBrains Mono uppercase, tracked at 0.16em, is the voice of every label, button and technical annotation.
@@ -131,7 +123,6 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 
 ### Primary
 - **Electric Signal Blue** (brand): the only accent. It is used for:
-  - the square after the selected Company system word;
   - the square bullets in the Products point lists;
   - the corner brackets on scroll-stage copy;
   - the hero progress rules;
@@ -143,13 +134,14 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 
 ### Neutral
 - **Blueprint Ink** (ink): headings and primary text on light grounds. It is the resting fill of the primary button on light grounds and the footer ground. Body copy uses it at 80% opacity, and hairline dividers use it at 15%.
-- **Drafting Slate** (soft): secondary text on light grounds, such as fact labels, the radiogroup prompt, the system meta line and the hero frame annotations.
-- **Plaster Panel** (panel): the light ground of Hero and Company, and of the partner logo tiles. Behind Company it is the wall the daylight lands on.
+- **Drafting Slate** (soft): secondary text on light grounds, such as fact labels and the frame annotations of the Hero and Company stages.
+- **Plaster Panel** (panel): the light ground of Hero and of the partner logo tiles.
+- **Mist** (mist, #aeb2b8): the Company ground, a cool mid grey dark enough for white air to show, lit by a soft radial light from the lower right. Labels on it are ink at 80%, not soft.
 - **Graphite** (graphite): the dark ground of Products and Projects. On graphite, text is white at stepped opacities: 100% for headings, 85–90% for leads, 70% for body and 50–60% for annotations.
 - **White** (white): text on dark grounds, the resting fill of the primary button on dark grounds, and the Partners ground.
 
 ### Named Rules
-**The One Signal Rule.** Brand blue only marks things: a point, a rule, a bracket, a focus ring or a hover. It covers a few square millimetres of any screen. If it fills an area larger than a button, it is wrong.
+**The One Signal Rule.** Brand blue only marks things: a point, a rule, a bracket, a focus ring or a hover. It covers a few square millimetres of any screen. If an interface fill is larger than a button, it is wrong. This rule covers the interface, not the light inside a rendered scene: the Company air is white filaments on mist, and carries no brand blue at all.
 
 **The Alternating Ground Rule.** Consecutive home sections change ground between light (panel or white) and dark (graphite or ink). A new section takes the opposite ground from the one before it.
 
@@ -162,14 +154,13 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 **Character:** a clear, modern Cyrillic grotesque set heavy and tight for statements, paired with a technical mono for labels and controls. Together they read like a specification sheet.
 
 ### Hierarchy
-- **Display** (600, clamp 2.25–4.5rem, line-height 0.95, tracking -0.045em): the hero step headings (the h1 is the first step) and the footer's "Төслөө бидэнтэй ярилцъя."
-- **Headline** (600, clamp 2–3.75rem, line-height 0.98, tracking -0.04em): section h2s in Products and Projects. The Company h2 runs slightly smaller and looser (clamp 2–3.5rem, line-height 1.02).
-- **Selector** (600, clamp 3–6rem with a 10svh cap, line-height 0.95): the three Company system words, which are themselves the radio controls. Unselected words are ink at 55%.
+- **Display** (600, clamp 2.25–4.5rem, line-height 0.95, tracking -0.045em): the hero step headings (the h1 is the first step) and the footer's centred "Есөн Бэлчир" wordmark, under which "Төслөө бидэнтэй ярилцъя." is the footer's h2 at 1.25–1.875rem, weight 500, white at 80%
+- **Headline** (600, clamp 2–3.75rem, line-height 0.98, tracking -0.04em): section and step headings in Products, Company and Projects.
 - **Figure** (600, 1.5rem, tracking -0.03em, tabular numerals): proof values in the facts list.
-- **Title** (600, 1.125rem, tracking -0.01em): the name of the selected system and the Products lead line.
+- **Title** (600, 1.125rem, tracking -0.01em): the Products lead line.
 - **Body** (400, fluid 1.0625–1.1875rem, line-height 1.625): every supporting paragraph, with a measure of 44–56ch.
 - **Small** (400, fluid 0.8125–0.875rem): footer contact lists and the WebGL fallback text.
-- **Label** (mono 400, 0.75rem, uppercase, tracking 0.16em): buttons, secondary links and meta lines.
+- **Label** (mono 400, 0.75rem, uppercase, tracking 0.16em): buttons, secondary links, meta lines and the Company brand list.
 - **Micro** (mono 400, 11px, uppercase, tracking 0.16em, 0.2em when set vertically): the frame annotations around the scroll stages and the footer column labels.
 
 ### Named Rules
@@ -179,17 +170,17 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 
 ## Layout
 
-- **Container and grid:** content sits in an 80rem container. Side gutters are 16px, rising to 24px at sm and 32px at lg. At lg, sections use a 12-column grid with 32px gaps. Company puts its headline in columns 1–6 and its facts in columns 9–12.
+- **Container and grid:** content sits in an 80rem container. Side gutters are 16px, rising to 24px at sm and 32px at lg. At lg, sections use a 12-column grid with 32px gaps.
 - **Section padding:** static sections open with 96px of top padding, or 128px at lg.
-- **Scroll stages:** Hero and Products are pinned stages. The sticky frame sits at the header's height (top 11vh) and fills the rest of the viewport. Hero takes 100svh of scroll per step and Products 70svh. Each step holds still for the first and last fifth of its scroll, then travels.
+- **Scroll stages:** Hero and Products are pinned stages. The sticky frame sits at the header's height (top 11vh) and fills the rest of the viewport. Hero takes 100svh of scroll per step and Products 70svh. Each step holds still for the first and last fifth of its scroll, then travels. Company is not pinned: its parts scroll as ordinary blocks over a sticky scene.
 - **Step copy:** at lg the copy floats bottom-left (5vw in, about 40–46vw wide) on its own ground at 80–85% opacity. Below lg it docks as a solid band along the bottom.
-- **Company:** a single viewport of at least 89svh. The headline and facts sit at the top; the choice and its panel are pushed to the bottom. On phones a 17rem slot is left above the choice, where the light lands.
+- **Company:** four parts stacked down the page, each one stage tall (100svh − 11vh), over a sticky full-stage scene that the blocks overlap with a negative top margin. At lg each part's copy takes one half, alternating right, left, right, left. It is vertically centred and at most 36rem wide; its outer edge sits on the page container's edge, max(2rem, 50vw − 38rem), and its inner edge is 4vw from the centre line. The copy fades with its distance from the stage and is fully opaque when its part fills it. The air streams gather in the other half. On phones each part's copy sits at the bottom of its block, and the streams gather in the top 40% of the stage, swaying ±12% between parts.
 - **Projects:** the header row wraps between the headline and the button. Below it, the carousel runs full bleed, min(64svh, 560px) tall, or min(80svh, 780px) at lg.
 
 ## Elevation & Depth
 
 The house is flat. There are no box-shadows anywhere on the home page. Depth comes from three things:
-- the rendered scenes themselves: R3F lighting, SSAO and bloom in the hero and products, and a colour-dodge WebGL layer over the Company wall;
+- the rendered scenes themselves: R3F lighting, SSAO and bloom in the hero and products, and the translucent Company air streams;
 - semi-opaque copy grounds over the scenes (panel or graphite at 80–85%);
 - the light/dark alternation between sections.
 
@@ -199,10 +190,10 @@ The house is flat. There are no box-shadows anywhere on the home page. Depth com
 ## Shapes
 
 Every corner the house draws is square (0px), including buttons, copy panels, partner tiles and the brand squares. The recurring geometry is rectilinear:
-- small solid squares of brand blue (0.14em after a selected word, 6px as list bullets);
-- 14px L-shaped corner brackets in 2px brand blue that frame scroll-stage copy at lg;
-- 1px hairline dividers at 15% opacity above each fact;
-- a thin progress rule (1px track, brand or white fill).
+- small solid squares of brand blue (6px list bullets in Products);
+- 14px L-shaped corner brackets in 2px brand blue that frame the Hero and Products step copy at lg;
+- 1px hairline dividers at 15% opacity above each fact and above the Company brand list;
+- a thin progress rule (1px track, filled brand in Hero, white in Products and ink in Company).
 
 The vendor ConcaveCarousel still uses its own rounded photo panels and circular 32px controls (see Do's and Don'ts).
 
@@ -220,23 +211,35 @@ Square, mono and direct. Every button carries a forward arrow.
   - Focus shows a 2px outline offset by 4px, brand on light grounds and white on dark.
 - **Secondary link:** mono uppercase label text with a 1px underline offset by 6px. On light grounds it turns brand on hover; on dark grounds it fades to 70% white. It sits 32px to the right of the primary button and wraps below it.
 
-### System Selector (signature)
-The Company radiogroup is three giant words: Сэлгэлт, Хөргөлт and Шүүлт. The selected word is full ink and ends in a brand square. The others are ink at 55% and rise to 80% on hover. Arrow keys move the selection (roving tabindex), and mouse hover selects after a 70ms intent delay. The panel beside the words changes with the selection: a title, a body sentence and a mono meta line. It fades and unblurs over 500ms on cubic-bezier(0.16, 1, 0.3, 1).
-
 ### Facts List
-A two-column definition list. Each fact sits under a 15% ink hairline, with the value above in the Figure style and the label below in soft text. It carries real, confirmed figures only.
+A two-column definition list. Each fact sits under a 15% ink hairline, with the value above in the Figure style and the label below in soft text. It carries real, confirmed figures only. A related variant is the Company brand list: the six official brands in mono Label style, laid out in 3 columns under one hairline.
 
 ### Scroll Stage (signature)
-A pinned 3D or WebGL scene with a technical frame of micro annotations:
+A pinned 3D or WebGL scene with a technical frame of micro annotations. Both stages (Hero, Products) show a "Гүйлгэж танилцана" progress rule at the bottom left, and add:
 - a vertical label at the top left;
-- a "Гүйлгэж танилцана" progress rule at the bottom left;
 - a step counter at the bottom right;
 - a vertical progress rule at the right edge (hero only).
 
-The step copy appears inside corner brackets. Products adds a jump index of its 15 items at the top left, at lg; the current item is at full opacity and the rest at 45%.
+In Hero and Products the step copy sits inside corner brackets. Products also adds a jump index of its 15 items at the top left, at lg; the current item is at full opacity and the rest at 45%.
+
+Step copy fades as the scene moves away from it and fades back once the scene has settled. Steps that are not showing are set to visibility hidden.
+
+### Air Streams (Company)
+Seven bands of fine white filaments (components/home/AirFlowScene.tsx), drawn as airflow is in a product film, each band with its own ripple, speed, twist and width. A custom shader draws each band as a sheaf of fourteen filaments, each with its own brightness and softness (some crisp, some out of focus), sliding a little against its neighbours, with light running along them with the flow; a band brightens where it turns edge-on, and bands blend without writing depth, so overlapping air thickens. Beside each part the air draws a figure that fits it:
+1. a skyline of stepped towers (the 150+ buildings fitted), its silhouette shared end to end by the seven bands;
+2. a rectangular duct's elbow (the factory's ducts), the bands running side by side through the bend as air fills a duct;
+3. a fan of seven curved arms (the equipment supplied), turning as a whole;
+4. a shield with a check mark (the warranty), five bands on the outline and two on the check.
+
+The figures are polylines rounded by Chaikin passes and stepped evenly by length into a 256 × 4 float texture that the vertex shader reads; a per-band table (start, end, offset or arm angle, depth) says which stretch of each figure each band draws. Outline bands are drawn narrower than the fan's arms so the figures stay crisp, and a small ripple runs across each figure with the flow.
+
+The vertex shader bends the ribbons, so a frame only updates uniforms. Each part's air rides up with its part as the page scrolls. Between parts the bands run as one current downhill from the part being left to the next part below it on the other side (upper left to lower right, then upper right to lower left), along an S-shaped path that sets off and arrives level. Each band leaves after its own delay (up to a third of the crossing), draws out into a gust lying along the path, spreads across the current mid-way, and redraws itself from one figure into the next as it gathers in the half the next part leaves free. The scroll is eased (damped, λ 4) so a wheel notch glides instead of stepping. The pointer leans the bundle slightly.
 
 ### Project Carousel
 A full-bleed ConcaveCarousel of the real project photos. Captions are a title plus "systems · year". It drifts on desktop and steps one slide at a time on phones. The page wheel is never captured, and drag, arrow keys and Space are supported.
+
+### Footer
+Adapted from components/blocks/footer-2.tsx. A photo of installed ductwork (`/images/banner.webp`, darkened toward ink) shows above the ink panel, whose two raised shoulders (the footer-2 curve, up to 250px wide) rise into it at the corners and dip between them; the curve is the one rounded shape the house allows. The panel centres the "Есөн Бэлчир" wordmark, the h2 "Төслөө бидэнтэй ярилцъя." and one row of actions: the white primary button "Инженертэй холбогдох" (brand on hover), then the phone and the email as underlined mono links, the email in its own case. Below a hairline, a four-column grid (two on phones) holds phones with hours, the office, the factory (each with a map link) and the menu. The closing bar has the copyright with the Facebook icon, and the three confirmed credentials stacked right: 2011 оноос, БХБЯ-ны тусгай зөвшөөрөлтэй, 150+ объект. No kicker sits above any heading.
 
 ### Navigation
 The shared header has not yet been aligned to this system: it uses grey links and a hardcoded blue underline on hover. Its two bars (4vh + 7vh) define the 11vh sticky offset that the scroll stages depend on.
@@ -252,10 +255,9 @@ The shared header has not yet been aligned to this system: it uses grey links an
 - **Do** gate every rAF loop or R3F frameloop with an IntersectionObserver (`useInView` or a raw observer), and load heavy scenes about one screen before they arrive.
 - **Do** make reduced motion produce a still picture:
   - R3F rigs snap to the scroll pose and drop ambient sway;
-  - the Company air is baked once as still streamlines;
-  - the copy swaps without the blur-in.
+  - the Company streams render one still frame per part, redrawn only when the part changes.
 - **Do** run the lite path on coarse pointers or widths under 768px: no SSAO, no multisampling, and a device pixel ratio capped at 1.5.
-- **Do** keep a readable fallback when WebGL is missing: the plain wall and all content stay.
+- **Do** keep a readable fallback when WebGL is missing: the section ground and all content stay.
 - **Do** write all copy in Mongolian, and use only figures the client has confirmed.
 
 ### Don't:
