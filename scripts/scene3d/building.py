@@ -17,9 +17,14 @@ What it holds:
   ceiling_reveal one suspended ceiling and one set of light fittings per floor; they fade to show the
                  branch ducts above
   HVAC           rooftop air handling unit (ahu_door, ahu_fan), condensers and an exhaust fan; three
-                 risers in a shaft; a supply and a return network on every floor; jet fans and an
-                 exhaust duct in the parking level. Explode extras pull each floor's network toward the
-                 camera and lift the roof plant.
+                 risers in a shaft; on every floor a supply tree (fire damper, volume control box, a
+                 main that steps down, branches to six square diffusers) and a return main over four
+                 grilles, taped sky and butter; an air curtain over the entrance; jet fans and an
+                 exhaust duct in the parking level. Explode extras pull each floor's network toward
+                 the camera and lift the roof plant; a `floor` extra on each level's parts (0 = ground,
+                 -1 = parking, 5 = roof plant) lets the web template bring one floor forward and dim the rest.
+Everything but the structure and the HVAC carries fade_explode (glass included), so the web template can
+fade it to leave the system, either pulled apart or in place inside a ghosted structure.
 No lettering anywhere: signs, plates and markings are plain shapes.
 """
 import math
@@ -38,7 +43,12 @@ DUCT_Z = 3.1                                # branch ducts run in the void above
 SHAFT_X0, SHAFT_X1, SHAFT_Y0 = 1.4, 3.6, 3.6
 CORE_X0, CORE_Y0 = 3.6, 1.8                 # stairs and lifts, to the right of the shaft
 RY = 4.3                                    # risers' y
-RISER = {"exhaust": 1.85, "supply": 2.55, "return": 3.25}
+# supply outermost, so its branch down each floor never crosses the return main along the back
+RISER = {"exhaust": 1.85, "return": 2.5, "supply": 3.15}
+SUPPLY_Y, RETURN_Y = -0.8, 2.9              # each floor's supply main runs down the middle, its return along the back
+TAKE_OFFS = (-5.4, -1.8, 1.8)               # supply branches, clear of the columns at x -3.6 and 0
+ROWS = (-2.1, 1.35)                         # diffuser rows, front and back of the main, between the light rows
+GRILLES = (-5.4, -3.0, -0.6, 1.8)           # return grilles under the back main
 AHU = (-3.4, 0.6, 0.2, 2.2)                 # x0, x1, y0, y1 on the roof
 FAR = 40.0                                  # how far the ground runs behind and beside the building
 ROAD_X0, ROAD_X1 = -17.0, -10.15            # the street along the left face, between its curbs
@@ -138,6 +148,9 @@ def build(g):
     cars = [material(n, h, 0.45, 0.32) for n, h in (("car_white", "e6e6e3"), ("car_grey", "7f848b"), ("car_blue", "3b5878"), ("car_dark", "2b2d31"))]
     car_glass = material("car_glass", "2b3540", 0.5, 0.08)
     hvac = {"supply": galv, "return": M["duct"], "exhaust": M["duct_wrap"]}
+    # In the web template's x-ray (fit-out faded, structure ghosted) each duct glows in its air's tape colour.
+    for air, colour in (("supply", "9fc3e8"), ("return", "f1d482"), ("exhaust", "f2b49c")):
+        hvac[air]["xray"] = colour
 
     # ------------------------------------------------------------ site: the street around the building, cut at the front
     site = Part("site")
@@ -315,7 +328,7 @@ def build(g):
             xx = (MX0 + MX1) / 2 + (k - 1) * 0.62
             chair(meet, xx, (MY0 + MY1) / 2 - 0.75, math.pi / 2)
             chair(meet, xx, (MY0 + MY1) / 2 + 0.75, -math.pi / 2)
-    gl.build()
+    gl.build(fade_explode=1)
     office.build(parent=furniture, fade_explode=1)
     meet.build(parent=furniture, fade_explode=1)
 
@@ -357,7 +370,7 @@ def build(g):
     park.build(parent=furniture, fade_explode=1)
 
     # ------------------------------------------------------------ HVAC: risers in the shaft
-    sizes = {"exhaust": (0.55, 0.5), "supply": (0.6, 0.5), "return": (0.55, 0.45)}
+    sizes = {"exhaust": (0.55, 0.5), "supply": (0.55, 0.5), "return": (0.55, 0.45)}
     bottoms = {"exhaust": B1 + 2.75, "supply": LEVELS[0] + DUCT_Z, "return": LEVELS[0] + DUCT_Z}
     tops = {"exhaust": ROOF + 1.2, "supply": ROOF + 1.2, "return": ROOF + 1.7}
     band = {"supply": M["skyblue"], "return": M["butter"], "exhaust": M["peach"]}   # site tape colours, as in the rooms
@@ -373,33 +386,68 @@ def build(g):
                 r.box((w + 0.012, d + 0.012, 0.12), (x, RY, z + 1.6), band[name])
         r.build(bevel=0.004)
 
-    # ------------------------------------------------------------ every floor: a supply and a return network
-    faces_ = Part("diffusers")
+    # ------------------------------------------------------------ every floor: a supply tree and a return main
+    # Supply leaves its riser through a fire damper and a volume control box, runs down the floor in a main that
+    # steps down after the first take-off, and branches front and back to two rows of square diffusers. Return
+    # comes back along the back over a row of grilles. Diffusers and grilles belong to their floor's network, so
+    # they move with it in the exploded view; tape bands mark the air on every run.
+    def tape(p, colour, along, x, y, zc_, w, h):
+        """A band of site tape round a rectangular duct running along x or y."""
+        size = (0.1, w + 0.012, h + 0.012) if along == "x" else (w + 0.012, 0.1, h + 0.012)
+        p.box(size, (x, y, zc_), colour)
+
+    def damper(p, x, y, zc_, w, h):
+        """A fire damper's collar where a branch leaves the shaft."""
+        p.box((w + 0.1, 0.1, h + 0.1), (x, y, zc_), M["steel"])
+
     for i, z in enumerate(LEVELS):
         zc = z + DUCT_Z
-        s = Part(f"supply_floor_{i}", origin=(-1.8, 1.2, zc))
-        sx = RISER["supply"]
-        s.box((0.5, RY - 1.2, 0.3), (sx, (RY + 1.2) / 2, zc), galv)
-        s.box((sx + 6.4, 0.55, 0.3), ((sx - 6.4) / 2, 1.2, zc), galv)
-        for x in (-5.4, -3.0, -0.6, 1.4):
-            s.box((0.24, 0.24, zc - 0.15 - (z + CEIL_H + 0.17)), (x, 1.2, (zc - 0.15 + z + CEIL_H + 0.17) / 2), galv)
-            s.box((0.5, 0.5, 0.15), (x, 1.2, z + CEIL_H + 0.1), galv)
-            for k, size in enumerate((0.6, 0.44, 0.28)):
-                faces_.box((size, size, 0.012), (x, 1.2, z + CEIL_H - 0.008 - k * 0.006), M["white_metal"])
-        s.build(bevel=0.003, explode_sys=[0.0, -1.6, 0.0], delay=0.1 + i * 0.1)
+        under = z + CEIL_H                                # the ceiling's face
+        sx, rx = RISER["supply"], RISER["return"]
 
-        RHY = -0.6
-        r = Part(f"return_floor_{i}", origin=(-1.4, RHY, zc))
-        rx = RISER["return"]
-        r.box((0.45, RY - RHY, 0.26), (rx, (RY + RHY) / 2, zc + 0.02), M["duct"])
-        r.box((rx + 6.2, 0.5, 0.26), ((rx - 6.2) / 2, RHY, zc + 0.02), M["duct"])
-        for x in (-4.0, 0.8):
-            r.box((0.3, 0.3, zc - 0.11 - (z + CEIL_H)), (x, RHY, (zc - 0.11 + z + CEIL_H) / 2), M["duct"])
-            faces_.box((0.62, 0.32, 0.012), (x, RHY, z + CEIL_H - 0.008), M["white_metal"])
+        s = Part(f"supply_floor_{i}", origin=(-1.0, SUPPLY_Y, zc))
+        s.box((0.5, RY - SUPPLY_Y + 0.3, 0.3), (sx, (RY + SUPPLY_Y - 0.3) / 2, zc), galv)   # riser to the main
+        damper(s, sx, SHAFT_Y0 - 0.05, zc, 0.5, 0.3)
+        s.box((0.62, 0.9, 0.38), (sx, 2.25, zc), galv)                                    # volume control box
+        s.box((0.06, 0.28, 0.2), (sx - 0.34, 2.25, zc), M["black"])                        # its controller
+        tape(s, band["supply"], "y", sx, 0.9, zc, 0.5, 0.3)
+        s.box((sx + 0.25, 0.6, 0.3), ((sx + 0.25) / 2, SUPPLY_Y, zc), galv)                # the main, then a step down
+        s.box((0.15, 0.6, 0.3), (-0.075, SUPPLY_Y, zc), M["steel"])
+        s.box((5.7, 0.45, 0.3), (-2.85, SUPPLY_Y, zc), galv)
+        for x in (2.6, -1.0, -4.0):
+            tape(s, band["supply"], "x", x, SUPPLY_Y, zc, 0.6 if x > 0 else 0.45, 0.3)
+        for x in TAKE_OFFS:
+            for row in ROWS:
+                far = row + (0.15 if row > SUPPLY_Y else -0.15)
+                s.box((0.3, abs(far - SUPPLY_Y), 0.2), (x, (far + SUPPLY_Y) / 2, zc + 0.05), galv)
+                tape(s, band["supply"], "y", x, (row + SUPPLY_Y) / 2, zc + 0.05, 0.3, 0.2)
+                s.box((0.24, 0.24, zc - 0.05 - (under + 0.17)), (x, row, (zc - 0.05 + under + 0.17) / 2), galv)
+                s.box((0.5, 0.5, 0.15), (x, row, under + 0.1), galv)
+                for k, size in enumerate((0.6, 0.44, 0.28)):
+                    s.box((size, size, 0.012), (x, row, under - 0.008 - k * 0.006), M["white_metal"])
+        s.build(bevel=0.003, explode_sys=[0.0, -1.6, 0.0], delay=0.1 + i * 0.1, floor=i)
+
+        r = Part(f"return_floor_{i}", origin=(-1.8, RETURN_Y, zc))
+        r.box((0.45, RY - RETURN_Y + 0.25, 0.26), (rx, (RY + RETURN_Y - 0.25) / 2, zc + 0.02), M["duct"])
+        damper(r, rx, SHAFT_Y0 - 0.05, zc + 0.02, 0.45, 0.26)
+        r.box((rx + 6.2 + 0.225, 0.5, 0.26), ((rx + 0.225 - 6.2) / 2, RETURN_Y, zc + 0.02), M["duct"])
+        for x in (1.0, -1.8, -4.4):
+            tape(r, band["return"], "x", x, RETURN_Y, zc + 0.02, 0.5, 0.26)
+        for x in GRILLES:
+            r.box((0.3, 0.3, zc - 0.11 - under), (x, RETURN_Y, (zc - 0.11 + under) / 2), M["duct"])
+            r.box((0.62, 0.32, 0.012), (x, RETURN_Y, under - 0.008), M["white_metal"])
             for k in range(5):
-                faces_.box((0.56, 0.012, 0.016), (x, RHY - 0.12 + k * 0.06, z + CEIL_H - 0.016), M["black"])
-        r.build(bevel=0.003, explode_sys=[0.0, -1.6, -0.3], delay=0.15 + i * 0.1)
-    faces_.build(bevel=0.001)
+                r.box((0.56, 0.012, 0.016), (x, RETURN_Y - 0.12 + k * 0.06, under - 0.016), M["black"])
+        r.build(bevel=0.003, explode_sys=[0.0, -1.6, -0.3], delay=0.15 + i * 0.1, floor=i)
+
+    # an air curtain over the entrance doors inside the lobby, so winter air stays out; it belongs to the ground floor
+    ac = Part("air_curtain", origin=(X0 + 0.22, 0.0, 2.5))
+    casing = material("air_curtain", "e6e8eb", 0.3, 0.35)
+    casing["xray"] = "9fc3e8"                            # it blows supply air, so it glows with the supply ducts
+    ac.box((0.34, 2.0, 0.26), (X0 + 0.22, 0.0, 2.5), casing)
+    ac.box((0.12, 1.9, 0.012), (X0 + 0.16, 0.0, 2.364), M["black"])                  # the discharge slot
+    ac.box((0.02, 2.0, 0.2), (X0 + 0.395, 0.0, 2.5), M["steel"])                       # the inner face's grille
+    ac.build(bevel=0.003, explode_sys=[0.0, -1.6, 0.0], delay=0.1, floor=0)
 
     # ------------------------------------------------------------ parking: jet fans and an exhaust duct to the riser
     pk = Part("parking_ventilation", origin=(-2.0, 2.0, -0.8))
@@ -415,7 +463,7 @@ def build(g):
         pk.box((0.7, 0.012, 0.3), (x, RY - 0.31, B1 + 2.72), M["white_metal"])
         for k in range(4):
             pk.box((0.64, 0.016, 0.012), (x, RY - 0.318, B1 + 2.61 + k * 0.07), M["black"])
-    pk.build(bevel=0.003, explode_sys=[0.0, -1.6, -0.4], delay=0.05)
+    pk.build(bevel=0.003, explode_sys=[0.0, -1.6, -0.4], delay=0.05, floor=-1)          # the parking level
 
     # ------------------------------------------------------------ roof: air handling unit, ducts to the risers, plant
     ax0, ax1, ay0, ay1 = AHU
@@ -423,25 +471,26 @@ def build(g):
     az0, az1 = ROOF + 0.3, ROOF + 2.1
     acz = (az0 + az1) / 2
     lift = [0.0, 0.0, 2.2]
+    # the roof plant counts as the level above the top floor (floor=len(LEVELS)), so it dims while a floor is in focus
     base = Part("ahu_base", origin=(acx, acy, ROOF + 0.15))
     for y in (ay0 + 0.1, ay1 - 0.1):
         base.box((ax1 - ax0 + 0.2, 0.12, 0.3), (acx, y, ROOF + 0.15), M["steel"])
-    base.build(explode_sys=lift, delay=0.0)
+    base.build(explode_sys=lift, floor=len(LEVELS), delay=0.0)
     casing = Part("ahu_casing", origin=(acx, acy, acz))
     casing.box((ax1 - ax0, 0.05, az1 - az0), (acx, ay1 - 0.025, acz), M["ahu"])
     casing.box((0.05, ay1 - ay0, az1 - az0), (ax0 + 0.025, acy, acz), M["ahu"])
     casing.box((0.05, ay1 - ay0, az1 - az0), (ax1 - 0.025, acy, acz), M["ahu"])
     casing.box((ax1 - ax0, ay1 - ay0, 0.05), (acx, acy, az0 + 0.025), M["ahu"])
     casing.box((ax1 - ax0 - 2.2, 0.05, az1 - az0), (ax0 + 2.2 + (ax1 - ax0 - 2.2) / 2, ay0 + 0.025, acz), M["ahu"])
-    casing.build(bevel=0.004, explode_sys=lift, explode_ahu=[0.0, 0.0, 0.0], delay=0.0)
+    casing.build(bevel=0.004, explode_sys=lift, floor=len(LEVELS), explode_ahu=[0.0, 0.0, 0.0], delay=0.0)
     top = Part("ahu_top", origin=(acx, acy, az1))
     top.box((ax1 - ax0 + 0.08, ay1 - ay0 + 0.08, 0.08), (acx, acy, az1 + 0.04), M["ahu"])
-    top.build(bevel=0.004, explode_sys=lift, explode_ahu=[0.0, 0.0, 0.9], delay=0.0)
+    top.build(bevel=0.004, explode_sys=lift, floor=len(LEVELS), explode_ahu=[0.0, 0.0, 0.9], delay=0.0)
     hinge = (ax0, ay0, acz)
     door = Part("ahu_door", origin=hinge)
     door.box((2.2, 0.05, az1 - az0 - 0.02), (ax0 + 1.1, ay0 + 0.025, acz), M["ahu"])
     door.box((0.05, 0.08, 0.3), (ax0 + 2.0, ay0 - 0.03, acz), M["steel"])
-    door.build(bevel=0.004, explode_sys=lift, explode_ahu=[0.0, -0.6, 0.0], delay=0.05)
+    door.build(bevel=0.004, explode_sys=lift, floor=len(LEVELS), explode_ahu=[0.0, -0.6, 0.0], delay=0.05)
     fan_axis = (ax0 + 1.0, acy, acz)
     fan = Part("ahu_fan", origin=fan_axis)
     fan.cyl(0.62, 0.06, fan_axis, M["steel"], axis="y", seg=40)
@@ -450,13 +499,13 @@ def build(g):
         fan.box((0.5, 0.36, 0.03), (fan_axis[0] + math.cos(a) * 0.36, acy - 0.05, acz + math.sin(a) * 0.36), M["ahu_inner"],
                 rot=Matrix.Rotation(-a, 4, "Y") @ Matrix.Rotation(0.5, 4, "X"))
     fan.cyl(0.12, 0.5, fan_axis, M["black"], axis="y", seg=20)
-    fan.build(explode_sys=lift, explode_ahu=[0.0, -0.9, 0.0], delay=0.3)
+    fan.build(explode_sys=lift, floor=len(LEVELS), explode_ahu=[0.0, -0.9, 0.0], delay=0.3)
     coil = Part("ahu_coil", origin=(ax0 + 2.6, acy, acz))
     coil.box((0.3, ay1 - ay0 - 0.15, az1 - az0 - 0.15), (ax0 + 2.6, acy, acz), M["fins"])
-    coil.build(explode_sys=lift, explode_ahu=[0.0, -0.4, 0.7], delay=0.25)
+    coil.build(explode_sys=lift, floor=len(LEVELS), explode_ahu=[0.0, -0.4, 0.7], delay=0.25)
     filt = Part("ahu_filter", origin=(ax0 + 3.4, acy, acz))
     filt.box((0.12, ay1 - ay0 - 0.15, az1 - az0 - 0.15), (ax0 + 3.4, acy, acz), M["filter"])
-    filt.build(explode_sys=lift, explode_ahu=[0.0, -0.2, 1.0], delay=0.4)
+    filt.build(explode_sys=lift, floor=len(LEVELS), explode_ahu=[0.0, -0.2, 1.0], delay=0.4)
 
     roof = Part("roof_ducts", origin=(1.0, 2.8, ROOF + 1.4))
     sx, rx = RISER["supply"], RISER["return"]
@@ -467,7 +516,7 @@ def build(g):
     roof.box((0.55, RY - RRY + 0.275, 0.4), (rx, (RY + RRY) / 2, zr), M["duct"])
     roof.box((rx + 2.6 + 0.275, 0.55, 0.4), ((rx - 2.6) / 2, RRY, zr), M["duct"])
     roof.box((0.55, RRY - ay1 + 0.275, 0.4), (-2.6, (RRY + ay1) / 2, zr), M["duct"])
-    roof.build(bevel=0.003, explode_sys=lift, delay=0.0)
+    roof.build(bevel=0.003, explode_sys=lift, floor=len(LEVELS), delay=0.0)
 
     plant_ = Part("roof_plant", origin=(-3.0, 3.8, ROOF + 0.6))
     ex = RISER["exhaust"]
@@ -477,4 +526,4 @@ def build(g):
         plant_.box((1.1, 0.8, 1.2), (x, 3.9, ROOF + 0.6), M["white_metal"])
         plant_.cyl(0.36, 0.02, (x, 3.9, ROOF + 1.21), M["black"], seg=32)
         plant_.box((0.04, 0.6, 0.02), (x, 3.9, ROOF + 1.225), M["steel"])
-    plant_.build(bevel=0.003, explode_sys=lift, delay=0.0)
+    plant_.build(bevel=0.003, explode_sys=lift, floor=len(LEVELS), delay=0.0)

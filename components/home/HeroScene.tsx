@@ -161,6 +161,25 @@ const NO_RECEIVE = new Set(["glass", "meeting_glass", "city"]);
 type Parts = ReturnType<typeof findParts>;
 
 function findParts(scene: THREE.Object3D) {
+  // Each floor's network (extra `floor`, 0 = ground) gets materials of its own, so a shot can bring one floor
+  // forward and dim the others. Cloned first, so the glow below picks the clones up.
+  const floors: { floor: number; materials: THREE.Material[] }[] = [];
+  scene.traverse((o) => {
+    if (typeof o.userData.floor !== "number") return;
+    const materials: THREE.Material[] = [];
+    o.traverse((c) => {
+      if (!(c instanceof THREE.Mesh)) return;
+      const material = (c.material as THREE.Material).clone();
+      material.transparent = true;
+      c.material = material;
+      materials.push(material);
+    });
+    floors.push({ floor: o.userData.floor, materials });
+  });
+
+  // Materials the model gives an x-ray colour (the building's ducts, by the air they carry) glow in it once the
+  // fit-out has faded, so each floor's network reads at a glance.
+  const glowing: { material: THREE.MeshStandardMaterial; base: THREE.Color; xray: THREE.Color }[] = [];
   scene.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
     const names = new Set<string>();
@@ -179,6 +198,16 @@ function findParts(scene: THREE.Object3D) {
         m.depthWrite = false;
         m.side = THREE.DoubleSide;
       }
+      if (
+        typeof m.userData.xray === "string" &&
+        m instanceof THREE.MeshStandardMaterial &&
+        !glowing.some((g) => g.material === m)
+      ) {
+        const xray = new THREE.Color(`#${m.userData.xray}`);
+        m.emissive.copy(xray);
+        m.emissiveIntensity = 0;
+        glowing.push({ material: m, base: m.color.clone(), xray });
+      }
     }
   });
 
@@ -192,7 +221,7 @@ function findParts(scene: THREE.Object3D) {
 
   // Exploded-view parts carry their offsets from Blender as glTF extras.
   const exploding: { obj: THREE.Object3D; home: THREE.Vector3; sys: THREE.Vector3; ahu: THREE.Vector3; delay: number }[] = [];
-  const fading: THREE.Material[] = [];
+  const fading: { mesh: THREE.Mesh; material: THREE.Material; base: number }[] = [];
   // the AHU's fan, plus any other fan the model marks to spin (the kindergarten's unit has two)
   const fans: THREE.Object3D[] = [];
   scene.traverse((o) => {
@@ -210,9 +239,11 @@ function findParts(scene: THREE.Object3D) {
     if (d.fade_explode) {
       o.traverse((c) => {
         if (!(c instanceof THREE.Mesh)) return;
-        c.material = (c.material as THREE.Material).clone();
-        (c.material as THREE.Material).transparent = true;
-        fading.push(c.material as THREE.Material);
+        const material = (c.material as THREE.Material).clone();
+        material.transparent = true;
+        c.material = material;
+        // base: glass is already see-through and must stay so
+        fading.push({ mesh: c, material, base: material.opacity });
       });
     }
   });
@@ -226,6 +257,8 @@ function findParts(scene: THREE.Object3D) {
     fading,
     slab,
     slabMaterial,
+    glowing,
+    floors,
     door: scene.getObjectByName("ahu_door"),
     fans,
   };
@@ -254,7 +287,7 @@ function Rig({
   const lookRef = useRef(new THREE.Vector3().fromArray(shots[0].target));
   const group = useRef<THREE.Group>(null);
   const offset = useRef({ w: 0, h: 0, x: 0, y: 0 });
-  const state = useRef({ ceiling: 1, slab: 1, sys: 0, ahu: 0 });
+  const state = useRef({ ceiling: 1, slab: 1, sys: 0, ahu: 0, fade: 0, isolate: 0, focus: 0 });
   // The parts the story moves, looked up on the first frame.
   const partsRef = useRef<Parts | null>(null);
 
@@ -297,6 +330,7 @@ function Rig({
     s.slab = damp(s.slab, lerp(a.slab, b.slab, t), k, delta);
     s.sys = damp(s.sys, lerp(a.sys, b.sys, t), slow, delta);
     s.ahu = damp(s.ahu, lerp(a.ahu, b.ahu, t), slow, delta);
+    s.fade = damp(s.fade, lerp(a.fade ?? 0, b.fade ?? 0, t), slow, delta);
 
     const hidden = 1 - s.ceiling;
     for (const piece of parts.ceiling) {
@@ -315,9 +349,33 @@ function Rig({
         .addScaledVector(part.sys, es)
         .addScaledVector(part.ahu, ea);
     }
-    for (const m of parts.fading) m.opacity = 1 - clamp(s.sys * 2, 0, 1);
+    // Fit-out, glazing and street go with the exploded view, or on their own to leave the system in place.
+    const gone = clamp(Math.max(s.sys * 2, s.fade), 0, 1);
+    for (const f of parts.fading) {
+      f.material.opacity = f.base * (1 - gone);
+      f.mesh.visible = gone < 0.99;
+    }
+    for (const g of parts.glowing) {
+      g.material.color.lerpColors(g.base, g.xray, gone);
+      g.material.emissiveIntensity = gone * 0.5;
+    }
+
+    // One floor in focus (a shot's `floor`): its network at full strength, the other floors' dimmed. The focus
+    // glides from floor to floor between two such shots, and starts on its floor when the isolation begins.
+    const focusTo = lerp(a.floor ?? b.floor ?? 0, b.floor ?? a.floor ?? 0, t);
+    s.isolate = damp(s.isolate, lerp(a.floor === undefined ? 0 : 1, b.floor === undefined ? 0 : 1, t), slow, delta);
+    s.focus = s.isolate < 0.01 ? focusTo : damp(s.focus, focusTo, slow, delta);
+    for (const f of parts.floors) {
+      const opacity = 1 - s.isolate * (1 - clamp(1 - Math.abs(f.floor - s.focus), 0, 1)) * 0.92;
+      for (const m of f.materials) {
+        m.opacity = opacity;
+        m.depthWrite = opacity > 0.5;
+      }
+    }
     if (parts.slab && parts.slabMaterial) {
       parts.slabMaterial.opacity = s.slab;
+      // a ghosted structure stops writing depth, so its layers blend evenly over the system inside
+      parts.slabMaterial.depthWrite = s.slab > 0.98;
       parts.slab.visible = s.slab > 0.02;
     }
     if (parts.door) parts.door.rotation.y = -staged(s.ahu, 0.05) * 1.2;

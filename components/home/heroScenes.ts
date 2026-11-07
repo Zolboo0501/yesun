@@ -12,12 +12,16 @@ export type Shot = {
   shift: number;
   /** suspended ceilings in place (1) or faded out to show the ducts above (0) */
   ceiling: number;
-  /** slab or structure shown (1) or faded out (0) */
+  /** slab or structure shown (1) or faded out (0); in between it is a ghost the system shows through */
   slab: number;
   /** the whole system pulled apart (1) */
   sys: number;
   /** the air handling unit opened up (1) */
   ahu: number;
+  /** fit-out, glazing and street faded out (1) with the system left in place; 0 when unset */
+  fade?: number;
+  /** the floor (0 = ground) whose network is in focus, the other floors' dimmed; all alike when unset */
+  floor?: number;
 };
 export type Step = { tag: string; title: string; text: string; cta?: boolean };
 export type HeroSceneConfig = {
@@ -190,7 +194,7 @@ export const heroScenes: HeroSceneConfig[] = [
   {
     id: "building",
     name: "Барилга",
-    model: "/models/hvac/building.glb",
+    model: "/models/hvac/building.glb?v=2",
     label: "Олон давхар барилгын зүсэлт: дээврийн төхөөрөмж, босоо суваг, давхар бүрийн суваг, зогсоолын сэнс",
     mood: { background: "#b9c6d3", sun: "#fff4e6", sunIntensity: 4.2, daylight: "#eaf1ff", pendant: "#fff1dc" },
     sun: { position: [-22, 34, 26], extent: 22, far: 90 },
@@ -200,7 +204,16 @@ export const heroScenes: HeroSceneConfig[] = [
       { pos: [-12, 12, 42], target: [1, 7.5, 0], fov: 38, shift: 0.15, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
       { pos: [-6, 24, 10.5], target: [-1.4, 19.2, -1.2], fov: 36, shift: 0.12, ceiling: 1, slab: 1, sys: 0, ahu: 1 },
       { pos: [3.6, 9.6, 17], target: [2.55, 9.2, -4.3], fov: 36, shift: 0.12, ceiling: 0, slab: 1, sys: 0, ahu: 0 },
-      { pos: [1.5, 10.2, 10], target: [-1.6, 10.3, -1.0], fov: 46, shift: 0.12, ceiling: 0, slab: 1, sys: 0, ahu: 0 },
+      // every floor's network in place: the structure ghosted, the fit-out and the street faded
+      { pos: [-15, 23.5, 37.5], target: [0.5, 8.2, 0], fov: 40, shift: 0.15, ceiling: 0, slab: 0.07, sys: 0, ahu: 0, fade: 1 },
+      // then down the floors from the top, one step each with that floor in focus (floor 4 is the fifth, 0 the ground):
+      // each floor whole, the camera leaning towards what its step names (the damper and control box by the shaft,
+      // the main stepping down, the diffusers, the return along the back, the air curtain over the entrance)
+      { pos: [-8.3, 25.9, 13.2], target: [0.2, 17.4, -1.3], fov: 40, shift: 0.2, ceiling: 0, slab: 0.07, sys: 0, ahu: 0, fade: 1, floor: 4 },
+      { pos: [-9.1, 22.3, 14.5], target: [-0.6, 13.8, 0], fov: 40, shift: 0.2, ceiling: 0, slab: 0.07, sys: 0, ahu: 0, fade: 1, floor: 3 },
+      { pos: [-9.9, 18.7, 14.2], target: [-1.4, 10.2, -0.3], fov: 40, shift: 0.2, ceiling: 0, slab: 0.07, sys: 0, ahu: 0, fade: 1, floor: 2 },
+      { pos: [-9.7, 15.1, 12.9], target: [-1.2, 6.6, -1.6], fov: 40, shift: 0.2, ceiling: 0, slab: 0.07, sys: 0, ahu: 0, fade: 1, floor: 1 },
+      { pos: [-15.5, 8.5, 12], target: [-5.2, 2.6, -0.4], fov: 40, shift: 0.2, ceiling: 0, slab: 0.07, sys: 0, ahu: 0, fade: 1, floor: 0 },
       { pos: [2.5, -1.4, 10.5], target: [-1.5, -2.2, -1.2], fov: 44, shift: 0.12, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
       { pos: [-14, 15, 46], target: [1, 9.5, 0], fov: 36, shift: 0.15, ceiling: 0, slab: 0, sys: 1, ahu: 0 },
     ],
@@ -222,8 +235,33 @@ export const heroScenes: HeroSceneConfig[] = [
       },
       {
         tag: "Давхар",
-        title: "Давхар бүрийн салаа суваг.",
-        text: "Давхар бүрийн таазны дээгүүр салаа суваг диффузор, сорох сараалж руу агаар хүргэнэ.",
+        title: "Давхар бүр өөрийн сүлжээтэй.",
+        text: "Таван давхар бүр шахтаас тусдаа салаа авч, өөрийн нийлүүлэх, сорох сүлжээгээр ажиллана.",
+      },
+      {
+        tag: "5 давхар",
+        title: "Шахтаас давхар руу.",
+        text: "Нийлүүлэх агаар шахтаас галын хаалтаар гарч, урсгал тохируулагч хайрцгаар тухайн давхарт хэрэгтэй хэмжээгээр орно.",
+      },
+      {
+        tag: "4 давхар",
+        title: "Гол суваг нарийсна.",
+        text: "Гол суваг давхрын дундуур явж, эхний салааны дараа нарийсна. Ингэж агаарын хурдыг сувгийн туршид жигд барина.",
+      },
+      {
+        tag: "3 давхар",
+        title: "Диффузор бүрт салаа.",
+        text: "Гурван салаа суваг урд, хойд эгнээний зургаан диффузорт агаар хүргэж, өрөөнд жигд тараана.",
+      },
+      {
+        tag: "2 давхар",
+        title: "Бохир агаарыг сорно.",
+        text: "Арын сорох суваг дөрвөн сараалжаар өрөөний агаарыг сорж, шахтаар дээвэр дээрх төхөөрөмж рүү буцаана.",
+      },
+      {
+        tag: "1 давхар",
+        title: "Үүдэнд агаарын хөшиг.",
+        text: "Орох хаалганы дээрх агаарын хөшиг өвлийн хүйтэн агаарыг лоббид оруулахгүй. Лобби бусад давхрын адил өөрийн сүлжээтэй.",
       },
       {
         tag: "Зогсоол",
