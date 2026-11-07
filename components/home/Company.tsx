@@ -62,10 +62,10 @@ export function Company() {
   const active = useInView(section);
   const reducedMotion = useReducedMotion() ?? false;
 
-  // 0 while the first part fills the stage under the 11vh header, `last` once the last one does.
+  // 0 while the first part fills the stage under the header (--header-h, 64px), `last` once the last one does.
   const { scrollYProgress } = useScroll({
     target: section,
-    offset: ["start 0.11", "end end"],
+    offset: ["start 64px", "end end"],
   });
   const part = useTransform(scrollYProgress, (v) => v * last);
 
@@ -80,12 +80,12 @@ export function Company() {
           in the half each part leaves free (above the copy on phones). A soft light falls from the lower right. */}
       <div
         aria-hidden
-        className="pointer-events-none sticky top-[11vh] h-[calc(100svh-11vh)] overflow-hidden bg-[radial-gradient(90%_80%_at_78%_82%,rgb(255_255_255/0.3),transparent_70%)]"
+        className="pointer-events-none sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-hidden bg-[radial-gradient(90%_80%_at_78%_82%,rgb(255_255_255/0.3),transparent_70%)]"
       >
         {near && <AirFlowScene part={part} last={last} active={active} reducedMotion={reducedMotion} />}
       </div>
 
-      <div className="relative -mt-[calc(100svh-11vh)]">
+      <div className="relative -mt-[calc(100svh-var(--header-h))]">
         {steps.map((s, i) => (
           <PartCopy key={s.title} step={s} index={i} part={part} />
         ))}
@@ -105,7 +105,7 @@ function PartCopy({ step, index, part }: { step: Step; index: number; part: Moti
       : "lg:pl-[max(2rem,calc(50vw-38rem))] lg:pr-[4vw]";
 
   return (
-    <div className="flex min-h-[calc(100svh-11vh)] items-end px-4 pb-10 sm:px-6 lg:items-center lg:px-0 lg:pb-0">
+    <div className="flex min-h-[calc(100svh-var(--header-h))] items-end px-4 pb-10 sm:px-6 lg:items-center lg:px-0 lg:pb-0">
       <motion.div style={{ opacity }} className={`w-full lg:w-1/2 ${half}`}>
         <div className="max-w-[36rem]">
           <Heading className="text-balance text-[clamp(2rem,1.3rem+2.6vw,3.75rem)] font-semibold leading-[0.98] tracking-[-0.04em]">

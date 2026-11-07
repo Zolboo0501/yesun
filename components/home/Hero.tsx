@@ -1,6 +1,6 @@
 "use client";
+import { ArrowUpRight, FacebookIcon, MailIcon, PhoneIcon } from "@/components/icons";
 import { contact } from "@/constants/data";
-import { ArrowUpRight } from "lucide-react";
 import {
   motion,
   useInView,
@@ -24,7 +24,6 @@ const last = 5; // six steps per scene
 const SPAN = last + 1; // scroll screens per scene: five between its steps, one to slide to the next
 const count = heroScenes.length;
 const UNITS = count * SPAN - 1; // the last scene does not slide on
-const pad = (n: number) => String(n).padStart(2, "0");
 const smooth = (t: number) => t * t * (3 - 2 * t);
 const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
 
@@ -39,6 +38,22 @@ const trackAt = (x: number) => {
   const k = Math.min(Math.floor(x / SPAN), count - 1);
   return k + (k < count - 1 ? smooth(clamp01(x - k * SPAN - last)) : 0);
 };
+/** The step of the scene on stage at scroll progress v: 0..5, travelling between steps. */
+const stepNow = (v: number) => {
+  const k = Math.min(Math.floor((v * UNITS) / SPAN), count - 1);
+  return stepAt(v * UNITS - k * SPAN);
+};
+/** A heading in two lines, broken at the word nearest its middle; the second line is set in. */
+const twoLines = (title: string) => {
+  const words = title.split(" ");
+  let best = 0;
+  let gap = Infinity;
+  for (let i = 1; i < words.length; i++) {
+    const d = Math.abs(words.slice(0, i).join(" ").length - words.slice(i).join(" ").length);
+    if (d < gap) [gap, best] = [d, i];
+  }
+  return best ? [words.slice(0, best).join(" "), words.slice(best).join(" ")] : [title, ""];
+};
 
 export function Hero() {
   const section = useRef<HTMLElement>(null);
@@ -52,10 +67,6 @@ export function Hero() {
   });
   const track = useTransform(scrollYProgress, (v) => trackAt(v * UNITS));
   const x = useTransform(track, (t) => `${(-t * 100) / count}%`);
-  const counter = useTransform(scrollYProgress, (v) => {
-    const k = Math.min(Math.floor((v * UNITS) / SPAN), count - 1);
-    return `${heroScenes[k].name}  ${pad(Math.round(stepAt(v * UNITS - k * SPAN)) + 1)} / ${pad(SPAN)}`;
-  });
 
   // Mount the scene on stage and its neighbours (so the next model loads while this one plays); draw only what shows.
   const [base, setBase] = useState(0);
@@ -65,12 +76,13 @@ export function Hero() {
     setSliding(t - Math.floor(t + 1e-4) > 1e-3);
   });
 
-  const go = (k: number) => {
+  /** Scroll to scene k's step (0..5). */
+  const go = (k: number, step = 0) => {
     const el = section.current;
     if (!el) return;
     const top = el.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({
-      top: top + ((el.offsetHeight - window.innerHeight) * k * SPAN) / UNITS,
+      top: top + ((el.offsetHeight - window.innerHeight) * (k * SPAN + step)) / UNITS,
       behavior: reducedMotion ? "auto" : "smooth",
     });
   };
@@ -80,10 +92,10 @@ export function Hero() {
       id="home"
       ref={section}
       aria-label="Есөн Бэлчир: оффис, цэцэрлэг, сургууль, барилгын агаар сэлгэлт, хөргөлтийн систем"
-      className="relative bg-panel text-ink"
+      className="relative bg-night text-white"
       style={{ height: `${(UNITS + 1) * 100}svh` }}
     >
-      <div className="sticky top-[11vh] h-[calc(100svh-11vh)] overflow-hidden">
+      <div className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-hidden">
         {/* The scenes stand side by side; scrolling past one scene's last step slides the next one in. */}
         <motion.div style={{ x, width: `${count * 100}%` }} className="flex h-full">
           {heroScenes.map((scene, k) => (
@@ -99,53 +111,64 @@ export function Hero() {
           ))}
         </motion.div>
 
-        {/* Technical frame around the stage, as on a spec sheet. */}
-        <p
-          aria-hidden
-          className="pointer-events-none absolute left-4 top-6 rotate-180 font-mono text-[11px] uppercase tracking-[0.2em] text-soft [writing-mode:vertical-rl] max-lg:hidden"
-        >
-          ЕБ / 2011
-        </p>
-        <p
-          aria-hidden
-          className="pointer-events-none absolute right-5 top-5 font-mono text-[11px] tracking-[0.12em] text-soft max-lg:hidden"
-        >
-          47.9184° N&nbsp;&nbsp;106.9177° E
-        </p>
-        {/* The four buildings: where you are, and a jump to any of them. */}
-        <nav aria-label="Объектууд" className="absolute left-12 top-4 max-lg:left-4">
-          <ol className="flex gap-5 font-mono text-[11px] uppercase tracking-[0.16em]">
-            {heroScenes.map((scene, k) => (
-              <SceneTab key={scene.id} label={scene.name} index={k} track={track} onSelect={() => go(k)} />
-            ))}
-          </ol>
+        {/* The scene's six steps, as short lines down the right edge (the current one long and bright);
+            each one jumps to its step. */}
+        <nav aria-label="Алхмууд" className="absolute right-4 top-1/2 flex -translate-y-1/2 flex-col gap-1.5 sm:right-6 lg:right-8">
+          {Array.from({ length: SPAN }, (_, i) => (
+            <StepLine key={i} index={i} scroll={scrollYProgress} onSelect={() => go(base, i)} />
+          ))}
         </nav>
+
+        {/* The four buildings, small at the bottom left, the one on stage in white. */}
+        <nav aria-label="Объектууд" className="absolute bottom-5 left-4 sm:left-6 lg:left-8">
+          <ul className="flex gap-4 text-[11px] font-medium sm:gap-5">
+            {heroScenes.map((scene, k) => (
+              <SceneLink
+                key={scene.id}
+                name={scene.name}
+                index={k}
+                track={track}
+                current={base === k}
+                onSelect={() => go(k)}
+              />
+            ))}
+          </ul>
+        </nav>
+
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-5 left-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em] text-soft"
+          className="pointer-events-none absolute bottom-5 right-[24%] hidden flex-col items-center gap-3 lg:flex"
         >
-          Гүйлгэж танилцана
-          <span className="relative h-px w-16 bg-ink/15">
-            <motion.span
-              style={{ scaleX: scrollYProgress }}
-              className="absolute inset-0 origin-left bg-brand"
-            />
+          <span className="rotate-180 text-[10px] font-medium uppercase tracking-[0.18em] text-white/60 [writing-mode:vertical-rl]">
+            Гүйлгэх
           </span>
+          <span className="h-10 w-px bg-white/45" />
         </div>
-        <p
-          aria-hidden
-          className="pointer-events-none absolute bottom-5 right-5 whitespace-pre font-mono text-[11px] uppercase tracking-[0.16em] text-soft"
-        >
-          <motion.span>{counter}</motion.span>
-        </p>
-        <div
-          aria-hidden
-          className="pointer-events-none absolute right-6 top-1/2 h-40 w-px -translate-y-1/2 bg-ink/15 max-lg:hidden"
-        >
-          <motion.div
-            style={{ scaleY: scrollYProgress }}
-            className="absolute -left-px top-0 h-full w-[3px] origin-top bg-brand"
-          />
+
+        <div className="absolute bottom-4 right-3 flex items-center gap-1 text-white/70 sm:right-5 lg:right-7">
+          <a
+            href={contact.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <FacebookIcon className="size-3.5" />
+          </a>
+          <a
+            href={`mailto:${contact.email}`}
+            aria-label="Имэйл"
+            className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <MailIcon className="size-3.5" />
+          </a>
+          <a
+            href={`tel:${contact.phone}`}
+            aria-label="Утас"
+            className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+          >
+            <PhoneIcon className="size-3.5" />
+          </a>
         </div>
       </div>
     </section>
@@ -173,6 +196,14 @@ function ScenePanel({
       <div className="absolute inset-0" style={scene.backdrop ? { background: scene.backdrop } : undefined}>
         {mounted && <HeroScene config={scene} progress={step} active={drawing} reducedMotion={reducedMotion} />}
       </div>
+      {/* Shade over the scene, as over a photograph: dark under the copy and round the frame, open where the
+          building stands (the right on desktop, the top on phones). */}
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-night/20" />
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-night)_20%,rgb(22_23_27/0.6)_48%,transparent_72%)] lg:bg-[linear-gradient(90deg,var(--color-night)_6%,rgb(22_23_27/0.82)_32%,rgb(22_23_27/0.2)_60%,transparent_76%)]" />
+        <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-night to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-night/85 to-transparent" />
+      </div>
       {scene.steps.map((s, i) => (
         <StepCopy key={s.tag} step={s} index={i} progress={step} first={index === 0 && i === 0} />
       ))}
@@ -180,27 +211,50 @@ function ScenePanel({
   );
 }
 
-function SceneTab({
-  label,
+function StepLine({ index, scroll, onSelect }: { index: number; scroll: MotionValue<number>; onSelect: () => void }) {
+  // 1 on its own step, easing to 0 a step away: the long, bright line travels down with the scroll
+  const near = useTransform(scroll, (v) => clamp01(1 - Math.abs(stepNow(v) - index)));
+  const scaleX = useTransform(near, (n) => 0.38 + 0.62 * n);
+  const opacity = useTransform(near, (n) => 0.45 + 0.55 * n);
+  return (
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-label={`Алхам ${index + 1}`}
+      className="group flex h-4 w-10 items-center justify-end focus-visible:outline-2 focus-visible:outline-white"
+    >
+      <motion.span
+        style={{ scaleX, opacity }}
+        className="block h-0.5 w-full origin-right bg-white shadow-[0_0_0_0.5px_rgb(0_0_0/0.25)] group-hover:!opacity-100"
+      />
+    </button>
+  );
+}
+
+function SceneLink({
+  name,
   index,
   track,
+  current,
   onSelect,
 }: {
-  label: string;
+  name: string;
   index: number;
   track: MotionValue<number>;
+  current: boolean;
   onSelect: () => void;
 }) {
-  const color = useTransform(track, (t) => (Math.round(t) === index ? "var(--color-brand)" : "var(--color-soft)"));
+  const color = useTransform(track, (t) => (Math.round(t) === index ? "rgb(255 255 255)" : "rgb(255 255 255 / 0.4)"));
   return (
     <li>
       <motion.button
         type="button"
-        style={{ color }}
         onClick={onSelect}
-        className="uppercase transition-colors hover:!text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+        aria-current={current ? "step" : undefined}
+        style={{ color }}
+        className="py-1 transition-colors hover:!text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
-        {label}
+        {name}
       </motion.button>
     </li>
   );
@@ -218,54 +272,43 @@ function StepCopy({
   /** the page's h1: the first scene's first step */
   first: boolean;
 }) {
-  const opacity = useTransform(progress, (s) =>
-    Math.max(0, 1 - Math.abs(s - index) * 2.5),
-  );
+  const opacity = useTransform(progress, (s) => Math.max(0, 1 - Math.abs(s - index) * 2.5));
   const y = useTransform(progress, (s) => (index - s) * 60);
-  const visibility = useTransform(opacity, (o) =>
-    o > 0.02 ? "visible" : "hidden",
-  );
+  const visibility = useTransform(opacity, (o) => (o > 0.02 ? "visible" : "hidden"));
   const Heading = first ? "h1" : "h2";
+  const [lineA, lineB] = twoLines(step.title);
 
+  // The block's font size is the heading's, so the set-in second line, the rule and the text all align on 0.9em.
   return (
     <motion.div
       style={{ opacity, y, visibility }}
-      className="absolute inset-x-0 bottom-12 bg-panel px-4 pt-5 sm:px-6 lg:bottom-[16%] lg:left-[5vw] lg:right-auto lg:w-[46vw] lg:bg-transparent lg:p-0"
+      className="absolute inset-x-0 bottom-16 px-4 text-[clamp(2.5rem,1.1rem+4.2vw,6rem)] sm:px-6 lg:inset-x-auto lg:bottom-auto lg:left-[max(2rem,calc(50vw-38rem))] lg:top-1/2 lg:w-[min(48rem,58vw)] lg:-translate-y-1/2 lg:px-0"
     >
-      <div className="relative lg:bg-panel/85 lg:p-10">
-        {/* Corner brackets */}
-        <span aria-hidden className="pointer-events-none absolute left-0 top-0 size-3.5 border-l-2 border-t-2 border-brand max-lg:hidden" />
-        <span aria-hidden className="pointer-events-none absolute right-0 top-0 size-3.5 border-r-2 border-t-2 border-brand max-lg:hidden" />
-        <span aria-hidden className="pointer-events-none absolute bottom-0 left-0 size-3.5 border-b-2 border-l-2 border-brand max-lg:hidden" />
-        <span aria-hidden className="pointer-events-none absolute bottom-0 right-0 size-3.5 border-b-2 border-r-2 border-brand max-lg:hidden" />
-
-        <p className="font-mono text-xs uppercase tracking-[0.18em] text-brand">
-          {pad(index + 1)} / {step.tag}
-        </p>
-        <Heading className="mt-4 text-balance text-[clamp(2.25rem,1.4rem+3vw,4.5rem)] font-semibold leading-[0.95] tracking-[-0.045em]">
-          {step.title}
-        </Heading>
-        <p className="mt-5 max-w-[44ch] text-step-body leading-relaxed text-ink/80">
-          {step.text}
-        </p>
-        {step.cta && (
-          <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <Link
-              href="/contact"
-              className="group inline-flex items-center gap-3 bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-white transition-colors hover:bg-brand active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
-            >
-              Инженертэй холбогдох
-              <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-            <a
-              href={`tel:${contact.phone}`}
-              className="font-mono text-xs uppercase tracking-[0.16em] underline decoration-1 underline-offset-[6px] transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
-            >
-              {contact.phone}
-            </a>
-          </div>
-        )}
+      <Heading className="font-semibold leading-[0.95] tracking-[-0.035em] text-white">
+        <span className="block">{lineA}</span>
+        {lineB && <span className="block pl-[0.9em]">{lineB}</span>}
+      </Heading>
+      <div className="mt-[0.4em] flex items-start gap-5 pl-[0.9em]">
+        <span aria-hidden className="mt-[0.7rem] h-px w-12 shrink-0 bg-white/60 sm:w-16" />
+        <p className="max-w-[34ch] text-[15px] leading-[1.55] text-white/75 sm:text-base">{step.text}</p>
       </div>
+      {step.cta && (
+        <div className="mt-[0.45em] flex flex-wrap items-center gap-x-6 gap-y-3 pl-[0.9em]">
+          <Link
+            href="/contact"
+            className="group inline-flex items-center gap-2 rounded-[3px] bg-white px-5 py-3 text-xs font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            Инженертэй холбогдох
+            <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
+          </Link>
+          <a
+            href={`tel:${contact.phone}`}
+            className="text-xs font-medium text-white/85 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          >
+            {contact.phone}
+          </a>
+        </div>
+      )}
     </motion.div>
   );
 }

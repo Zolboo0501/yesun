@@ -195,8 +195,7 @@ export const heroScenes: HeroSceneConfig[] = [
     mood: { background: "#b9c6d3", sun: "#fff4e6", sunIntensity: 4.2, daylight: "#eaf1ff", pendant: "#fff1dc" },
     sun: { position: [-22, 34, 26], extent: 22, far: 90 },
     interior: false,
-    fog: { color: "#e9ebee", near: 55, far: 130 },
-    backdrop: "linear-gradient(180deg, #d6dfe8 0%, #e3e8ed 30%, #e9ebee 48%)",
+    fog: { color: "#16171b", near: 55, far: 130 },
     shots: [
       { pos: [-12, 12, 42], target: [1, 7.5, 0], fov: 38, shift: 0.15, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
       { pos: [-6, 24, 10.5], target: [-1.4, 19.2, -1.2], fov: 36, shift: 0.12, ceiling: 1, slab: 1, sys: 0, ahu: 1 },

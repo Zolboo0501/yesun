@@ -97,7 +97,7 @@ components:
 
 # Design System: Есөн Бэлчир
 
-Scope: this records the home page (`app/page.tsx`) as it ships: Hero, Products, Company, Projects, plus the shared Partners block and footer in `components/Footer.tsx`. The other routes (about, ourTeam, projects, factory, partner, contact, greeting, products) and `components/Header.tsx` still use the older styles: shadcn primary blue, hardcoded hex values, grey text, rounded cards and drop shadows. They are **not yet aligned** and are not evidence for this system.
+Scope: this records the home page (`app/page.tsx`) as it ships: the shared header (`components/Header.tsx`), Hero, Company, Projects, plus the shared Partners block and footer in `components/Footer.tsx`; and the 3D product run, Products (`components/factory/Products.tsx`), which since 2026-11-07 sits on the factory page (`/factory`) after the factory's introduction. The rest of the other routes (about, ourTeam, projects, the factory page's own blocks, partner, contact, greeting, products) still use the older styles: shadcn primary blue, hardcoded hex values, grey text, rounded cards and drop shadows. They are **not yet aligned** and are not evidence for this system.
 
 ## Overview
 
@@ -110,12 +110,14 @@ The layout is calm and sparse. A section carries one headline, one or two senten
 The world is local and factual. All copy is Mongolian. Every figure shown is one the client has confirmed.
 
 **Key Characteristics:**
-- Grounds alternate light and dark: panel (Hero), graphite (Products), mist (Company), graphite (Projects), then white (Partners) and ink (footer).
+- Grounds alternate dark and light: night (Hero), mist (Company), graphite (Projects), then white (Partners) and ink (footer). On the factory page, Products keeps its graphite ground.
 - One accent, electric brand blue. It appears as small squares, hairline progress rules, corner brackets, focus outlines and the hover fill of buttons.
 - Semibold Golos Text headlines with tight negative tracking, sized with clamp().
 - JetBrains Mono uppercase, tracked at 0.16em, is the voice of every label, button and technical annotation.
 - Square corners throughout. No shadows.
 - The scenes are driven by scroll, are paused when off screen, hold still under reduced motion, and run a lighter path on phones.
+
+**The header and the hero's first screen are the exception (dark cinematic, since 2026-11-07, after the client's reference image).** One deep charcoal, night `#16171b` (a token in `globals.css`), runs from the header into the hero, the way a full-bleed photograph runs under a transparent menu. Everything on it is white: the logo (drawn white with a filter), small uppercase Golos links (semibold, 11px, 0.06em; the current page at 45% white), and one small white button with a 3px radius. Hero headings are large Golos semibold (`clamp(2.5rem, 1.1rem + 4.2vw, 6rem)`, line-height 0.95, tracking -0.035em) in two lines, the second set in by 0.9em, with a short white rule and the step text beside it. Icons are the inline set in `components/icons.tsx`. Brand blue appears in neither. Every rule below still holds for the rest of the home page.
 
 ## Colors
 
@@ -172,9 +174,9 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 
 - **Container and grid:** content sits in an 80rem container. Side gutters are 16px, rising to 24px at sm and 32px at lg. At lg, sections use a 12-column grid with 32px gaps.
 - **Section padding:** static sections open with 96px of top padding, or 128px at lg.
-- **Scroll stages:** Hero and Products are pinned stages. The sticky frame sits at the header's height (top 11vh) and fills the rest of the viewport. Hero takes 100svh of scroll per step and Products 70svh. Each step holds still for the first and last fifth of its scroll, then travels. Company is not pinned: its parts scroll as ordinary blocks over a sticky scene.
+- **Scroll stages:** Hero (home) and Products (factory page) are pinned stages. The sticky frame sits right under the header (top `var(--header-h)`, 4rem) and fills the rest of the viewport. Hero takes 100svh of scroll per step and Products 70svh. Each step holds still for the first and last fifth of its scroll, then travels. Company is not pinned: its parts scroll as ordinary blocks over a sticky scene.
 - **Step copy:** at lg the copy floats bottom-left (5vw in, about 40–46vw wide) on its own ground at 80–85% opacity. Below lg it docks as a solid band along the bottom.
-- **Company:** four parts stacked down the page, each one stage tall (100svh − 11vh), over a sticky full-stage scene that the blocks overlap with a negative top margin. At lg each part's copy takes one half, alternating right, left, right, left. It is vertically centred and at most 36rem wide; its outer edge sits on the page container's edge, max(2rem, 50vw − 38rem), and its inner edge is 4vw from the centre line. The copy fades with its distance from the stage and is fully opaque when its part fills it. The air streams gather in the other half. On phones each part's copy sits at the bottom of its block, and the streams gather in the top 40% of the stage, swaying ±12% between parts.
+- **Company:** four parts stacked down the page, each one stage tall (100svh − `--header-h`), over a sticky full-stage scene that the blocks overlap with a negative top margin. At lg each part's copy takes one half, alternating right, left, right, left. It is vertically centred and at most 36rem wide; its outer edge sits on the page container's edge, max(2rem, 50vw − 38rem), and its inner edge is 4vw from the centre line. The copy fades with its distance from the stage and is fully opaque when its part fills it. The air streams gather in the other half. On phones each part's copy sits at the bottom of its block, and the streams gather in the top 40% of the stage, swaying ±12% between parts.
 - **Projects:** the header row wraps between the headline and the button. Below it, the carousel runs full bleed, min(64svh, 560px) tall, or min(80svh, 780px) at lg.
 
 ## Elevation & Depth
@@ -215,10 +217,9 @@ Square, mono and direct. Every button carries a forward arrow.
 A two-column definition list. Each fact sits under a 15% ink hairline, with the value above in the Figure style and the label below in soft text. It carries real, confirmed figures only. A related variant is the Company brand list: the six official brands in mono Label style, laid out in 3 columns under one hairline.
 
 ### Scroll Stage (signature)
-A pinned 3D or WebGL scene with a technical frame of micro annotations. Both stages (Hero, Products) show a "Гүйлгэж танилцана" progress rule at the bottom left, and add:
-- a vertical label at the top left;
-- a step counter at the bottom right;
-- a vertical progress rule at the right edge (hero only).
+A pinned 3D or WebGL scene with a technical frame of micro annotations: a vertical label at the top left and a step counter at the bottom right.
+- **Hero** (dark cinematic, see Overview): four buildings (office, kindergarten, school, building) slide in one after another on the night ground. Each scene is shaded like a photograph under type: a light overall dim, dark under the copy (the left on desktop, the bottom on phones) and along the top and bottom edges, open where the building stands; the building's fog melts its far ground into the night. The step copy floats without a panel: the two-line heading, the rule and the text, and on the last step the white button with the phone beside it. Around it, as in the reference: six short lines down the right edge for the steps (the current one long and bright, sliding to the next as you scroll; each a jump link), the four building names small at the bottom left (the current one white, each a jump link), a vertical "Гүйлгэх" over a hairline, and Facebook, email and phone icons at the bottom right.
+- **Products:** a "Гүйлгэж танилцана" progress rule at the bottom left.
 
 In Hero and Products the step copy sits inside corner brackets. Products also adds a jump index of its 15 items at the top left, at lg; the current item is at full opacity and the rest at 45%.
 
@@ -242,7 +243,11 @@ A full-bleed ConcaveCarousel of the real project photos. Captions are a title pl
 Adapted from components/blocks/footer-2.tsx. A photo of installed ductwork (`/images/banner.webp`, darkened toward ink) shows above the ink panel, whose two raised shoulders (the footer-2 curve, up to 250px wide) rise into it at the corners and dip between them; the curve is the one rounded shape the house allows. The panel centres the "Есөн Бэлчир" wordmark, the h2 "Төслөө бидэнтэй ярилцъя." and one row of actions: the white primary button "Инженертэй холбогдох" (brand on hover), then the phone and the email as underlined mono links, the email in its own case. Below a hairline, a four-column grid (two on phones) holds phones with hours, the office, the factory (each with a map link) and the menu. The closing bar has the copyright with the Facebook icon, and the three confirmed credentials stacked right: 2011 оноос, БХБЯ-ны тусгай зөвшөөрөлтэй, 150+ объект. No kicker sits above any heading.
 
 ### Navigation
-The shared header has not yet been aligned to this system: it uses grey links and a hardcoded blue underline on hover. Its two bars (4vh + 7vh) define the 11vh sticky offset that the scroll stages depend on.
+One bar, `--header-h` (4rem) tall and sticky, so every scroll stage pins right under it; dark cinematic (see Overview).
+- **Layout:** a three-column grid in the 80rem container: the white logo at the left; the page links in the middle ("Нүүр" first), small uppercase and white, the current page at 45% white, the others dimming on hover; the phone (from xl) and the small white "Холбоо барих" button at the right.
+- **Ground:** night everywhere. Over the home page's hero it has no rule, so it reads as part of the first screen; elsewhere a white 10% hairline sets it off. No shadow, no blur.
+- **Phones:** the logo and a 44px menu button. The menu opens as a night sheet under the bar: the pages in large white semibold type on white 10% lines, then the phones and the email. Escape closes it and returns focus to the button.
+- A skip link ("Агуулга руу шилжих") leads to `<main id="main">`.
 
 ## Do's and Don'ts
 

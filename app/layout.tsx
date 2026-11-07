@@ -3,7 +3,7 @@ import { Header } from "@/components/Header";
 import { siteUrl } from "@/constants/data";
 import { shareMetadata, siteName } from "@/lib/metadata";
 import type { Metadata } from "next";
-import { golos, mono } from "./fonts";
+import { golos, mono, serif } from "./fonts";
 import "./globals.css";
 
 const defaultTitle = "Есөн Бэлчир ХХК - Агаар сэлгэлт ба Хөргөлтийн Систем";
@@ -95,11 +95,11 @@ export default function RootLayout({
   return (
     <html lang="mn">
       <body
-        className={`scroll-smooth font-sans ${golos.variable} ${mono.variable}`}
+        className={`scroll-smooth font-sans ${golos.variable} ${mono.variable} ${serif.variable}`}
         suppressHydrationWarning
       >
         <Header />
-        {children}
+        <main id="main">{children}</main>
         <Footer />
       </body>
     </html>

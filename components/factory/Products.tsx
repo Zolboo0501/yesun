@@ -190,7 +190,7 @@ export function Products() {
       className="relative bg-graphite text-white"
       style={{ height: `${steps.length * 70}svh` }}
     >
-      <div className="sticky top-[11vh] h-[calc(100svh-11vh)] overflow-hidden">
+      <div className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-hidden">
         <div className="absolute inset-0">
           {near && <ProductsScene progress={step} active={active} reducedMotion={reducedMotion} />}
         </div>

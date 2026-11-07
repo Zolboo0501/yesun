@@ -6,6 +6,17 @@
 @theme inline {
   --font-sans: var(--font-golos), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
+  /* header and the home page's first screen: one deep charcoal */
+  --color-night: #16171b;
+  /* warm monochrome with one washed-out blue for tags */
+  --color-bone: #f7f6f3;
+  --color-line: #eaeaea;
+  --color-quiet: #787774;
+  --color-charcoal: #111111;
+  --color-prose: #2f3437;
+  --color-tag: #e1f3fe;
+  --color-tag-ink: #1f6c9f;
   --color-ink: #0b1020;
   --color-soft: #4f5a6e;
   --color-panel: #e9ebee;
@@ -57,6 +68,7 @@
 }
 
 :root {
+  --header-h: 4rem; /* the one-bar header; the scroll stages pin right under it */
   --radius: 0.625rem;
   --background: #ffffff;
   --foreground: #333333;
@@ -148,5 +160,16 @@
 }
 .animate-ping-slow {
   animation: ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* the hero's scroll hint: a brand mark running down a hairline */
+@keyframes hint-drop {
+  0% {
+    transform: translateY(-100%);
+  }
+  70%,
+  100% {
+    transform: translateY(260%);
+  }
 }
 
