@@ -21,9 +21,11 @@ type SceneProps = {
   progress: MotionValue<number>;
   active: boolean;
   reducedMotion: boolean;
+  /** called once the scene has drawn its first frames (its model loaded, its shaders compiled) */
+  onReady?: () => void;
 };
 
-export default function HeroScene({ config, progress, active, reducedMotion }: SceneProps) {
+export default function HeroScene({ config, progress, active, reducedMotion, onReady }: SceneProps) {
   const { mood, sun, shots } = config;
   // Mouse drag turns the room a little; touch is left alone so the page still scrolls.
   const input = useRef<Input>({ dragging: false, lastX: 0, yaw: 0, px: 0, py: 0 });
@@ -107,7 +109,14 @@ export default function HeroScene({ config, progress, active, reducedMotion }: S
         )}
 
         <Suspense fallback={null}>
-          <Rig model={config.model} shots={shots} progress={progress} inputRef={input} animate={!reducedMotion} />
+          <Rig
+            model={config.model}
+            shots={shots}
+            progress={progress}
+            inputRef={input}
+            animate={!reducedMotion}
+            onReady={onReady}
+          />
         </Suspense>
 
         {lite ? (
@@ -276,12 +285,14 @@ function Rig({
   progress,
   inputRef,
   animate,
+  onReady,
 }: {
   model: string;
   shots: HeroSceneConfig["shots"];
   progress: MotionValue<number>;
   inputRef: RefObject<Input>;
   animate: boolean;
+  onReady?: () => void;
 }) {
   const { scene } = useGLTF(model, DRACO);
   const lookRef = useRef(new THREE.Vector3().fromArray(shots[0].target));
@@ -291,7 +302,11 @@ function Rig({
   // The parts the story moves, looked up on the first frame.
   const partsRef = useRef<Parts | null>(null);
 
+  const frames = useRef(0);
+
   useFrame(({ camera, size }, delta) => {
+    // the third frame: the model is in and the first frame's shader compile is behind us
+    if (frames.current < 3 && ++frames.current === 3) onReady?.();
     partsRef.current ??= findParts(scene);
     const parts = partsRef.current;
     const cam = camera as THREE.PerspectiveCamera;

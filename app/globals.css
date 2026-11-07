@@ -22,7 +22,7 @@
   --color-panel: #e9ebee;
   --color-brand: #0100fd;
   --color-graphite: #1f2226;
-  --color-mist: #aeb2b8; /* the Company ground: dark enough for white air to show */
+  --color-mist: #aeb2b8; /* a cool mid grey; the Company ground before it moved onto night */
   --text-step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
   --text-step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
   --radius-sm: calc(var(--radius) - 4px);
@@ -163,6 +163,14 @@
 }
 
 /* the hero's scroll hint: a brand mark running down a hairline */
+/* The home page's first-load curtain (components/home/Hero.tsx) lifts on its own if the script never runs. */
+@keyframes curtain-safety {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 @keyframes hint-drop {
   0% {
     transform: translateY(-100%);

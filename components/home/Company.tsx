@@ -1,14 +1,16 @@
 "use client";
+import { AstralShell, type AstralShellLive } from "@/components/react-bits/astral-shell";
 import { ArrowUpRight } from "lucide-react";
-import { motion, useInView, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
-import dynamic from "next/dynamic";
+import {
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionValue,
+} from "motion/react";
 import Link from "next/link";
-import { useRef } from "react";
-
-const AirFlowScene = dynamic(() => import("./AirFlowScene"), {
-  ssr: false,
-  loading: () => null,
-});
+import { useEffect, useRef, useSyncExternalStore } from "react";
 
 type Step = {
   title: string;
@@ -55,11 +57,34 @@ const steps: Step[] = [
 
 const last = steps.length - 1;
 
+// The shell stands in the half the copy leaves free: the copy is right on even parts, left on odd ones. On phones
+// it sits above the copy and only sways.
+const SIDES = { wide: [0.27, 0.73], narrow: [0.4, 0.6] } as const;
+const PHONE_Y = 0.75; // the shell's height on phones, above the copy
+const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
+/** The shell at part p: it holds for the first and last fifth of the scroll between two parts, then crosses to the
+ *  other half, breaking apart on the way and coming back together on the far side. */
+const shellAt = (p: number, wide: boolean, still: boolean): AstralShellLive => {
+  const i = Math.min(Math.floor(p), last - 1);
+  const t = clamp01((p - i - 0.2) / 0.6);
+  const e = t * t * (3 - 2 * t);
+  const sides = wide ? SIDES.wide : SIDES.narrow;
+  const from = sides[i % 2];
+  const to = sides[(i + 1) % 2];
+  return { originX: from + (to - from) * e, originY: wide ? 0.5 : PHONE_Y, scatter: still ? 0 : Math.sin(Math.PI * e) };
+};
+
+// The shell is placed and sized in JS, so the breakpoint is read here; the server renders the desktop layout.
+const wideQuery = "(min-width: 1024px)";
+const subscribe = (change: () => void) => {
+  const query = window.matchMedia(wideQuery);
+  query.addEventListener("change", change);
+  return () => query.removeEventListener("change", change);
+};
+
 export function Company() {
   const section = useRef<HTMLElement>(null);
-  // Load the scene a screen early, draw it only while the section is on screen.
-  const near = useInView(section, { once: true, margin: "100% 0px" });
-  const active = useInView(section);
+  const wide = useSyncExternalStore(subscribe, () => window.matchMedia(wideQuery).matches, () => true);
   const reducedMotion = useReducedMotion() ?? false;
 
   // 0 while the first part fills the stage under the header (--header-h, 64px), `last` once the last one does.
@@ -69,23 +94,45 @@ export function Company() {
   });
   const part = useTransform(scrollYProgress, (v) => v * last);
 
+  // The scroll drives the shell through a ref it reads every frame, so nothing re-renders as the page moves.
+  const live = useRef<AstralShellLive>({});
+  useMotionValueEvent(part, "change", (p) => {
+    live.current = shellAt(p, wide, reducedMotion);
+  });
+  useEffect(() => {
+    live.current = shellAt(part.get(), wide, reducedMotion);
+  }, [part, wide, reducedMotion]);
+
   return (
     <section
       id="about"
       ref={section}
       aria-label="Бидний тухай"
-      className="relative bg-mist text-ink selection:bg-brand selection:text-white"
+      className="relative bg-night text-white selection:bg-brand selection:text-white"
     >
-      {/* The air stays on screen while the four parts scroll past: its streams wander between them and gather
-          in the half each part leaves free (above the copy on phones). A soft light falls from the lower right. */}
-      <div
-        aria-hidden
-        className="pointer-events-none sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-hidden bg-[radial-gradient(90%_80%_at_78%_82%,rgb(255_255_255/0.3),transparent_70%)]"
-      >
-        {near && <AirFlowScene part={part} last={last} active={active} reducedMotion={reducedMotion} />}
+      {/* One network of the 150+ sites, white on the night ground, held on screen while the four parts scroll past.
+          Between parts it breaks apart and comes together again in the half the next part leaves free. The pointer
+          lights the nodes near it and a click sends a pulse round it; dragging is off, so a swipe over it scrolls. */}
+      <div className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))]">
+        <AstralShell
+          className="size-full"
+          colors={["#ffffff", "#0100fd"]}
+          backgroundColor="transparent"
+          nodes={wide ? 2200 : 1200}
+          radius={wide ? 0.32 : 0.23}
+          originX={SIDES.wide[0]}
+          draggable={false}
+          live={live}
+        />
+        {/* on phones the copy lies over the shell's lower half: a night shade keeps it readable */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--color-night)_34%,rgb(22_23_27/0.72)_56%,transparent_76%)] lg:hidden"
+        />
       </div>
 
-      <div className="relative -mt-[calc(100svh-var(--header-h))]">
+      {/* the rows let the pointer through to the shell; only the copy itself takes it */}
+      <div className="pointer-events-none relative -mt-[calc(100svh-var(--header-h))]">
         {steps.map((s, i) => (
           <PartCopy key={s.title} step={s} index={i} part={part} />
         ))}
@@ -98,7 +145,7 @@ function PartCopy({ step, index, part }: { step: Step; index: number; part: Moti
   // fades in as its part reaches the stage and out as it scrolls on
   const opacity = useTransform(part, (p) => Math.min(1, Math.max(0, 1.25 - Math.abs(p - index) * 1.6)));
   const Heading = index === 0 ? "h2" : "h3";
-  // the copy takes the other half (right while the air is left), its outer edge on the page container's edge
+  // the copy takes one half, alternating right and left, its outer edge on the page container's edge
   const half =
     index % 2 === 0
       ? "lg:ml-auto lg:pl-[4vw] lg:pr-[max(2rem,calc(50vw-38rem))]"
@@ -107,17 +154,17 @@ function PartCopy({ step, index, part }: { step: Step; index: number; part: Moti
   return (
     <div className="flex min-h-[calc(100svh-var(--header-h))] items-end px-4 pb-10 sm:px-6 lg:items-center lg:px-0 lg:pb-0">
       <motion.div style={{ opacity }} className={`w-full lg:w-1/2 ${half}`}>
-        <div className="max-w-[36rem]">
+        <div className="pointer-events-auto max-w-[36rem]">
           <Heading className="text-balance text-[clamp(2rem,1.3rem+2.6vw,3.75rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
             {step.title}
           </Heading>
-          <p className="mt-5 max-w-[56ch] text-step-body leading-relaxed text-ink/80">{step.text}</p>
+          <p className="mt-5 max-w-[56ch] text-step-body leading-relaxed text-white/75">{step.text}</p>
 
           {step.facts && (
             <dl className="mt-8 grid max-w-[26rem] grid-cols-2 gap-x-8">
               {step.facts.map((fact) => (
-                <div key={fact.label} className="flex flex-col-reverse justify-end border-t border-ink/15 py-4">
-                  <dt className="mt-1 text-sm text-ink/80">{fact.label}</dt>
+                <div key={fact.label} className="flex flex-col-reverse justify-end border-t border-white/15 py-4">
+                  <dt className="mt-1 text-sm text-white/70">{fact.label}</dt>
                   <dd className="text-2xl font-semibold tracking-[-0.03em] tabular-nums">{fact.value}</dd>
                 </div>
               ))}
@@ -127,7 +174,7 @@ function PartCopy({ step, index, part }: { step: Step; index: number; part: Moti
           {step.brands && (
             <ul
               aria-label="Албан ёсны брэндүүд"
-              className="mt-8 grid max-w-[26rem] grid-cols-3 gap-x-6 gap-y-3 border-t border-ink/15 pt-4 font-mono text-xs uppercase tracking-[0.16em]"
+              className="mt-8 grid max-w-[26rem] grid-cols-3 gap-x-6 gap-y-3 border-t border-white/15 pt-4 font-mono text-xs uppercase tracking-[0.16em]"
             >
               {step.brands.map((brand) => (
                 <li key={brand}>{brand}</li>
@@ -139,14 +186,14 @@ function PartCopy({ step, index, part }: { step: Step; index: number; part: Moti
             <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
               <Link
                 href="/contact"
-                className="group inline-flex items-center gap-3 whitespace-nowrap bg-ink px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-white transition-colors hover:bg-brand active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+                className="group inline-flex items-center gap-3 whitespace-nowrap bg-white px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-night transition-colors hover:bg-brand hover:text-white active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               >
                 Инженертэй холбогдох
                 <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href="/about"
-                className="whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] underline decoration-1 underline-offset-[6px] transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+                className="whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] underline decoration-1 underline-offset-[6px] transition-colors hover:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               >
                 Компанийн танилцуулга
               </Link>

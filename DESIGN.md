@@ -103,21 +103,21 @@ Scope: this records the home page (`app/page.tsx`) as it ships: the shared heade
 
 **Creative North Star: "The Engineered Air"**
 
-The site shows the company's subject, air moving through a building, as something you can see. It does not illustrate it. Each scroll stage is a working view: an x-rayed office, a run of fabricated duct pieces, translucent streams of air that wander between the company's four parts and gather beside each one, and a wall of delivered buildings. Around them sits the plain apparatus of an engineering drawing: cool grey and graphite grounds, near-black ink type, small mono uppercase labels, square buttons, and one saturated electric blue used sparingly.
+The site shows the company's subject, air moving through a building, as something you can see. It does not illustrate it. Each scroll stage is a working view: an x-rayed office, a run of fabricated duct pieces, a turning network sphere of the company's sites beside its four parts, and delivered buildings flying in one after another. Around them sits the plain apparatus of an engineering drawing: cool grey and graphite grounds, near-black ink type, small mono uppercase labels, square buttons, and one saturated electric blue used sparingly.
 
 The layout is calm and sparse. A section carries one headline, one or two sentences, real figures and one call to action. The 3D or WebGL image does the persuading. Type is set large and tight. Everything else is small, mono and quiet. The house draws no rounded corners and no shadows; depth comes from the rendered scenes and from alternating light and dark grounds.
 
 The world is local and factual. All copy is Mongolian. Every figure shown is one the client has confirmed.
 
 **Key Characteristics:**
-- Grounds alternate dark and light: night (Hero), mist (Company), graphite (Projects), then white (Partners) and ink (footer). On the factory page, Products keeps its graphite ground.
+- Grounds alternate dark and light: night (Hero and Company), graphite (Projects), then white (Partners) and ink (footer). On the factory page, Products keeps its graphite ground.
 - One accent, electric brand blue. It appears as small squares, hairline progress rules, corner brackets, focus outlines and the hover fill of buttons.
 - Semibold Golos Text headlines with tight negative tracking, sized with clamp().
 - JetBrains Mono uppercase, tracked at 0.16em, is the voice of every label, button and technical annotation.
 - Square corners throughout. No shadows.
 - The scenes are driven by scroll, are paused when off screen, hold still under reduced motion, and run a lighter path on phones.
 
-**The header and the hero's first screen are the exception (dark cinematic, since 2026-11-07, after the client's reference image).** One deep charcoal, night `#16171b` (a token in `globals.css`), runs from the header into the hero, the way a full-bleed photograph runs under a transparent menu. Everything on it is white: the logo (drawn white with a filter), small uppercase Golos links (semibold, 11px, 0.06em; the current page at 45% white), and one small white button with a 3px radius. Hero headings are large Golos semibold (`clamp(2.5rem, 1.1rem + 4.2vw, 6rem)`, line-height 0.95, tracking -0.035em) in two lines, the second set in by 0.9em, with a short white rule and the step text beside it. Each step's heading and text come in word by word, fading in as they rise a few pixels into place and stopping there (no blur, no overshoot), whenever that step or its scene arrives (`components/react-bits/staggered-text.tsx`). Over the stage, a mouse brings up a white drafting crosshair with rulers and a mono coordinate chip; a drag measures and a click pins a point, and the step lines name their step in the chip (`components/react-bits/drafting-cursor.tsx`; fine pointers only). Icons are the inline set in `components/icons.tsx`. Brand blue appears in neither. Every rule below still holds for the rest of the home page.
+**The header and the hero's first screen are the exception (dark cinematic, since 2026-11-07, after the client's reference image).** One deep charcoal, night `#16171b` (a token in `globals.css`), runs from the header into the hero, the way a full-bleed photograph runs under a transparent menu. Everything on it is white: the logo (drawn white with a filter), small uppercase Golos links (semibold, 11px, 0.06em; the current page at 45% white), and one small white button with a 3px radius. Hero headings are large Golos semibold (`clamp(2.5rem, 1.1rem + 4.2vw, 6rem)`, line-height 0.95, tracking -0.035em) in two lines, the second set in by 0.9em, with a short white rule and the step text beside it. On first load a night curtain lies over the header and the hero, and scroll-mask's iris (`components/react-bits/scroll-mask.tsx`) opens it from the subject once the first 3D frame is drawn (1.6 s; skipped under reduced motion; a CSS timer lifts it after 4 s if the script never runs), the 3D settling from a slight zoom and the heading's words running as the iris reaches them. Each step's heading and text come in word by word, fading in as they rise a few pixels into place and stopping there (no blur, no overshoot), whenever that step or its scene arrives (`components/react-bits/staggered-text.tsx`). Over the stage, a mouse brings up a white drafting crosshair with rulers and a mono coordinate chip; a drag measures and a click pins a point, and the step lines name their step in the chip (`components/react-bits/drafting-cursor.tsx`; fine pointers only). Icons are the inline set in `components/icons.tsx`. Brand blue appears in neither. Every rule below still holds for the rest of the home page.
 
 ## Colors
 
@@ -138,12 +138,12 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 - **Blueprint Ink** (ink): headings and primary text on light grounds. It is the resting fill of the primary button on light grounds and the footer ground. Body copy uses it at 80% opacity, and hairline dividers use it at 15%.
 - **Drafting Slate** (soft): secondary text on light grounds, such as fact labels and the frame annotations of the Hero and Company stages.
 - **Plaster Panel** (panel): the light ground of Hero and of the partner logo tiles.
-- **Mist** (mist, #aeb2b8): the Company ground, a cool mid grey dark enough for white air to show, lit by a soft radial light from the lower right. Labels on it are ink at 80%, not soft.
+- **Mist** (mist, #aeb2b8): a cool mid grey, the Company ground until the network sphere moved it onto night (2026-11-07); the token stays for later use.
 - **Graphite** (graphite): the dark ground of Products and Projects. On graphite, text is white at stepped opacities: 100% for headings, 85–90% for leads, 70% for body and 50–60% for annotations.
 - **White** (white): text on dark grounds, the resting fill of the primary button on dark grounds, and the Partners ground.
 
 ### Named Rules
-**The One Signal Rule.** Brand blue only marks things: a point, a rule, a bracket, a focus ring or a hover. It covers a few square millimetres of any screen. If an interface fill is larger than a button, it is wrong. This rule covers the interface, not the light inside a rendered scene: the Company air is white filaments on mist, and carries no brand blue at all.
+**The One Signal Rule.** Brand blue only marks things: a point, a rule, a bracket, a focus ring or a hover. It covers a few square millimetres of any screen. If an interface fill is larger than a button, it is wrong. This rule covers the interface, not the light inside a rendered scene: the Company network is white on night, and brand blue only lights the nodes under the pointer and the pulse a click sends round it.
 
 **The Alternating Ground Rule.** Consecutive home sections change ground between light (panel or white) and dark (graphite or ink). A new section takes the opposite ground from the one before it.
 
@@ -157,7 +157,7 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 
 ### Hierarchy
 - **Display** (600, clamp 2.25–4.5rem, line-height 0.95, tracking -0.045em): the hero step headings (the h1 is the first step) and the footer's centred "Есөн Бэлчир" wordmark, under which "Төслөө бидэнтэй ярилцъя." is the footer's h2 at 1.25–1.875rem, weight 500, white at 80%
-- **Headline** (600, clamp 2–3.75rem, line-height 0.98, tracking -0.04em): section and step headings in Products, Company and Projects.
+- **Headline** (600, clamp 2–3.75rem, line-height 0.98, tracking -0.04em): section and step headings in Products and Company. The Projects stage sets its headings in the hero's step style instead: the opening at the Display size, each project's name at clamp 2.25–2.875rem.
 - **Figure** (600, 1.5rem, tracking -0.03em, tabular numerals): proof values in the facts list.
 - **Title** (600, 1.125rem, tracking -0.01em): the Products lead line.
 - **Body** (400, fluid 1.0625–1.1875rem, line-height 1.625): every supporting paragraph, with a measure of 44–56ch.
@@ -176,13 +176,13 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 - **Section padding:** static sections open with 96px of top padding, or 128px at lg.
 - **Scroll stages:** Hero (home) and Products (factory page) are pinned stages. The sticky frame sits right under the header (top `var(--header-h)`, 4rem) and fills the rest of the viewport. Hero takes 100svh of scroll per step and Products 70svh. Each step holds still for the first and last fifth of its scroll, then travels. Company is not pinned: its parts scroll as ordinary blocks over a sticky scene.
 - **Step copy:** at lg the copy floats bottom-left (5vw in, about 40–46vw wide) on its own ground at 80–85% opacity. Below lg it docks as a solid band along the bottom.
-- **Company:** four parts stacked down the page, each one stage tall (100svh − `--header-h`), over a sticky full-stage scene that the blocks overlap with a negative top margin. At lg each part's copy takes one half, alternating right, left, right, left. It is vertically centred and at most 36rem wide; its outer edge sits on the page container's edge, max(2rem, 50vw − 38rem), and its inner edge is 4vw from the centre line. The copy fades with its distance from the stage and is fully opaque when its part fills it. The air streams gather in the other half. On phones each part's copy sits at the bottom of its block, and the streams gather in the top 40% of the stage, swaying ±12% between parts.
-- **Projects:** the header row wraps between the headline and the button. Below it, the carousel runs full bleed, min(64svh, 560px) tall, or min(80svh, 780px) at lg.
+- **Company:** four parts stacked down the page, each one stage tall (100svh − `--header-h`), over a sticky full-stage scene that the blocks overlap with a negative top margin. At lg each part's copy takes one half, alternating right, left, right, left, vertically centred and at most 36rem wide; its outer edge sits on the page container's edge, max(2rem, 50vw − 38rem), and its inner edge is 4vw from the centre line. The copy fades with its distance from the stage and is fully opaque when its part fills it. The network sphere stands in the other half and crosses between parts. On phones each part's copy sits at the bottom of its block over a night shade, and the sphere sits above it, swaying a little between parts. The part rows let the pointer through to the sphere; only the copy takes it.
+- **Projects:** a scroll stage like the hero's, one screen of scroll per step: the opening, then one step per project (eleven in all), under a sticky stage (100svh − `--header-h`). The copy is the hero's (components/home/Step.tsx): the opening carries "Хэрэгжүүлсэн төслүүд." at the hero heading size, one plain sentence under it a size up ("Музейгээс уурхай хүртэл 150 гаруй объектод агаар сэлгэлт, хөргөлт угсарсан.") and the white "Бүх төсөл" button. Each project step is a caption beside its photo: the name a size down (clamp 2.25–2.875rem) in a column of min(25rem, 32vw) at lg that ends before the photo, and "systems · year" at body size, the year kept on the line of the word before it. The gallery stands in the right 60% at lg (the top 60% on phones), so the photo is the largest thing on each step; a graphite shade darkens only the copy's side (graphite to 8%, 80% at 24%, 25% at 34%, clear from 42%) and the bottom on phones, and the hero's step lines run down the right edge.
 
 ## Elevation & Depth
 
 The house is flat. There are no box-shadows anywhere on the home page. Depth comes from three things:
-- the rendered scenes themselves: R3F lighting, SSAO and bloom in the hero and products, and the translucent Company air streams;
+- the rendered scenes themselves: R3F lighting, SSAO and bloom in the hero and products, and the Company network sphere;
 - semi-opaque copy grounds over the scenes (panel or graphite at 80–85%);
 - the light/dark alternation between sections.
 
@@ -197,7 +197,6 @@ Every corner the house draws is square (0px), including buttons, copy panels, pa
 - 1px hairline dividers at 15% opacity above each fact and above the Company brand list;
 - a thin progress rule (1px track, filled brand in Hero, white in Products and ink in Company).
 
-The vendor ConcaveCarousel still uses its own rounded photo panels and circular 32px controls (see Do's and Don'ts).
 
 ## Components
 
@@ -225,19 +224,13 @@ In Hero and Products the step copy sits inside corner brackets. Products also ad
 
 Step copy fades as the scene moves away from it and fades back once the scene has settled. Steps that are not showing are set to visibility hidden.
 
-### Air Streams (Company)
-Seven bands of fine white filaments (components/home/AirFlowScene.tsx), drawn as airflow is in a product film, each band with its own ripple, speed, twist and width. A custom shader draws each band as a sheaf of fourteen filaments, each with its own brightness and softness (some crisp, some out of focus), sliding a little against its neighbours, with light running along them with the flow; a band brightens where it turns edge-on, and bands blend without writing depth, so overlapping air thickens. Beside each part the air draws a figure that fits it:
-1. a skyline of stepped towers (the 150+ buildings fitted), its silhouette shared end to end by the seven bands;
-2. a rectangular duct's elbow (the factory's ducts), the bands running side by side through the bend as air fills a duct;
-3. a fan of seven curved arms (the equipment supplied), turning as a whole;
-4. a shield with a check mark (the warranty), five bands on the outline and two on the check.
+### Network Sphere (Company)
+The 150+ sites as one network (components/react-bits/astral-shell.tsx): 2,200 nodes (1,200 on phones) clustered on a sphere, each linked to its nearest neighbours with a few chords across, white on the night ground, drawn additively so it glows. It turns slowly on a tilted axis; the pointer lights the nodes and links near it in brand blue, and a click sends a pulse round the shell. Dragging is off, so a swipe over it still scrolls the page. It draws only while in view.
 
-The figures are polylines rounded by Chaikin passes and stepped evenly by length into a 256 × 4 float texture that the vertex shader reads; a per-band table (start, end, offset or arm angle, depth) says which stretch of each figure each band draws. Outline bands are drawn narrower than the fan's arms so the figures stay crisp, and a small ripple runs across each figure with the flow.
+It stands in the half the part's copy leaves free (centre 27% or 73% across, radius 0.32 of the stage height; on phones 40% or 60% across, 75% up, radius 0.23). Between two parts it holds for the first and last fifth of the scroll, then crosses to the other half and breaks apart on the way: every node flies out along a direction of its own (set by where it sits, so the two ends of a link follow the nodes they join), the links let go first, and the nodes come back together on the far side. The scroll reaches the shell through a ref it reads every frame (`live`), eased there, so nothing re-renders as the page moves. Under reduced motion it crosses without breaking. The earlier air-stream scene (components/home/AirFlowScene.tsx) is no longer used.
 
-The vertex shader bends the ribbons, so a frame only updates uniforms. Each part's air rides up with its part as the page scrolls. Between parts the bands run as one current downhill from the part being left to the next part below it on the other side (upper left to lower right, then upper right to lower left), along an S-shaped path that sets off and arrives level. Each band leaves after its own delay (up to a third of the crossing), draws out into a gust lying along the path, spreads across the current mid-way, and redraws itself from one figure into the next as it gathers in the half the next part leaves free. The scroll is eased (damped, λ 4) so a wheel notch glides instead of stepping. The pointer leans the bundle slightly.
-
-### Project Carousel
-A full-bleed ConcaveCarousel of the real project photos. Captions are a title plus "systems · year". It drifts on desktop and steps one slide at a time on phones. The page wheel is never captured, and drag, arrow keys and Space are supported.
+### Project Dolly Gallery
+A DollyGallery (components/react-bits/dolly-gallery.tsx) of the real project photos: square-cornered landscape tiles (820px wide, 360px on phones, never wider than the gallery less 32px; aspect 1.45, a light 25% grayscale) placed one behind another down a 1000px perspective, 900px of depth apart, shifted 5% of a tile to alternate sides, so the front photo stays whole beside the copy and on a phone. The page scroll drives it through `driveRef`: the opening holds the first project a step away, and each later step brings the next one to the front, where it holds while its name shows; between steps the passing photo flies past and fades. It has no wheel, drag or drift of its own (the wheel and a swipe stay the page's); the pointer only leans the tiles. The ConcaveCarousel it replaced is no longer used.
 
 ### Footer
 Adapted from components/blocks/footer-2.tsx. A photo of installed ductwork (`/images/banner.webp`, darkened toward ink) shows above the ink panel, whose two raised shoulders (the footer-2 curve, up to 250px wide) rise into it at the corners and dip between them; the curve is the one rounded shape the house allows. The panel centres the "Есөн Бэлчир" wordmark, the h2 "Төслөө бидэнтэй ярилцъя." and one row of actions: the white primary button "Инженертэй холбогдох" (brand on hover), then the phone and the email as underlined mono links, the email in its own case. Below a hairline, a four-column grid (two on phones) holds phones with hours, the office, the factory (each with a map link) and the menu. The closing bar has the copyright with the Facebook icon, and the three confirmed credentials stacked right: 2011 оноос, БХБЯ-ны тусгай зөвшөөрөлтэй, 150+ объект. No kicker sits above any heading.

@@ -2,11 +2,13 @@
 import { mono } from "@/app/fonts";
 import { ArrowUpRight, FacebookIcon, MailIcon, PhoneIcon } from "@/components/icons";
 import DraftingCursor from "@/components/react-bits/drafting-cursor";
-import StaggeredText from "@/components/react-bits/staggered-text";
+import { irisSheet } from "@/components/react-bits/scroll-mask";
 import { contact } from "@/constants/data";
 import {
+  animate,
   motion,
   useInView,
+  useMotionValue,
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
@@ -15,8 +17,9 @@ import {
 } from "motion/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { heroScenes, type HeroSceneConfig, type Step } from "./heroScenes";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { heroScenes, type HeroSceneConfig } from "./heroScenes";
+import { StepCopy, StepLine } from "./Step";
 
 const HeroScene = dynamic(() => import("./HeroScene"), {
   ssr: false,
@@ -54,28 +57,57 @@ const stepNow = (v: number) => {
   const k = sceneAt(v * UNITS);
   return stepAt(v * UNITS - starts[k], steps[k] - 1);
 };
-/** A heading in two lines, broken at the word nearest its middle; the second line is set in. */
-const twoLines = (title: string) => {
-  const words = title.split(" ");
-  let best = 0;
-  let gap = Infinity;
-  for (let i = 1; i < words.length; i++) {
-    const d = Math.abs(words.slice(0, i).join(" ").length - words.slice(i).join(" ").length);
-    if (d < gap) [gap, best] = [d, i];
+// On first load the whole first screen, header included, opens through scroll-mask's iris: a night curtain lies over
+// everything and the iris is cut out of it (the full layer XOR the iris), centred on the subject. The 3D settles from
+// a slight zoom as it opens.
+const IRIS = { x: 58, y: 52, feather: 14, zoom: 0.12 };
+const FULL = "linear-gradient(#000, #000)";
+const paintCurtain = (el: HTMLElement, p: number) => {
+  if (p >= 1) {
+    el.style.display = "none";
+    return;
   }
-  return best ? [words.slice(0, best).join(" "), words.slice(best).join(" ")] : [title, ""];
+  const image = `${FULL}, ${irisSheet(p, IRIS.feather, IRIS.x, IRIS.y).image}`;
+  el.style.setProperty("mask-image", image);
+  el.style.setProperty("-webkit-mask-image", image);
 };
-// Words rise a short way into place and stop there: opacity and a small lift, no blur, no overshoot.
-const EASE_OUT = [0.16, 1, 0.3, 1] as const;
-const HEADING_FROM = { opacity: 0, y: 14 };
-const TEXT_FROM = { opacity: 0, y: 8 };
-const SHOWN = { opacity: 1, y: 0 };
+const paintZoom = (el: HTMLElement, p: number) => {
+  el.style.transform = p >= 1 ? "" : `scale(${(1 + IRIS.zoom * (1 - p)).toFixed(4)})`;
+};
 
 export function Hero() {
   const section = useRef<HTMLElement>(null);
   // Start drawing straight away; the observer only pauses it once the hero is scrolled past.
   const active = useInView(section, { initial: true });
   const reducedMotion = useReducedMotion() ?? false;
+
+  // The iris opens once, when the first model has drawn (or after 3 s if none does). Reduced motion skips it, and so
+  // does a page whose script arrived after the CSS safety had already lifted the curtain.
+  const reveal = useMotionValue(0);
+  const curtain = useRef<HTMLDivElement>(null);
+  const opened = useRef(false);
+  const open = useCallback(() => {
+    if (opened.current) return;
+    opened.current = true;
+    animate(reveal, 1, { duration: 1.6, ease: [0.65, 0, 0.35, 1] });
+  }, [reveal]);
+  useMotionValueEvent(reveal, "change", (p) => {
+    if (curtain.current) paintCurtain(curtain.current, p);
+  });
+  useEffect(() => {
+    const el = curtain.current;
+    const lifted = !el || Number(getComputedStyle(el).opacity) < 1;
+    // a page that opens further down (a restored scroll, a link to #about) is not the first screen: no curtain there
+    const deep = window.scrollY > window.innerHeight / 2 || window.location.hash !== "";
+    if (el) el.style.animation = "none"; // the script holds the curtain from here
+    if (reducedMotion || lifted || deep) {
+      opened.current = true;
+      reveal.jump(1);
+      return;
+    }
+    const fallback = window.setTimeout(open, 3000);
+    return () => window.clearTimeout(fallback);
+  }, [reducedMotion, open, reveal]);
 
   const { scrollYProgress } = useScroll({
     target: section,
@@ -91,6 +123,9 @@ export function Hero() {
     setBase(Math.floor(t + 1e-4));
     setSliding(t - Math.floor(t + 1e-4) > 1e-3);
   });
+
+  // the step of the scene on stage, for the step lines
+  const onStage = useTransform(scrollYProgress, stepNow);
 
   /** Scroll to scene k's step. */
   const go = (k: number, step = 0) => {
@@ -130,6 +165,8 @@ export function Hero() {
               mounted={Math.abs(k - base) <= 1}
               drawing={active && (k === base || (sliding && k === base + 1))}
               reducedMotion={reducedMotion}
+              reveal={reveal}
+              onReady={open}
             />
           ))}
         </motion.div>
@@ -142,7 +179,7 @@ export function Hero() {
               key={i}
               index={i}
               label={heroScenes[base].steps[i].tag}
-              scroll={scrollYProgress}
+              step={onStage}
               onSelect={() => go(base, i)}
             />
           ))}
@@ -200,6 +237,15 @@ export function Hero() {
           </a>
         </div>
       </DraftingCursor>
+
+      {/* The first-load curtain, in the server HTML so nothing shows before it. It sits over the header too; the iris
+          is cut out of it as it opens. If the script never runs, globals.css lifts it after 4 s. */}
+      <div
+        ref={curtain}
+        aria-hidden
+        className="pointer-events-none fixed inset-0 z-[60] bg-night [animation:curtain-safety_0.4s_ease-out_4s_forwards]"
+        style={{ maskComposite: "exclude", WebkitMaskComposite: "xor", maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat" }}
+      />
     </section>
   );
 }
@@ -211,6 +257,8 @@ function ScenePanel({
   mounted,
   drawing,
   reducedMotion,
+  reveal,
+  onReady,
 }: {
   scene: HeroSceneConfig;
   index: number;
@@ -218,12 +266,26 @@ function ScenePanel({
   mounted: boolean;
   drawing: boolean;
   reducedMotion: boolean;
+  /** the first-load curtain's iris, 0 closed to 1 open */
+  reveal: MotionValue<number>;
+  onReady: () => void;
 }) {
   const step = useTransform(scroll, (v) => stepAt(v * UNITS - starts[index], steps[index] - 1));
+  const zoomed = useRef<HTMLDivElement>(null);
+  useMotionValueEvent(reveal, "change", (p) => {
+    if (zoomed.current) paintZoom(zoomed.current, p);
+  });
   return (
     <div className="relative h-full shrink-0" style={{ width: `${100 / count}%` }}>
-      <div className="absolute inset-0" style={scene.backdrop ? { background: scene.backdrop } : undefined}>
-        {mounted && <HeroScene config={scene} progress={step} active={drawing} reducedMotion={reducedMotion} />}
+      {/* the 3D starts slightly zoomed and settles as the curtain opens */}
+      <div
+        ref={zoomed}
+        className="absolute inset-0 origin-[58%_52%]"
+        style={{ ...(scene.backdrop ? { background: scene.backdrop } : {}), transform: `scale(${1 + IRIS.zoom})` }}
+      >
+        {mounted && (
+          <HeroScene config={scene} progress={step} active={drawing} reducedMotion={reducedMotion} onReady={onReady} />
+        )}
       </div>
       {/* Shade over the scene, as over a photograph: dark under the copy and round the frame, open where the
           building stands (the right on desktop, the top on phones). */}
@@ -234,40 +296,19 @@ function ScenePanel({
         <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-night/85 to-transparent" />
       </div>
       {scene.steps.map((s, i) => (
-        <StepCopy key={s.tag} step={s} index={i} progress={step} first={index === 0 && i === 0} />
+        <StepCopy
+          key={s.tag}
+          title={s.title}
+          text={s.text}
+          index={i}
+          progress={step}
+          reveal={reveal}
+          heading={index === 0 && i === 0 ? "h1" : "h2"}
+        >
+          {s.cta && <ContactActions />}
+        </StepCopy>
       ))}
     </div>
-  );
-}
-
-function StepLine({
-  index,
-  label,
-  scroll,
-  onSelect,
-}: {
-  index: number;
-  label: string;
-  scroll: MotionValue<number>;
-  onSelect: () => void;
-}) {
-  // 1 on its own step, easing to 0 a step away: the long, bright line travels down with the scroll
-  const near = useTransform(scroll, (v) => clamp01(1 - Math.abs(stepNow(v) - index)));
-  const scaleX = useTransform(near, (n) => 0.38 + 0.62 * n);
-  const opacity = useTransform(near, (n) => 0.45 + 0.55 * n);
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      aria-label={`Алхам ${index + 1}: ${label}`}
-      data-cursor-label={label}
-      className="group flex h-4 w-10 items-center justify-end focus-visible:outline-2 focus-visible:outline-white"
-    >
-      <motion.span
-        style={{ scaleX, opacity }}
-        className="block h-0.5 w-full origin-right bg-white shadow-[0_0_0_0.5px_rgb(0_0_0/0.25)] group-hover:!opacity-100"
-      />
-    </button>
   );
 }
 
@@ -300,80 +341,23 @@ function SceneLink({
   );
 }
 
-function StepCopy({
-  step,
-  index,
-  progress,
-  first,
-}: {
-  step: Step;
-  index: number;
-  progress: MotionValue<number>;
-  /** the page's h1: the first scene's first step */
-  first: boolean;
-}) {
-  const opacity = useTransform(progress, (s) => Math.max(0, 1 - Math.abs(s - index) * 2.5));
-  const y = useTransform(progress, (s) => (index - s) * 60);
-  const visibility = useTransform(opacity, (o) => (o > 0.02 ? "visible" : "hidden"));
-  // Each time this step comes on (its opacity leaves 0), its words run in again: a new key mounts them at the start.
-  const [run, setRun] = useState(0);
-  const on = useRef(Math.abs(progress.get() - index) < 0.4);
-  useMotionValueEvent(progress, "change", (s) => {
-    const now = Math.abs(s - index) < 0.4;
-    if (now && !on.current) setRun((r) => r + 1);
-    on.current = now;
-  });
-  const [lineA, lineB] = twoLines(step.title);
-
-  // The block's font size is the heading's, so the set-in second line, the rule and the text all align on 0.9em.
+/** The last step's actions: talk to an engineer, or call. */
+function ContactActions() {
   return (
-    <motion.div
-      style={{ opacity, y, visibility }}
-      className="absolute inset-x-0 bottom-16 px-4 text-[clamp(2.5rem,1.1rem+4.2vw,6rem)] sm:px-6 lg:inset-x-auto lg:bottom-auto lg:left-[max(2rem,calc(50vw-38rem))] lg:top-1/2 lg:w-[min(48rem,58vw)] lg:-translate-y-1/2 lg:px-0"
-    >
-      {/* The words are inline blocks, so the second line is set in by a hanging indent (reset inside each word, as
-          text-indent inherits). A scene sliding in runs its words the first time it comes into view. */}
-      <StaggeredText
-        key={run}
-        as={first ? "h1" : "h2"}
-        text={lineB ? `${lineA}\n${lineB}` : lineA}
-        delay={60}
-        duration={0.7}
-        easing={EASE_OUT}
-        from={HEADING_FROM}
-        to={SHOWN}
-        className={`font-semibold leading-[0.95] tracking-[-0.035em] text-white ${lineB ? "pl-[0.9em] indent-[-0.9em] *:indent-0" : ""}`}
-      />
-      <div className="mt-[0.4em] flex items-start gap-5 pl-[0.9em]">
-        <span aria-hidden className="mt-[0.7rem] h-px w-12 shrink-0 bg-white/60 sm:w-16" />
-        <StaggeredText
-          key={run}
-          text={step.text}
-          delay={15}
-          duration={0.6}
-          easing={EASE_OUT}
-          from={TEXT_FROM}
-          to={SHOWN}
-          className="max-w-[34ch] text-[15px] leading-[1.55] text-white/75 sm:text-base"
-        />
-      </div>
-      {step.cta && (
-        <div className="mt-[0.45em] flex flex-wrap items-center gap-x-6 gap-y-3 pl-[0.9em]">
-          <Link
-            href="/contact"
-            className="group inline-flex items-center gap-2 rounded-[3px] bg-white px-5 py-3 text-xs font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            Инженертэй холбогдох
-            <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
-          </Link>
-          <a
-            href={`tel:${contact.phone}`}
-            className="text-xs font-medium text-white/85 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-          >
-            {contact.phone}
-          </a>
-        </div>
-      )}
-    </motion.div>
+    <>
+      <Link
+        href="/contact"
+        className="group inline-flex items-center gap-2 rounded-[3px] bg-white px-5 py-3 text-xs font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+      >
+        Инженертэй холбогдох
+        <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
+      </Link>
+      <a
+        href={`tel:${contact.phone}`}
+        className="text-xs font-medium text-white/85 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+      >
+        {contact.phone}
+      </a>
+    </>
   );
 }

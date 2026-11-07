@@ -116,7 +116,7 @@ const falloff = (p: number, f: number) => {
   return stops.join(", ");
 };
 
-const irisSheet = (p: number, f: number, ox: number, oy: number): Sheet => {
+export const irisSheet = (p: number, f: number, ox: number, oy: number): Sheet => {
   const stops = falloff(p, f);
   if (!stops) return VOID;
   return gather([
