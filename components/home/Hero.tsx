@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import {
   motion,
   useInView,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useTransform,
@@ -11,52 +12,33 @@ import {
 } from "motion/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import { heroScenes, type HeroSceneConfig, type Step } from "./heroScenes";
 
 const HeroScene = dynamic(() => import("./HeroScene"), {
   ssr: false,
   loading: () => null,
 });
 
-type Step = { tag: string; title: string; text: string; cta?: boolean };
-
-// One step per camera shot in HeroScene, same order.
-const steps: Step[] = [
-  {
-    tag: "Есөн Бэлчир",
-    title: "Цэвэр агаарыг инженерчилнэ.",
-    text: "Агаар сэлгэлт, хөргөлтийн системийг тооцоолж, үйлдвэрлэж, угсардаг инженерийн компани.",
-  },
-  {
-    tag: "Тооцоолол",
-    title: "Өрөө бүрээр тооцоолно.",
-    text: "Агаарын солилцоо, хөргөлтийн ачааллыг тооцоолж, зураг төслийг өөрсдөө боловсруулдаг. 2011 оноос хойш Барилга, хот байгуулалтын яамны тусгай зөвшөөрөлтэй.",
-  },
-  {
-    tag: "Үйлдвэрлэл",
-    title: "Сувгаа өөрсдөө хийнэ.",
-    text: "Агаарын суваг, бөөлгийг 1 800 м² талбайтай, 12 тоног төхөөрөмжтэй өөрсдийн үйлдвэрт хийдэг.",
-  },
-  {
-    tag: "Төхөөрөмж",
-    title: "Дэлхийн 6 брэнд.",
-    text: "KANION, AUX, BALLU, SHUFT, AIRONN, LAVFILL брэндийн хөргөлт, агаар сэлгэлтийн төхөөрөмжийг албан ёсоор нийлүүлнэ.",
-  },
-  {
-    tag: "Угсралт",
-    title: "150 гаруй объект.",
-    text: "Оффис, үйлдвэр, зочид буудал, худалдааны төвд нийслэл болон орон нутагт угсралт хийсэн.",
-  },
-  {
-    tag: "Үйлчилгээ",
-    title: "Баталгаатай ажиллуулна.",
-    text: "Угсралтдаа 1–3 жилийн чанарын баталгаа гаргаж, яаралтай үед 24/7 засвар үйлчилгээ үзүүлнэ.",
-    cta: true,
-  },
-];
-
-const last = steps.length - 1;
+const last = 5; // six steps per scene
+const SPAN = last + 1; // scroll screens per scene: five between its steps, one to slide to the next
+const count = heroScenes.length;
+const UNITS = count * SPAN - 1; // the last scene does not slide on
 const pad = (n: number) => String(n).padStart(2, "0");
+const smooth = (t: number) => t * t * (3 - 2 * t);
+const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
+
+/** A scene's own progress, 0..5: each step holds still for the first and last fifth of its scroll, then travels. */
+const stepAt = (local: number) => {
+  const x = Math.min(Math.max(local, 0), last);
+  const i = Math.min(Math.floor(x), last - 1);
+  return i + clamp01((x - i - 0.2) / 0.6);
+};
+/** 0..count-1: which scene fills the stage; fractions are the slide from one scene to the next. */
+const trackAt = (x: number) => {
+  const k = Math.min(Math.floor(x / SPAN), count - 1);
+  return k + (k < count - 1 ? smooth(clamp01(x - k * SPAN - last)) : 0);
+};
 
 export function Hero() {
   const section = useRef<HTMLElement>(null);
@@ -68,31 +50,54 @@ export function Hero() {
     target: section,
     offset: ["start start", "end end"],
   });
-  // Each step holds still for the first and last fifth of its scroll, then travels.
-  const step = useTransform(scrollYProgress, (v) => {
-    const x = v * last;
-    const i = Math.min(Math.floor(x), last - 1);
-    const f = Math.min(Math.max((x - i - 0.2) / 0.6, 0), 1);
-    return i + f;
+  const track = useTransform(scrollYProgress, (v) => trackAt(v * UNITS));
+  const x = useTransform(track, (t) => `${(-t * 100) / count}%`);
+  const counter = useTransform(scrollYProgress, (v) => {
+    const k = Math.min(Math.floor((v * UNITS) / SPAN), count - 1);
+    return `${heroScenes[k].name}  ${pad(Math.round(stepAt(v * UNITS - k * SPAN)) + 1)} / ${pad(SPAN)}`;
   });
-  const counter = useTransform(step, (s) => pad(Math.round(s) + 1));
+
+  // Mount the scene on stage and its neighbours (so the next model loads while this one plays); draw only what shows.
+  const [base, setBase] = useState(0);
+  const [sliding, setSliding] = useState(false);
+  useMotionValueEvent(track, "change", (t) => {
+    setBase(Math.floor(t + 1e-4));
+    setSliding(t - Math.floor(t + 1e-4) > 1e-3);
+  });
+
+  const go = (k: number) => {
+    const el = section.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: top + ((el.offsetHeight - window.innerHeight) * k * SPAN) / UNITS,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+  };
 
   return (
     <section
       id="home"
       ref={section}
-      aria-label="Есөн Бэлчир: агаар сэлгэлт, хөргөлтийн систем"
+      aria-label="Есөн Бэлчир: оффис, цэцэрлэг, сургууль, барилгын агаар сэлгэлт, хөргөлтийн систем"
       className="relative bg-panel text-ink"
-      style={{ height: `${steps.length * 100}svh` }}
+      style={{ height: `${(UNITS + 1) * 100}svh` }}
     >
       <div className="sticky top-[11vh] h-[calc(100svh-11vh)] overflow-hidden">
-        <div className="absolute inset-0">
-          <HeroScene
-            progress={step}
-            active={active}
-            reducedMotion={reducedMotion}
-          />
-        </div>
+        {/* The scenes stand side by side; scrolling past one scene's last step slides the next one in. */}
+        <motion.div style={{ x, width: `${count * 100}%` }} className="flex h-full">
+          {heroScenes.map((scene, k) => (
+            <ScenePanel
+              key={scene.id}
+              scene={scene}
+              index={k}
+              scroll={scrollYProgress}
+              mounted={Math.abs(k - base) <= 1}
+              drawing={active && (k === base || (sliding && k === base + 1))}
+              reducedMotion={reducedMotion}
+            />
+          ))}
+        </motion.div>
 
         {/* Technical frame around the stage, as on a spec sheet. */}
         <p
@@ -103,10 +108,18 @@ export function Hero() {
         </p>
         <p
           aria-hidden
-          className="pointer-events-none absolute right-5 top-5 font-mono text-[11px] tracking-[0.12em] text-soft"
+          className="pointer-events-none absolute right-5 top-5 font-mono text-[11px] tracking-[0.12em] text-soft max-lg:hidden"
         >
           47.9184° N&nbsp;&nbsp;106.9177° E
         </p>
+        {/* The four buildings: where you are, and a jump to any of them. */}
+        <nav aria-label="Объектууд" className="absolute left-12 top-4 max-lg:left-4">
+          <ol className="flex gap-5 font-mono text-[11px] uppercase tracking-[0.16em]">
+            {heroScenes.map((scene, k) => (
+              <SceneTab key={scene.id} label={scene.name} index={k} track={track} onSelect={() => go(k)} />
+            ))}
+          </ol>
+        </nav>
         <div
           aria-hidden
           className="pointer-events-none absolute bottom-5 left-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em] text-soft"
@@ -121,10 +134,9 @@ export function Hero() {
         </div>
         <p
           aria-hidden
-          className="pointer-events-none absolute bottom-5 right-5 font-mono text-[11px] uppercase tracking-[0.16em] text-soft"
+          className="pointer-events-none absolute bottom-5 right-5 whitespace-pre font-mono text-[11px] uppercase tracking-[0.16em] text-soft"
         >
-          <span className="max-sm:hidden">Систем бэлэн&nbsp;&nbsp;&nbsp;</span>
-          <motion.span>{counter}</motion.span> / {pad(steps.length)}
+          <motion.span>{counter}</motion.span>
         </p>
         <div
           aria-hidden
@@ -135,12 +147,62 @@ export function Hero() {
             className="absolute -left-px top-0 h-full w-[3px] origin-top bg-brand"
           />
         </div>
-
-        {steps.map((s, i) => (
-          <StepCopy key={s.tag} step={s} index={i} progress={step} />
-        ))}
       </div>
     </section>
+  );
+}
+
+function ScenePanel({
+  scene,
+  index,
+  scroll,
+  mounted,
+  drawing,
+  reducedMotion,
+}: {
+  scene: HeroSceneConfig;
+  index: number;
+  scroll: MotionValue<number>;
+  mounted: boolean;
+  drawing: boolean;
+  reducedMotion: boolean;
+}) {
+  const step = useTransform(scroll, (v) => stepAt(v * UNITS - index * SPAN));
+  return (
+    <div className="relative h-full shrink-0" style={{ width: `${100 / count}%` }}>
+      <div className="absolute inset-0" style={scene.backdrop ? { background: scene.backdrop } : undefined}>
+        {mounted && <HeroScene config={scene} progress={step} active={drawing} reducedMotion={reducedMotion} />}
+      </div>
+      {scene.steps.map((s, i) => (
+        <StepCopy key={s.tag} step={s} index={i} progress={step} first={index === 0 && i === 0} />
+      ))}
+    </div>
+  );
+}
+
+function SceneTab({
+  label,
+  index,
+  track,
+  onSelect,
+}: {
+  label: string;
+  index: number;
+  track: MotionValue<number>;
+  onSelect: () => void;
+}) {
+  const color = useTransform(track, (t) => (Math.round(t) === index ? "var(--color-brand)" : "var(--color-soft)"));
+  return (
+    <li>
+      <motion.button
+        type="button"
+        style={{ color }}
+        onClick={onSelect}
+        className="uppercase transition-colors hover:!text-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+      >
+        {label}
+      </motion.button>
+    </li>
   );
 }
 
@@ -148,10 +210,13 @@ function StepCopy({
   step,
   index,
   progress,
+  first,
 }: {
   step: Step;
   index: number;
   progress: MotionValue<number>;
+  /** the page's h1: the first scene's first step */
+  first: boolean;
 }) {
   const opacity = useTransform(progress, (s) =>
     Math.max(0, 1 - Math.abs(s - index) * 2.5),
@@ -160,7 +225,7 @@ function StepCopy({
   const visibility = useTransform(opacity, (o) =>
     o > 0.02 ? "visible" : "hidden",
   );
-  const Heading = index === 0 ? "h1" : "h2";
+  const Heading = first ? "h1" : "h2";
 
   return (
     <motion.div

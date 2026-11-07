@@ -1,0 +1,118 @@
+{
+  "name": "yesun-building",
+  "room": "building",
+  "note": "A multi-storey building in section for the home page's fourth scene, set in its street: a curtain wall on three faces, offices with meeting rooms, a lobby, lifts and a parking level; rooftop AHU, condensers and exhaust fan, three risers in a shaft, supply and return networks on five floors, jet fans and an exhaust duct in the parking level.",
+  "cache_dir": "~/.cache/interior-3d-hero/polyhaven",
+  "materials": {
+    "wood": {
+      "asset": "oak_veneer_05",
+      "mul": [
+        1.19,
+        1.21,
+        1.12
+      ],
+      "rough_mul": 0.9,
+      "tile": 1.0,
+      "nsize": 512
+    },
+    "floor": {
+      "asset": "laminate_floor_02",
+      "mul": [
+        1.0,
+        0.94,
+        0.88
+      ],
+      "rough_mul": 0.75,
+      "tile": 1.7,
+      "nsize": 512
+    },
+    "plaster": {
+      "asset": "beige_wall_001",
+      "mul": [
+        1.01,
+        1.08,
+        1.12
+      ],
+      "add": 0.3,
+      "tile": 3.0,
+      "normal_strength": 0.5
+    },
+    "fabric": {
+      "asset": "poly_wool_herringbone",
+      "mul": [
+        0.45,
+        0.47,
+        0.52
+      ],
+      "tile": 0.27
+    },
+    "fabric_light": {
+      "asset": "poly_wool_herringbone",
+      "mul": [
+        1.11,
+        1.08,
+        0.99
+      ],
+      "add": 0.27,
+      "tile": 0.27
+    },
+    "concrete": {
+      "asset": "concrete_wall_008",
+      "mul": [
+        1.0,
+        1.04,
+        1.18
+      ],
+      "add": 0.23,
+      "tile": 2.7,
+      "dsize": 512,
+      "nsize": 512,
+      "roughness": 0.9
+    },
+    "asphalt": {
+      "asset": "asphalt_02",
+      "mul": [
+        0.95,
+        0.98,
+        1.08
+      ],
+      "tile": 3.0,
+      "dsize": 512,
+      "nsize": 512
+    },
+    "pavers": {
+      "asset": "square_pavers",
+      "mul": [
+        0.99,
+        1.44,
+        1.57
+      ],
+      "add": 0.35,
+      "tile": 2.2,
+      "dsize": 512,
+      "nsize": 512
+    },
+    "grass": {
+      "asset": "leafy_grass",
+      "mul": [
+        0.72,
+        1.05,
+        0.75
+      ],
+      "tile": 2.0,
+      "dsize": 512,
+      "nsize": 512
+    }
+  },
+  "colors": {
+    "desk": "f3f2ef",
+    "panel": "ecebe7",
+    "window_frame": "3a3d42",
+    "pot": "8d8a85",
+    "duct": "7f858c",
+    "duct_wrap": "c3c6ca",
+    "ahu": "d0d3d6",
+    "leaf_dark": "2f5a24",
+    "leaf_light": "7aa64a"
+  }
+}

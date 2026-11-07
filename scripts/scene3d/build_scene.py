@@ -22,6 +22,7 @@ import bpy, bmesh, json, math, os, sys, urllib.request
 import numpy as np
 from mathutils import Matrix, Vector
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))  # rooms.py, building.py
 argv = sys.argv[sys.argv.index("--") + 1:]
 SPEC_PATH, OUT_GLB, RENDER_DIR = argv[0], argv[1], argv[2]
 DO_RENDER = len(argv) > 3 and argv[3] == "render"
@@ -46,6 +47,10 @@ FEAT = SPEC["features"]
 HVAC = SPEC["hvac"]
 CEIL_TYPE = SPEC["ceiling"]["type"]
 assert CEIL_TYPE in ("slats", "tiles", "open"), f"unknown ceiling type {CEIL_TYPE}"
+# every room shares the shell and ceiling; the office's HVAC is built here, the kindergarten's and school's in
+# systems.py, and each room's furniture in rooms.py (the building has its own builder, building.py)
+ROOM = SPEC.get("room", "office")
+assert ROOM in ("office", "kindergarten", "school", "building"), f"unknown room {ROOM}"
 CACHE = os.path.expanduser(SPEC["cache_dir"])
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -306,6 +311,18 @@ M.update({
     "arrow_light": material("arrow_light", "c9cbcf", 0.2, 0.5),
     "sprinkler": material("sprinkler_red", col("sprinkler"), 0.3, 0.45),
     "slab": material("slab", col("slab"), 0.0, 0.95),
+    # children's furniture and classroom pieces
+    "mint": material("kid_mint", "9fd3c2", 0.0, 0.5),
+    "peach": material("kid_peach", "f2b49c", 0.0, 0.5),
+    "butter": material("kid_butter", "f1d482", 0.0, 0.5),
+    "skyblue": material("kid_sky", "9fc3e8", 0.0, 0.5),
+    "lilac": material("kid_lilac", "c6b6e4", 0.0, 0.5),
+    "rug": material("rug", "ece3d1", 0.0, 0.95),
+    "board": material("whiteboard", "f6f7f4", 0.0, 0.18),
+    "ink_blue": material("marker_blue", "2a4fb5", 0.0, 0.5),
+    "seat": material("school_seat", "36506e", 0.0, 0.45),
+    "globe": material("globe_sea", "4f86b8", 0.1, 0.4),
+    "globe_land": material("globe_land", "8fb36a", 0.0, 0.6),
 })
 
 
@@ -479,6 +496,87 @@ def empty(name, loc=(0, 0, 0)):
     return ob
 
 
+# ---------------------------------------------------------------- export and previews (functions, so every room and the building share them)
+def export_glb():
+    os.makedirs(os.path.dirname(os.path.abspath(OUT_GLB)), exist_ok=True)
+    bpy.ops.object.select_all(action="DESELECT")
+    bpy.ops.export_scene.gltf(
+        filepath=OUT_GLB,
+        export_format="GLB",
+        export_apply=True,
+        export_yup=True,
+        export_extras=True,
+        export_cameras=False,
+        export_lights=False,
+        export_image_format="WEBP",
+        export_image_quality=80,
+        export_draco_mesh_compression_enable=True,
+        export_draco_mesh_compression_level=7,
+        export_draco_position_quantization=14,
+        export_draco_texcoord_quantization=12,
+    )
+    print("EXPORTED", OUT_GLB, os.path.getsize(OUT_GLB))
+
+
+def preview(shots, lights=None):
+    """EEVEE renders for a quick look only; shots are (file, location, target, lens, hidden names)."""
+    world = bpy.data.worlds.new("w")
+    scene.world = world
+    try:
+        world.use_nodes = True
+    except Exception:
+        pass
+    bg = world.node_tree.nodes.get("Background")
+    bg.inputs["Color"].default_value = (*srgb("dfe6ee"), 1)
+    bg.inputs["Strength"].default_value = 0.6
+
+    def light(name, kind, loc, rot, energy, size=3, color=(1, 1, 1)):
+        ld = bpy.data.lights.new(name, kind)
+        ld.energy = energy
+        ld.color = color
+        if kind == "AREA":
+            ld.size = size
+        ob = bpy.data.objects.new(name, ld)
+        ob.location, ob.rotation_euler = loc, rot
+        root.objects.link(ob)
+
+    for args in lights or (
+        ("sun", "SUN", (0, 0, 8), (math.radians(60), 0, math.radians(-110)), 4.0, 3, (1, 0.95, 0.88)),
+        ("room", "AREA", (0, -1, 2.6), (0, 0, 0), 700, 6, (1, 0.93, 0.85)),
+        ("window", "AREA", (-4.9, -0.5, 1.5), (0, math.radians(-90), 0), 900, 6, (0.92, 0.95, 1.0)),
+    ):
+        light(*args)
+
+    cam_data = bpy.data.cameras.new("cam")
+    cam = bpy.data.objects.new("cam", cam_data)
+    root.objects.link(cam)
+    scene.camera = cam
+    scene.render.engine = "BLENDER_EEVEE"
+    scene.render.resolution_x, scene.render.resolution_y = 1600, 900
+    scene.view_settings.view_transform = "AgX"
+    os.makedirs(RENDER_DIR, exist_ok=True)
+    for name, loc, target, lens, hide in shots:
+        cam.location = loc
+        cam.rotation_euler = (Vector(target) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
+        cam_data.lens = lens
+        cam_data.clip_end = 300
+        for ob in bpy.data.objects:
+            ob.hide_render = bool(ob.name in hide or (ob.parent and ob.parent.name in hide))
+        scene.render.filepath = os.path.join(RENDER_DIR, name)
+        bpy.ops.render.render(write_still=True)
+        print("RENDERED", name)
+
+
+if ROOM == "building":
+    import building  # scripts/scene3d/building.py: a multi-storey building in section, its own layout
+
+    building.build(globals())
+    export_glb()
+    if DO_RENDER:
+        preview(building.SHOTS, building.LIGHTS)
+    sys.exit(0)
+
+
 # ---------------------------------------------------------------- layout constants
 RX0, RX1, RY0, RY1 = -5.2, 5.2, -4.6, 3.6        # room; -Y is the open front the camera looks in from
 CEIL = 3.0                                        # white plaster ceiling around the feature zone
@@ -518,7 +616,10 @@ def snap_y(y):
 # ---------------------------------------------------------------- room shell
 shell = Part("room")
 shell.box((RX1 - RX0, RY1 - RY0, 0.02), ((RX0 + RX1) / 2, (RY0 + RY1) / 2, -0.01), M["border"], uv=uvs("border"))
-shell.box((8.0, 6.6, 0.012), (-0.6, -0.4, 0.006), M["floor"], uv=uvs("floor"))
+if FEAT.get("full_floor"):                         # the finish runs wall to wall; the office keeps a border round its zone
+    shell.box((RX1 - RX0, RY1 - RY0, 0.012), ((RX0 + RX1) / 2, (RY0 + RY1) / 2, 0.006), M["floor"], uv=uvs("floor"))
+else:
+    shell.box((8.0, 6.6, 0.012), (-0.6, -0.4, 0.006), M["floor"], uv=uvs("floor"))
 shell.box((RX1 - RX0 + 0.3, 0.15, CEIL + 0.05), ((RX0 + RX1) / 2, RY1 + 0.075, (CEIL + 0.05) / 2), M["plaster"], uv=uvs("plaster", "x"))
 shell.box((0.15, RY1 - RY0, CEIL + 0.05), (RX1 + 0.075, (RY0 + RY1) / 2, (CEIL + 0.05) / 2), M["plaster"], uv=uvs("plaster"))
 if FEAT["windows"]:
@@ -646,7 +747,12 @@ def cell_of(x, y):
     return (round((x - SX0 - CELL / 2) / CELL), round((y - SY0 - CELL / 2) / CELL))
 
 
-if HVAC["enabled"]:
+if HVAC["enabled"] and ROOM != "office":
+    import systems  # scripts/scene3d/systems.py: the kindergarten's and the school's own systems
+
+    getattr(systems, ROOM)(globals())
+
+if HVAC["enabled"] and ROOM == "office":
     SUP_W, SUP_H = 0.5, 0.32
     RET_W, RET_H = 0.45, 0.28
     MAIN_Z = PZ + 0.62
@@ -980,8 +1086,17 @@ def bench(name, cx, y0, y1, n):
 
 A_CX, A_Y0, A_Y1 = -1.2, -2.1, 2.1
 B_CX, B_Y0, B_Y1 = 1.75, -2.0, 0.8
-bench("desks_a", A_CX, A_Y0, A_Y1, 3)
-bench("desks_b", B_CX, B_Y0, B_Y1, 2)
+if ROOM == "office":
+    bench("desks_a", A_CX, A_Y0, A_Y1, 3)
+    bench("desks_b", B_CX, B_Y0, B_Y1, 2)
+elif ROOM == "kindergarten":
+    from rooms import kindergarten  # scripts/scene3d/rooms.py
+
+    kindergarten(globals())
+elif ROOM == "school":
+    from rooms import school
+
+    school(globals())
 
 if FEAT["planter"]:
     pl = Part("planter")
@@ -1076,70 +1191,10 @@ if FEAT["pendant_ring"] or FEAT["pendant_linear"]:
     pend.build(parent=furniture)
 
 # ---------------------------------------------------------------- export
-os.makedirs(os.path.dirname(os.path.abspath(OUT_GLB)), exist_ok=True)
-bpy.ops.object.select_all(action="DESELECT")
-bpy.ops.export_scene.gltf(
-    filepath=OUT_GLB,
-    export_format="GLB",
-    export_apply=True,
-    export_yup=True,
-    export_extras=True,
-    export_cameras=False,
-    export_lights=False,
-    export_image_format="WEBP",
-    export_image_quality=80,
-    export_draco_mesh_compression_enable=True,
-    export_draco_mesh_compression_level=7,
-    export_draco_position_quantization=14,
-    export_draco_texcoord_quantization=12,
-)
-print("EXPORTED", OUT_GLB, os.path.getsize(OUT_GLB))
-
-# ---------------------------------------------------------------- preview renders (EEVEE, for a quick look only)
+export_glb()
 if DO_RENDER:
-    world = bpy.data.worlds.new("w")
-    scene.world = world
-    try:
-        world.use_nodes = True
-    except Exception:
-        pass
-    bg = world.node_tree.nodes.get("Background")
-    bg.inputs["Color"].default_value = (*srgb("dfe6ee"), 1)
-    bg.inputs["Strength"].default_value = 0.6
-
-    def light(name, kind, loc, rot, energy, size=3, color=(1, 1, 1)):
-        ld = bpy.data.lights.new(name, kind)
-        ld.energy = energy
-        ld.color = color
-        if kind == "AREA":
-            ld.size = size
-        ob = bpy.data.objects.new(name, ld)
-        ob.location, ob.rotation_euler = loc, rot
-        root.objects.link(ob)
-
-    light("sun", "SUN", (0, 0, 8), (math.radians(60), 0, math.radians(-110)), 4.0, color=(1, 0.95, 0.88))
-    light("room", "AREA", (0, -1, 2.6), (0, 0, 0), 700, 6, (1, 0.93, 0.85))
-    light("window", "AREA", (-4.9, -0.5, 1.5), (0, math.radians(-90), 0), 900, 6, (0.92, 0.95, 1.0))
-
-    cam_data = bpy.data.cameras.new("cam")
-    cam = bpy.data.objects.new("cam", cam_data)
-    root.objects.link(cam)
-    scene.camera = cam
-    scene.render.engine = "BLENDER_EEVEE"
-    scene.render.resolution_x, scene.render.resolution_y = 1600, 900
-    scene.view_settings.view_transform = "AgX"
-
-    def shoot(name, loc, target, lens=30, hide=()):
-        cam.location = loc
-        cam.rotation_euler = (Vector(target) - Vector(loc)).to_track_quat("-Z", "Y").to_euler()
-        cam_data.lens = lens
-        for ob in bpy.data.objects:
-            ob.hide_render = bool(ob.name in hide or (ob.parent and ob.parent.name in hide))
-        scene.render.filepath = os.path.join(RENDER_DIR, name)
-        bpy.ops.render.render(write_still=True)
-        print("RENDERED", name)
-
-    os.makedirs(RENDER_DIR, exist_ok=True)
-    shoot("office.png", (1.4, -6.2, 1.55), (-0.9, 1.0, 1.95), lens=24)
-    shoot("xray.png", (2.2, -5.2, 1.3), (0.4, -0.5, 3.0), lens=24, hide=("ceiling_reveal",))
-    shoot("plenum.png", (6.5, -8.5, 9.5), (-0.3, 0, 3.0), lens=30, hide=("slab",))
+    preview((
+        ("office.png", (1.4, -6.2, 1.55), (-0.9, 1.0, 1.95), 24, ()),
+        ("xray.png", (2.2, -5.2, 1.3), (0.4, -0.5, 3.0), 24, ("ceiling_reveal",)),
+        ("plenum.png", (6.5, -8.5, 9.5), (-0.3, 0, 3.0), 30, ("slab",)),
+    ))

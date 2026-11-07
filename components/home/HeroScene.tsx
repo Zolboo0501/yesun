@@ -7,62 +7,24 @@ import { ToneMappingMode } from "postprocessing";
 import { Suspense, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
+import { heroScenes, type HeroSceneConfig } from "./heroScenes";
 
 RectAreaLightUniformsLib.init();
 
-// Built by scripts/scene3d/build_scene.py from scene.json: an office under a walnut slat ceiling, and the HVAC above it.
-const MODEL = "/models/hvac/office.glb";
+// Each scene's model, light and shots live in heroScenes.ts; this component draws whichever it is given.
 const DRACO = "/draco/"; // three's Draco decoder, copied into public/draco/
-
-// The light's mood, kept with the spec's look. Warm amber pendants and a low sun read as a calm, premium office;
-// for a cooler, technical space use neutral pendants (#f4f1ec) and a whiter sun (#ffffff).
-const MOOD = {
-  background: "#8f8a83", // what reflections see beyond the room
-  sun: "#fff2df",
-  sunIntensity: 3.8,
-  daylight: "#eaf1ff", // the glazing
-  pendant: "#ffcf94",
-};
-
-type Vec = [number, number, number];
-type Shot = {
-  pos: Vec;
-  target: Vec;
-  fov: number;
-  /** how far right of the copy the subject sits on desktop, as a share of the width */
-  shift: number;
-  /** feature ceiling in place (1) or faded out to show the ducts above (0) */
-  ceiling: number;
-  /** slab shown (1) or faded out for views from above (0) */
-  slab: number;
-  /** whole HVAC system pulled apart into its components (1) */
-  sys: number;
-  /** air handling unit opened up: casing off, fan, motor, coil and filter drawn out (1) */
-  ahu: number;
-};
-// One camera shot per story step, in the order Hero renders them. Every camera sits outside the
-// room or above the slab, so moving between shots never cuts through a wall. Three.js axes:
-// x = Blender x, y = Blender z (up), z = -Blender y. The room spans x -5.2..5.2, z -3.6..4.6,
-// the ceiling is at y 3.0 and the slab at 4.0; the AHU sits around (-2.45, 3.5, 0).
-// Change them only to change the story; the room layout is fixed, so these hold for any spec.
-const shots: Shot[] = [
-  { pos: [1.4, 1.55, 6.2], target: [-0.9, 2.0, -1.0], fov: 46, shift: 0.06, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
-  { pos: [7.4, 11.2, 10.4], target: [-0.6, 4.0, 0], fov: 32, shift: 0.17, ceiling: 1, slab: 0, sys: 1, ahu: 0 },
-  { pos: [2.7, 4.4, 1.7], target: [0.75, 3.42, -0.15], fov: 34, shift: 0.15, ceiling: 1, slab: 0, sys: 0, ahu: 0 },
-  { pos: [-1.3, 4.15, 5.6], target: [-2.75, 3.75, 0.3], fov: 40, shift: 0.17, ceiling: 1, slab: 0, sys: 0, ahu: 1 },
-  { pos: [2.2, 1.3, 5.2], target: [0.4, 3.0, 0.5], fov: 44, shift: 0.12, ceiling: 0, slab: 1, sys: 0, ahu: 0 },
-  { pos: [-2.6, 1.6, 6.4], target: [0.2, 1.85, -1.0], fov: 46, shift: 0.06, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
-];
 
 type Input = { dragging: boolean; lastX: number; yaw: number; px: number; py: number };
 
 type SceneProps = {
+  config: HeroSceneConfig;
   progress: MotionValue<number>;
   active: boolean;
   reducedMotion: boolean;
 };
 
-export default function HeroScene({ progress, active, reducedMotion }: SceneProps) {
+export default function HeroScene({ config, progress, active, reducedMotion }: SceneProps) {
+  const { mood, sun, shots } = config;
   // Mouse drag turns the room a little; touch is left alone so the page still scrolls.
   const input = useRef<Input>({ dragging: false, lastX: 0, yaw: 0, px: 0, py: 0 });
   // Phones and small screens skip ambient occlusion and multisampling.
@@ -98,49 +60,54 @@ export default function HeroScene({ progress, active, reducedMotion }: SceneProp
         dpr={[1, lite ? 1.5 : 1.75]}
         shadows="percentage"
         flat
-        camera={{ position: shots[0].pos, fov: shots[0].fov, near: 0.05, far: 80 }}
+        camera={{ position: shots[0].pos, fov: shots[0].fov, near: 0.05, far: 160 }}
         fallback={
           <p className="flex size-full items-center justify-center text-step-small text-soft">
             Таны хөтөч 3D дүрслэлийг дэмжихгүй байна.
           </p>
         }
-        aria-label="Цонхоор нар тусах оффис, модон сороот тааз, таазны дээрх агаар сэлгэлт, хөргөлтийн систем"
+        aria-label={config.label}
       >
         <Environment resolution={256} environmentIntensity={0.9}>
-          <color attach="background" args={[MOOD.background]} />
+          <color attach="background" args={[mood.background]} />
           {/* the window wall, the white ceiling and a warm floor bounce, as seen by reflections */}
-          <Lightformer intensity={5} position={[-9, 1.5, 0]} rotation-y={Math.PI / 2} scale={[12, 3, 1]} color={MOOD.daylight} />
+          <Lightformer intensity={5} position={[-9, 1.5, 0]} rotation-y={Math.PI / 2} scale={[12, 3, 1]} color={mood.daylight} />
           <Lightformer intensity={1.2} position={[0, 6, 0]} rotation-x={Math.PI / 2} scale={[10, 8, 1]} color="#fff4e6" />
           <Lightformer intensity={0.8} position={[0, -3, 0]} rotation-x={-Math.PI / 2} scale={[10, 8, 1]} color="#c89f7a" />
           <Lightformer intensity={1} position={[9, 2, 0]} rotation-y={-Math.PI / 2} scale={[10, 3, 1]} color="#fff1e0" />
         </Environment>
+        {config.fog && <fog attach="fog" args={[config.fog.color, config.fog.near, config.fog.far]} />}
         <hemisphereLight args={["#e6eef8", "#6a5544", 0.7]} />
         {/* low sun through the window wall; the ceiling and walls cast, so it lands in patches */}
         <directionalLight
           castShadow
-          position={[-12, 6.5, 2.5]}
-          intensity={MOOD.sunIntensity}
-          color={MOOD.sun}
+          position={sun.position}
+          intensity={mood.sunIntensity}
+          color={mood.sun}
           shadow-mapSize={[2048, 2048]}
-          shadow-camera-left={-8}
-          shadow-camera-right={8}
-          shadow-camera-top={8}
-          shadow-camera-bottom={-8}
+          shadow-camera-left={-sun.extent}
+          shadow-camera-right={sun.extent}
+          shadow-camera-top={sun.extent}
+          shadow-camera-bottom={-sun.extent}
           shadow-camera-near={1}
-          shadow-camera-far={30}
+          shadow-camera-far={sun.far}
           shadow-bias={-0.0003}
           shadow-normalBias={0.03}
           shadow-radius={4}
         />
-        {/* soft daylight from the glazing */}
-        <rectAreaLight position={[-5.0, 1.5, 0]} rotation={[0, -Math.PI / 2, 0]} width={8} height={2.6} intensity={2.2} color={MOOD.daylight} />
-        {/* pools under the pendants, and a work light in the plenum */}
-        <pointLight position={[-1.2, 2.05, 0]} intensity={4} distance={4.5} color={MOOD.pendant} />
-        <pointLight position={[1.75, 2.15, 0.6]} intensity={2.5} distance={3.5} color={MOOD.pendant} />
-        <pointLight position={[0, 3.6, 1.5]} intensity={3} distance={6} color="#f4f1ec" />
+        {config.interior && (
+          <>
+            {/* soft daylight from the glazing */}
+            <rectAreaLight position={[-5.0, 1.5, 0]} rotation={[0, -Math.PI / 2, 0]} width={8} height={2.6} intensity={2.2} color={mood.daylight} />
+            {/* pools under the lamps, and a work light in the plenum */}
+            <pointLight position={[-1.2, 2.05, 0]} intensity={4} distance={4.5} color={mood.pendant} />
+            <pointLight position={[1.75, 2.15, 0.6]} intensity={2.5} distance={3.5} color={mood.pendant} />
+            <pointLight position={[0, 3.6, 1.5]} intensity={3} distance={6} color="#f4f1ec" />
+          </>
+        )}
 
         <Suspense fallback={null}>
-          <Rig progress={progress} inputRef={input} animate={!reducedMotion} />
+          <Rig model={config.model} shots={shots} progress={progress} inputRef={input} animate={!reducedMotion} />
         </Suspense>
 
         {lite ? (
@@ -173,9 +140,9 @@ export default function HeroScene({ progress, active, reducedMotion }: SceneProp
   );
 }
 
+// scratch vectors, rewritten every frame; each Rig keeps its own look target
 const targetPos = new THREE.Vector3();
 const targetLook = new THREE.Vector3();
-const look = new THREE.Vector3(...shots[0].target);
 const tmpA = new THREE.Vector3();
 const tmpB = new THREE.Vector3();
 const { damp, clamp, lerp } = THREE.MathUtils;
@@ -226,8 +193,11 @@ function findParts(scene: THREE.Object3D) {
   // Exploded-view parts carry their offsets from Blender as glTF extras.
   const exploding: { obj: THREE.Object3D; home: THREE.Vector3; sys: THREE.Vector3; ahu: THREE.Vector3; delay: number }[] = [];
   const fading: THREE.Material[] = [];
+  // the AHU's fan, plus any other fan the model marks to spin (the kindergarten's unit has two)
+  const fans: THREE.Object3D[] = [];
   scene.traverse((o) => {
     const d = o.userData;
+    if (o.name === "ahu_fan" || d.spin) fans.push(o);
     if (d.explode_sys || d.explode_ahu) {
       exploding.push({
         obj: o,
@@ -257,7 +227,7 @@ function findParts(scene: THREE.Object3D) {
     slab,
     slabMaterial,
     door: scene.getObjectByName("ahu_door"),
-    fan: scene.getObjectByName("ahu_fan"),
+    fans,
   };
 }
 
@@ -268,15 +238,20 @@ const staged = (amount: number, delay: number) => {
 };
 
 function Rig({
+  model,
+  shots,
   progress,
   inputRef,
   animate,
 }: {
+  model: string;
+  shots: HeroSceneConfig["shots"];
   progress: MotionValue<number>;
   inputRef: RefObject<Input>;
   animate: boolean;
 }) {
-  const { scene } = useGLTF(MODEL, DRACO);
+  const { scene } = useGLTF(model, DRACO);
+  const lookRef = useRef(new THREE.Vector3().fromArray(shots[0].target));
   const group = useRef<THREE.Group>(null);
   const offset = useRef({ w: 0, h: 0, x: 0, y: 0 });
   const state = useRef({ ceiling: 1, slab: 1, sys: 0, ahu: 0 });
@@ -307,6 +282,7 @@ function Rig({
       damp(cam.position.y, targetPos.y, k, delta),
       damp(cam.position.z, targetPos.z, k, delta),
     );
+    const look = lookRef.current;
     look.set(
       damp(look.x, targetLook.x, k, delta),
       damp(look.y, targetLook.y, k, delta),
@@ -345,7 +321,7 @@ function Rig({
       parts.slab.visible = s.slab > 0.02;
     }
     if (parts.door) parts.door.rotation.y = -staged(s.ahu, 0.05) * 1.2;
-    if (parts.fan && animate) parts.fan.rotation.z += delta * (1 + s.ahu * 6);
+    if (animate) for (const fan of parts.fans) fan.rotation.z += delta * (1 + s.ahu * 6);
 
     // Released drags ease the room back so every shot frames what it should.
     if (!input.dragging) input.yaw = damp(input.yaw, 0, 2.5, delta);
@@ -375,4 +351,5 @@ function Rig({
   );
 }
 
-useGLTF.preload(MODEL, DRACO);
+// the first scene loads with the page; the others are mounted (and so fetched) a scene ahead of being seen
+useGLTF.preload(heroScenes[0].model, DRACO);
