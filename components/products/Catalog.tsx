@@ -39,7 +39,7 @@ export function Catalog() {
             />
           </h1>
           <p className="max-w-[42ch] text-pretty text-step-body leading-[1.65] text-ink/70 lg:col-span-4 lg:col-start-9">
-            Албан ёсны {brands.length} түнш брэндийн агааржуулагч, сэнс, агаар боловсруулах төхөөрөмж.
+            Албан ёсны түнш брэндүүдийн агааржуулагч, сэнс, агаар боловсруулах төхөөрөмж.
           </p>
         </div>
 
@@ -180,7 +180,7 @@ function Browser({ filters }: { filters: Filters }) {
             {q && (
               <button
                 type="button"
-                aria-label="Хайлтыг цэвэрлэх"
+                aria-label="Хайлтыг арилгах"
                 onClick={() => {
                   setQ("");
                   write({ q: "" });
@@ -233,7 +233,7 @@ function Browser({ filters }: { filters: Filters }) {
         ) : (
           <div className="mt-8 rounded-[24px] bg-ink/[0.035] px-6 py-16 text-center">
             <p className="font-semibold">Тохирох бүтээгдэхүүн олдсонгүй</p>
-            <p className="mt-1 text-sm text-ink/60">Өөр үгээр хайх эсвэл шүүлтүүрийг арилгаад үзнэ үү.</p>
+            <p className="mt-1 text-sm text-ink/60">Өөр үгээр хайгаад, эсвэл шүүлтүүрээ арилгаад үзнэ үү.</p>
             <button
               type="button"
               onClick={clear}

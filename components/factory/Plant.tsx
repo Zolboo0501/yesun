@@ -37,7 +37,7 @@ export function Plant() {
               <Heading id="plant-title" text="Манай үйлдвэр" />
             </div>
             <p className="max-w-[44ch] text-pretty text-step-body leading-[1.65] text-ink/70 lg:col-span-5 lg:col-start-8 lg:self-end">
-              72 × 24 м хэмжээтэй, 7,35 м өндөр, хоёр давхар барилгад байрладаг.
+              72 × 24 м хэмжээтэй, 7,35 м өндөртэй, хоёр давхар барилгад байрладаг.
             </p>
           </div>
 

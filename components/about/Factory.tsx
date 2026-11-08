@@ -76,7 +76,7 @@ export function Factory() {
           <Heading id="factory-title" text="Сувгаа өөрсдөө хийнэ." />
         </div>
         <p className="max-w-[44ch] text-pretty text-step-body leading-[1.65] text-ink/75 lg:col-span-5 lg:col-start-8 lg:self-end">
-          Агаарын суваг, фасон эдлэлийг өөрийн үйлдвэрт төслийн хэмжээгээр хийнэ.
+          Агаарын суваг, фасон эдлэлийг өөрийн үйлдвэрт төсөл бүрийн хэмжээгээр хийнэ.
         </p>
       </div>
 

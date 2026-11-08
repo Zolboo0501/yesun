@@ -10,8 +10,8 @@ const members: About1Member[] = [
   { name: "Б.Бэхбат", role: "Инженерийн багийн ахлагч", image: "/images/member2.jpg", text: "17 жилийн туршлагатай" },
   { name: "Ц.Хосбаяр", role: "ХАС-ийн мэргэшсэн инженер", image: "/images/member3.jpg", text: "5 жилийн туршлагатай" },
   { name: "Д.Хангай", role: "ХАС-ийн мэргэшсэн инженер", image: "/images/member4.jpg", text: "5 жилийн туршлагатай" },
-  { name: "С.Энхзаяа", role: "ХАБЭА-инженер" },
-  { name: "М.Далайсайхан", role: "ХАБЭА-инженер" },
+  { name: "С.Энхзаяа", role: "ХАБЭА-н инженер" },
+  { name: "М.Далайсайхан", role: "ХАБЭА-н инженер" },
 ];
 
 /** The engineering team through the repo's about-1 block: the roster on the left, the portraits on the right. */
@@ -24,7 +24,7 @@ export function Engineers() {
           <>
             <Heading id="engineers-title" text="Инженер техникийн алба" />
             <p className="mt-5 max-w-[56ch] text-pretty text-step-body leading-[1.65] text-ink/70">
-              Зураг төсөл, тооцоо, угсралт, ашиглалтыг нэг дор хийдэг мэргэшсэн баг.
+              Зураг төсөл, тооцоо, угсралт, ашиглалтыг нэг дор хариуцдаг мэргэшсэн баг.
             </p>
           </>
         }

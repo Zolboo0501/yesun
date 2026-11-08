@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Есөн Бэлчир ХХК - Агаар Сэрүүцэгч, Эйркондишн',
+    name: 'Есөн Бэлчир ХХК – Агаар сэрүүцэгч, эйркондишн',
     short_name: 'Есөн Бэлчир',
-    description: 'Агаар сэрүүцэгч, эйркондишн, халаалтын систем, агаар сэлгэлт - KANION, AUX, BALLU, SHUFT, AIRONN брэндийн албан ёсны нийлүүлэгч',
+    description: 'Агаар сэрүүцэгч, эйркондишн, халаалтын систем, агаар сэлгэлт – KANION, AUX, BALLU, SHUFT, AIRONN брэндийн албан ёсны нийлүүлэгч',
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

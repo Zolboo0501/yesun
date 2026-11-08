@@ -27,7 +27,7 @@ type Project = {
 // page's five-star ratings are gone: they were not real reviews.
 const projects: Project[] = [
   {
-    title: "Монгол банкны үндэсний цахим гүйлгээний төв",
+    title: "Монголбанкны үндэсний цахим гүйлгээний төв",
     work: ["Агаар сэлгэлт"],
     year: 2019,
     engineer: "Ц.Хосбаяр",
@@ -36,7 +36,7 @@ const projects: Project[] = [
   },
   {
     title: "Хүннү 2222, 2-р ээлж",
-    scope: "Орон сууцны нэгдсэн граж",
+    scope: "Орон сууцны нэгдсэн гараж",
     work: ["Агаар сэлгэлт", "Хөргөлт", "Угсралт"],
     year: 2020,
     engineer: "Ц.Хосбаяр",
@@ -80,7 +80,7 @@ const projects: Project[] = [
   },
   {
     title: "Одод хотхон",
-    scope: "2 блок орон сууц, нэгдсэн граж",
+    scope: "2 блок орон сууц, нэгдсэн гараж",
     work: ["Агаар сэлгэлт", "Хөргөлт"],
     year: 2022,
     engineer: "Д.Хангай",
@@ -89,7 +89,7 @@ const projects: Project[] = [
   },
   {
     title: "Platinum Tower",
-    scope: "2 блок орон сууц, нэгдсэн граж",
+    scope: "2 блок орон сууц, нэгдсэн гараж",
     work: ["Агаар сэлгэлт", "Хөргөлт"],
     year: 2023,
     engineer: "Ц.Хосбаяр",
@@ -143,7 +143,7 @@ const portraits: Record<string, string> = {
 const FILTERS = [
   { id: "all", label: "Бүгд" },
   { id: "home", label: "Орон сууц" },
-  { id: "public", label: "Олон нийтийн" },
+  { id: "public", label: "Олон нийтийн барилга" },
   { id: "industry", label: "Үйлдвэр, уурхай" },
 ] as const;
 
@@ -241,7 +241,7 @@ function TextPage({ project, index }: { project: Project; index: number }) {
             )}
           </span>
           <p className="text-[max(12px,2.4cqw)] leading-tight">
-            <span className="block text-ink/50">Гүйцэтгэсэн инженер</span>
+            <span className="block text-ink/50">Хариуцсан инженер</span>
             <span className="block font-semibold">{project.engineer}</span>
           </p>
         </div>
@@ -474,7 +474,7 @@ export function ProjectBook() {
                 <p className="mt-1 text-sm text-white/60">
                   {[project.scope, project.work.join(", ")].filter(Boolean).join(" · ")}
                 </p>
-                <p className="mt-0.5 text-sm text-white/60">Гүйцэтгэсэн инженер: {project.engineer}</p>
+                <p className="mt-0.5 text-sm text-white/60">Хариуцсан инженер: {project.engineer}</p>
               </>
             ) : (
               <p className="text-sm text-white/60">
@@ -484,7 +484,7 @@ export function ProjectBook() {
           </div>
 
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-            <p className="hidden text-sm text-white/55 sm:block">Хуудсан дээр дарж, эсвэл ← → товчоор эргүүлнэ.</p>
+            <p className="hidden text-sm text-white/55 sm:block">Хуудсан дээр дарж эсвэл ← → товчоор эргүүлнэ.</p>
             <div className="col-start-2 flex items-center gap-3">
               <button
                 type="button"

@@ -62,7 +62,7 @@ function BrandCard({ brand }: { brand: Brand }) {
           href={brand.url}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label={`${brand.name}-ийн сайт (шинэ цонхонд нээгдэнэ)`}
+          aria-label={`${brand.name} брэндийн сайт (шинэ цонхонд нээгдэнэ)`}
           className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-6 text-sm font-semibold text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
         >
           {brand.domain}

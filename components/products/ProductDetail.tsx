@@ -91,7 +91,7 @@ export function ProductDetail({ product }: { product: Product }) {
                 rel="noopener noreferrer"
                 className="group mt-6 inline-flex items-center gap-1.5 text-sm text-ink/60 underline decoration-ink/25 decoration-1 underline-offset-[5px] transition-colors hover:text-ink hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
               >
-                Үйлдвэрлэгчийн сайтаас үзэх (шинэ цонхонд)
+                Үйлдвэрлэгчийн сайтаас үзэх (шинэ цонхонд нээгдэнэ)
                 <ArrowUpRight aria-hidden className="size-3.5 transition-transform group-hover:-translate-y-px group-hover:translate-x-px" />
               </a>
             )}

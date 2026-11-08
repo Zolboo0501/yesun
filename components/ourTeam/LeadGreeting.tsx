@@ -7,10 +7,10 @@ import Image from "next/image";
 
 // The engineering lead's greeting, from the old engineering greeting page; its last sentence leads it as the quote.
 const quote =
-  "Бид зөвхөн өнөөдрийн гүйцэтгэлд бус, ирээдүйн ашиглалт, засвар үйлчилгээний үр ашгийг урьдчилан тооцож ажилладаг.";
+  "Бид өнөөдрийн гүйцэтгэлээс гадна ирээдүйн ашиглалт, засвар үйлчилгээний үр ашгийг урьдчилан тооцож ажилладаг.";
 // Cut to one paragraph at the user's request (2026-11-09).
 const words = [
-  "Монгол орны уур амьсгал, барилгын онцлогт нийцсэн агаар сэлгэлт, хөргөлтийн системийг судалгаа, зураг төслөөс суурилуулалт, тохируулга хүртэл бүрэн хариуцан хэрэгжүүлдэг.",
+  "Манай баг Монгол орны уур амьсгал, барилгын онцлогт нийцсэн агаар сэлгэлт, хөргөлтийн системийг судалгаа, зураг төслөөс эхлээд суурилуулалт, тохируулга хүртэл бүрэн хариуцаж хийдэг.",
 ];
 
 /** The engineering lead's greeting, the director's mirrored: the words on the left (his name and years under the

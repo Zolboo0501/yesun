@@ -29,10 +29,10 @@ const years = [
   },
   {
     year: "2019",
-    title: "Монгол банк",
+    title: "Монголбанк",
     text: "Үндэсний цахим гүйлгээний төв.",
     src: "/images/project3.webp",
-    alt: "Монгол банкны үндэсний цахим гүйлгээний төв",
+    alt: "Монголбанкны үндэсний цахим гүйлгээний төв",
   },
   {
     year: "2020",
@@ -44,7 +44,7 @@ const years = [
   {
     year: "2021",
     title: "Өөрийн үйлдвэр",
-    text: "Үйлдвэр ашиглалтад орсон; Чингис хаан музей.",
+    text: "Үйлдвэр ашиглалтад орсон. Чингис хаан музей.",
     src: "/images/factory4.jpg",
     alt: "Агаар сэлгэлтийн сувгийн үйлдвэрийн цех",
   },
@@ -58,7 +58,7 @@ const years = [
   {
     year: "2023",
     title: "Platinum Tower",
-    text: "Хоёр блок барилга, нэгдсэн гражийн агаар сэлгэлт, хөргөлтийн систем.",
+    text: "Хоёр блок барилга, нэгдсэн гаражийн агаар сэлгэлт, хөргөлтийн систем.",
     src: "/images/project8.webp",
     alt: "Platinum Tower орон сууц",
   },
@@ -74,7 +74,7 @@ const years = [
     title: "150 гаруй объект",
     text: "Нийслэл, орон нутагт. Зураг төслөөс угсралт, засвар үйлчилгээ хүртэл нэг дор.",
     src: "/images/banner2.webp",
-    alt: "Барилгын дээвэр дээрх агаар сэлгэлтийн хоолой",
+    alt: "Барилгын дээвэр дээрх агаар сэлгэлтийн суваг",
   },
 ];
 
@@ -438,7 +438,7 @@ export function Timeline() {
 
   return (
     <Part labelledBy="timeline-title" className="overflow-x-clip">
-      <Heading id="timeline-title" text="Оноор түүх" />
+      <Heading id="timeline-title" text="Бидний түүх" />
       <div ref={track} className="relative mt-20 lg:mt-28">
         <svg aria-hidden fill="none" className="pointer-events-none absolute inset-0 size-full overflow-visible">
           {line && (

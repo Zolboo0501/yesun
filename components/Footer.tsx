@@ -283,7 +283,7 @@ function FooterView() {
                 className="font-semibold leading-[0.95] tracking-[-0.035em]"
               >
                 Төслөө
-                <span className="block pl-[0.9em]">бидэнтэй ярилцъя.</span>
+                <span className="block pl-[0.9em]">хамтдаа ярилцъя.</span>
               </motion.h2>
               <motion.div
                 variants={rise}
@@ -347,7 +347,7 @@ function FooterView() {
             ))}
             <motion.nav
               variants={rise}
-              aria-label="Footer цэс"
+              aria-label="Доод цэс"
               className="sm:col-span-2 lg:col-span-1"
             >
               <p className={`${label} text-white/50 light:text-ink/55`}>Цэс</p>
