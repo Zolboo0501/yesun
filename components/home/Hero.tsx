@@ -205,7 +205,7 @@ export function Hero() {
           aria-hidden
           className="pointer-events-none absolute bottom-5 right-[24%] hidden flex-col items-center gap-3 lg:flex"
         >
-          <span className="rotate-180 text-[10px] font-medium uppercase tracking-[0.18em] text-white/60 [writing-mode:vertical-rl]">
+          <span className="rotate-180 text-[11px] font-medium uppercase tracking-[0.18em] text-white/60 [writing-mode:vertical-rl]">
             Гүйлгэх
           </span>
           <span className="h-10 w-px bg-white/45" />

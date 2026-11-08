@@ -4,16 +4,8 @@ import { ArrowUpRight } from "lucide-react";
 import { useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { getImageProps } from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef } from "react";
 import { StepCopy, StepLine } from "./Step";
-
-// The gallery sizes its tiles in JS, so the breakpoint is read here; the server renders the desktop size.
-const wideQuery = "(min-width: 1024px)";
-const subscribe = (change: () => void) => {
-  const query = window.matchMedia(wideQuery);
-  query.addEventListener("change", change);
-  return () => query.removeEventListener("change", change);
-};
 
 type Project = { src: string; width: number; height: number; title: string; subtitle: string; alt: string };
 
@@ -102,18 +94,18 @@ const projects: Project[] = [
   },
 ];
 
-// Next's image optimizer serves each photo at the width the screen needs (never past the original). A tile crops its
-// photo to 1.45:1, so a wide photo is asked for at the width its height needs: the tile's height times the photo's
-// aspect, at most 820 × 566 at lg and 360 × 248 below. A stable list, so the gallery builds its tiles once.
-const TILE = { wide: [820, 566], narrow: [360, 248] } as const;
+// Next's image optimizer serves each photo at the width the screen needs (never past the original). A tile is at most
+// 820 × 566 (the gallery's box caps it below that: the full width less 32px on phones and tablets) and crops its photo
+// to 1.45:1, so a photo wider than that is asked for at the width its height needs. A stable list, so the gallery
+// builds its tiles once.
 const images = projects.map(({ src, width, height, alt }) => {
-  const need = ([w, h]: readonly [number, number]) => Math.round(Math.max(w, (h * width) / height));
+  const crop = Math.max(1, width / height / 1.45); // how much wider than its tile the covering photo is
   const { props } = getImageProps({
     src,
     alt,
     width,
     height,
-    sizes: `(min-width: 1024px) ${need(TILE.wide)}px, ${need(TILE.narrow)}px`,
+    sizes: `(min-width: 1024px) ${Math.round(820 * crop)}px, calc(min(820px, 100vw - 32px) * ${crop.toFixed(2)})`,
   });
   return { src: props.src, srcSet: props.srcSet, sizes: props.sizes, alt };
 });
@@ -132,7 +124,6 @@ const stepAt = (x: number) => {
 
 export function Projects() {
   const section = useRef<HTMLElement>(null);
-  const wide = useSyncExternalStore(subscribe, () => window.matchMedia(wideQuery).matches, () => true);
   const reducedMotion = useReducedMotion() ?? false;
 
   const { scrollYProgress } = useScroll({
@@ -178,7 +169,7 @@ export function Projects() {
           <DollyGallery
             images={images}
             infinite={false}
-            itemWidth={wide ? 820 : 360}
+            itemWidth={820}
             aspectRatio={1.45}
             borderRadius={0}
             grayscale={0.25}

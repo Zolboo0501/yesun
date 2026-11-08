@@ -2,11 +2,12 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/* the header, the Partners block and the footer are night on the home page and white everywhere else */
+@custom-variant light (&:where(.light, .light *));
 
 @theme inline {
   --font-sans: var(--font-golos), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, monospace;
-  --font-serif: var(--font-source-serif), ui-serif, Georgia, serif;
   /* header and the home page's first screen: one deep charcoal */
   --color-night: #16171b;
   /* warm monochrome with one washed-out blue for tags */
@@ -145,6 +146,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* selected text in the one accent, on every ground */
+  ::selection {
+    background-color: var(--color-brand);
+    color: var(--color-white);
+  }
 }
 
 @keyframes ping-slow {
@@ -191,6 +197,47 @@
 }
 .orbit:has(a:hover, a:focus-visible) .orbit-turn {
   animation-play-state: paused;
+}
+
+/* The home page's service icons (components/home/ServiceIcons.tsx): air running along a dashed line (its dash and gap
+   make 90), smoke rings leaving a chimney, windows lit in turn, a wrench working a bolt. They turn on `orbit` too. */
+@keyframes flow {
+  to {
+    stroke-dashoffset: -90;
+  }
+}
+@keyframes puff {
+  0% {
+    opacity: 0;
+    translate: 0 8px;
+    scale: 0.6;
+  }
+  25% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    translate: 36px -66px;
+    scale: 1.5;
+  }
+}
+@keyframes glow {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes rock {
+  0%,
+  100% {
+    rotate: -9deg;
+  }
+  50% {
+    rotate: 9deg;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .orbit-turn {

@@ -153,7 +153,8 @@ export const DollyGallery = ({
     () => false,
   );
   const list = useMemo(() => images.map(normalise), [images]);
-  const tileWidth = Math.max(40, Math.min(itemWidth, box.width - 32));
+  // never wider than the box, nor taller than it, less 32px each way
+  const tileWidth = Math.max(40, Math.min(itemWidth, box.width - 32, (box.height - 32) * aspectRatio));
   const tileHeight = tileWidth / Math.max(0.1, aspectRatio);
   const step = Math.max(40, spacing);
   const ring = useMemo(() => {

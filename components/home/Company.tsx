@@ -1,5 +1,6 @@
 "use client";
 import { AstralShell, type AstralShellLive } from "@/components/react-bits/astral-shell";
+import { VaporType } from "@/components/react-bits/vapor-type";
 import { ArrowUpRight } from "lucide-react";
 import {
   motion,
@@ -10,7 +11,7 @@ import {
   type MotionValue,
 } from "motion/react";
 import Link from "next/link";
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 type Step = {
   title: string;
@@ -108,7 +109,7 @@ export function Company() {
       id="about"
       ref={section}
       aria-label="Бидний тухай"
-      className="relative bg-night text-white selection:bg-brand selection:text-white"
+      className="relative overflow-x-clip bg-night text-white"
     >
       {/* One network of the 150+ sites, white on the night ground, held on screen while the four parts scroll past.
           Between parts it breaks apart and comes together again in the half the next part leaves free. The pointer
@@ -134,17 +135,78 @@ export function Company() {
       {/* the rows let the pointer through to the shell; only the copy itself takes it */}
       <div className="pointer-events-none relative -mt-[calc(100svh-var(--header-h))]">
         {steps.map((s, i) => (
-          <PartCopy key={s.title} step={s} index={i} part={part} />
+          <PartCopy key={s.title} step={s} index={i} part={part} wide={wide} />
         ))}
       </div>
     </section>
   );
 }
 
-function PartCopy({ step, index, part }: { step: Step; index: number; part: MotionValue<number> }) {
+const headingClass = "text-balance text-[clamp(2rem,1.3rem+2.6vw,3.75rem)] font-semibold leading-[0.98] tracking-[-0.04em]";
+const textClass = "max-w-[56ch] text-pretty text-step-body leading-relaxed text-white/75";
+
+/** Text that condenses out of white vapor (react-bits VaporType) while its part is at the stage, then holds. Away from
+ *  the stage it stands as the same text, unseen, so nothing moves and readers already have it. The canvas is mounted
+ *  only near the stage, so at most two parts hold WebGL at once, and each arrival condenses it again. */
+function Vapor({
+  live,
+  as: Tag,
+  text,
+  className,
+  sweep,
+  wide,
+  interactive = false,
+}: {
+  live: boolean;
+  as: "h2" | "h3" | "p" | "span";
+  text: string;
+  className: string;
+  sweep: "left" | "right";
+  wide: boolean;
+  /** the pointer may stir it; off for running text, which would scatter under a reader's mouse */
+  interactive?: boolean;
+}) {
+  if (!live) return <Tag className={`opacity-0 ${className}`}>{text}</Tag>;
+  return (
+    <VaporType
+      as={Tag}
+      words={[text]}
+      align="start"
+      vaporColor="#ffffff"
+      sweep={sweep}
+      condense={1.6}
+      loop={false}
+      clickAdvance={false}
+      interactive={interactive}
+      dpr={wide ? 2 : 1.5}
+      className={`block ${className}`}
+    />
+  );
+}
+
+function PartCopy({
+  step,
+  index,
+  part,
+  wide,
+}: {
+  step: Step;
+  index: number;
+  part: MotionValue<number>;
+  wide: boolean;
+}) {
   // fades in as its part reaches the stage and out as it scrolls on
   const opacity = useTransform(part, (p) => Math.min(1, Math.max(0, 1.25 - Math.abs(p - index) * 1.6)));
   const Heading = index === 0 ? "h2" : "h3";
+  // The vapor is mounted as the part comes within 0.6 of the stage, so it condenses in view, and unmounted once it is a
+  // whole part away, when its copy has faded out.
+  const [live, setLive] = useState(() => Math.abs(part.get() - index) < 0.6);
+  useMotionValueEvent(part, "change", (p) => {
+    const away = Math.abs(p - index);
+    if (!live && away < 0.6) setLive(true);
+    else if (live && away > 1) setLive(false);
+  });
+  const sweep = index % 2 === 0 ? "right" : "left";
   // the copy takes one half, alternating right and left, its outer edge on the page container's edge
   const half =
     index % 2 === 0
@@ -155,17 +217,23 @@ function PartCopy({ step, index, part }: { step: Step; index: number; part: Moti
     <div className="flex min-h-[calc(100svh-var(--header-h))] items-end px-4 pb-10 sm:px-6 lg:items-center lg:px-0 lg:pb-0">
       <motion.div style={{ opacity }} className={`w-full lg:w-1/2 ${half}`}>
         <div className="pointer-events-auto max-w-[36rem]">
-          <Heading className="text-balance text-[clamp(2rem,1.3rem+2.6vw,3.75rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-            {step.title}
-          </Heading>
-          <p className="mt-5 max-w-[56ch] text-step-body leading-relaxed text-white/75">{step.text}</p>
+          {/* The heading, the line and the figures condense out of vapor as the part arrives. Phones keep the lite path:
+              there only the heading does, and the rest fades in with the part. */}
+          <Vapor live={live} as={Heading} text={step.title} className={headingClass} sweep={sweep} wide={wide} interactive />
+          {wide ? (
+            <Vapor live={live} as="p" text={step.text} className={`mt-5 ${textClass}`} sweep={sweep} wide />
+          ) : (
+            <p className={`mt-5 ${textClass}`}>{step.text}</p>
+          )}
 
           {step.facts && (
             <dl className="mt-8 grid max-w-[26rem] grid-cols-2 gap-x-8">
               {step.facts.map((fact) => (
                 <div key={fact.label} className="flex flex-col-reverse justify-end border-t border-white/15 py-4">
                   <dt className="mt-1 text-sm text-white/70">{fact.label}</dt>
-                  <dd className="text-2xl font-semibold tracking-[-0.03em] tabular-nums">{fact.value}</dd>
+                  <dd className="text-2xl font-semibold tracking-[-0.03em] tabular-nums">
+                    {wide ? <Vapor live={live} as="span" text={fact.value} className="" sweep={sweep} wide /> : fact.value}
+                  </dd>
                 </div>
               ))}
             </dl>
@@ -183,17 +251,17 @@ function PartCopy({ step, index, part }: { step: Step; index: number; part: Moti
           )}
 
           {step.cta && (
-            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+            <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link
                 href="/contact"
-                className="group inline-flex items-center gap-3 whitespace-nowrap bg-white px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-night transition-colors hover:bg-brand hover:text-white active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="group inline-flex items-center gap-2 whitespace-nowrap rounded-[3px] bg-white px-5 py-3 text-xs font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
                 Инженертэй холбогдох
-                <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
               </Link>
               <Link
                 href="/about"
-                className="whitespace-nowrap font-mono text-xs uppercase tracking-[0.16em] underline decoration-1 underline-offset-[6px] transition-colors hover:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                className="whitespace-nowrap text-xs font-medium text-white/85 underline decoration-white/30 decoration-1 underline-offset-[5px] transition-[color,text-decoration-color] duration-200 hover:text-white hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
               >
                 Компанийн танилцуулга
               </Link>

@@ -113,8 +113,8 @@ export function StepCopy({
           to={SHOWN}
           className={
             large
-              ? "max-w-[38ch] text-lg leading-[1.5] text-white/80 sm:text-xl"
-              : "max-w-[34ch] text-[15px] leading-[1.55] text-white/75 sm:text-base"
+              ? "max-w-[38ch] text-step-body leading-[1.55] text-white/80"
+              : "max-w-[34ch] text-base leading-[1.55] text-white/75"
           }
         />
       </div>

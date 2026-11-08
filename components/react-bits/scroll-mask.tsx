@@ -18,6 +18,8 @@ export interface ScrollMaskProps {
   word?: string;
   /** Scroll runway beyond the pinned viewport, in viewport heights */
   scrollLength?: number;
+  /** Viewport heights before the stage pins over which the reveal already begins; 0 starts it at the pin */
+  lead?: number;
   /** Fraction of the runway after which the reveal has fully opened */
   settle?: number;
   /** Follow damping applied to the scroll position, 0 snaps instantly */
@@ -167,6 +169,7 @@ export const ScrollMask = ({
   alt = "",
   word = "SCROLL",
   scrollLength = 1.7,
+  lead = 0,
   settle = 0.84,
   smooth = 0.14,
   feather = 14,
@@ -355,8 +358,9 @@ export const ScrollMask = ({
     const rect = root.getBoundingClientRect();
     const run = rect.height - tall;
     if (run <= 0) return 0;
-    return clamp(-rect.top / run, 0, 1);
-  }, []);
+    const ahead = clamp(lead, 0, 1) * tall;
+    return clamp((ahead - rect.top) / (run + ahead), 0, 1);
+  }, [lead]);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -456,7 +460,8 @@ export const ScrollMask = ({
       className={cn("relative w-full", className)}
       style={{ height: `${((1 + runway) * 100).toFixed(2)}vh`, background }}
     >
-      <div className="sticky top-0 flex h-screen w-full items-center justify-center p-4 sm:p-8">
+      {/* pinned under a sticky site header when the page sets --header-h, else at the top */}
+      <div className="sticky top-[var(--header-h,0px)] flex h-[calc(100svh-var(--header-h,0px))] w-full items-center justify-center p-4 sm:p-8">
         <div
           ref={stageRef}
           className="relative h-full w-full overflow-hidden"
