@@ -1,8 +1,9 @@
-import Hero from "@/components/ourTeam/Hero";
-import Team from "@/components/ourTeam/Team";
-import TeamMembers from "@/components/ourTeam/TeamMembers";
+import { Advantages } from "@/components/ourTeam/Advantages";
+import { Crew } from "@/components/ourTeam/Crew";
+import { DirectorGreeting } from "@/components/ourTeam/DirectorGreeting";
+import { Engineers } from "@/components/ourTeam/Engineers";
+import { LeadGreeting } from "@/components/ourTeam/LeadGreeting";
 import { pageMetadata } from "@/lib/metadata";
-import React from "react";
 
 export const metadata = pageMetadata(
   "Хамт олон",
@@ -10,14 +11,16 @@ export const metadata = pageMetadata(
   "/ourTeam",
 );
 
-const OurTeam = () => {
-  return (
-    <>
-      <Hero />
-      <TeamMembers />
-      <Team />
-    </>
-  );
-};
+// The director's greeting first, then the engineers, what sets them apart and their lead's greeting, then the crew.
+const OurTeam = () => (
+  <>
+    <h1 className="sr-only">Хамт олон</h1>
+    <DirectorGreeting />
+    <Engineers />
+    <Advantages />
+    <LeadGreeting />
+    <Crew />
+  </>
+);
 
 export default OurTeam;

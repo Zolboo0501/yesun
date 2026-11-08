@@ -149,7 +149,8 @@ const steps: Step[] = [
 ];
 
 const last = steps.length - 1;
-const products = steps.slice(1, -1);
+/** The fifteen products, in the GLB's order; the about page's product tile names them too. */
+export const products = steps.slice(1, -1);
 const pad = (n: number) => String(n).padStart(2, "0");
 
 export function Products() {

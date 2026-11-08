@@ -1,20 +1,13 @@
 "use client";
-import Bento16 from "@/components/blocks/bento-16";
 import { rise, stagger } from "@/lib/reveal";
-import { Cog, Factory as FactoryIcon, Warehouse } from "lucide-react";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { Heading } from "./Heading";
 import { Part } from "./Part";
+import { ProductTile } from "./ProductTile";
 
 // The client's facts, as approved on 2026-11-08: the factory (2021, 72 m × 24 m, 7,35 m high, 1 800 m², two floors),
 // the warehouse (18 m × 12 m, 216 m², one floor, cold and freezer chambers) and the 12 modern machines.
-const stack = [
-  { label: "Агуулах", icon: Warehouse, meta: "216 м² · хөргөх, хөлдөөх камертай" },
-  { label: "Үйлдвэр", icon: FactoryIcon, meta: "1 800 м² · хоёр давхар" },
-  { label: "Тоног төхөөрөмж", icon: Cog, meta: "Орчин үеийн 12 тоног төхөөрөмж" },
-];
-
 const photos = {
   factory: {
     src: "/images/about1.jpg",
@@ -72,9 +65,9 @@ const figures = [
   { value: "12", label: "Тоног төхөөрөмж" },
 ];
 
-/** The factory as a bento: the layered stack of what the company owns (react-bits bento-16: warehouse, factory and
- *  machines as slabs that part and tilt under the pointer) in the big tile, the factory and the warehouse beside it,
- *  then the floor area with the other figures and the machines along the foot. */
+/** The factory as a bento: what it makes in the big tile (the factory page's 3D run of fifteen duct products, which
+ *  turns under a drag and slides one product out after another), the factory and the warehouse beside it, then the
+ *  floor area with the other figures and the machines along the foot. */
 export function Factory() {
   return (
     <Part labelledBy="factory-title">
@@ -95,16 +88,7 @@ export function Factory() {
         className="mt-14 grid gap-4 md:grid-cols-2 lg:mt-16 lg:grid-cols-12 lg:grid-rows-[repeat(2,minmax(16rem,auto))_minmax(18rem,auto)]"
       >
         <motion.li variants={rise} className="md:col-span-2 lg:col-span-7 lg:row-span-2">
-          <Bento16
-            layers={stack}
-            chip="Бүгд өөрийнх"
-            asideTitle="Нэг дор"
-            asideText="Материал хадгалахаас суваг үйлдвэрлэх хүртэл өөрсдөө."
-            status="2021 оноос ажиллаж байна"
-            title="Үйлдвэрлэлийн хүчин чадал"
-            text="Агуулах, үйлдвэр, тоног төхөөрөмж гурвуулаа өөрийнх тул сувгийг төслийн хэмжээгээр хийнэ."
-            className="min-h-[26rem] lg:min-h-0"
-          />
+          <ProductTile />
         </motion.li>
         <motion.li variants={rise} className="aspect-[4/3] md:aspect-auto lg:col-span-5">
           <PhotoTile photo={photos.factory} sizes="(min-width: 1024px) 40vw, (min-width: 768px) 50vw, 100vw" />

@@ -146,9 +146,10 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* selected text in the one accent, on every ground */
+  /* selected text in a neutral grey with white letters, readable on the night and the white grounds alike; not the
+     brand blue (the user's call, 2026-11-09) */
   ::selection {
-    background-color: var(--color-brand);
+    background-color: color-mix(in oklab, var(--color-ink) 60%, white);
     color: var(--color-white);
   }
 }

@@ -1,41 +1,35 @@
 "use client";
-import { ScrollMask } from "@/components/react-bits/scroll-mask";
-import { useReducedMotion } from "motion/react";
-import { getImageProps } from "next/image";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import Image from "next/image";
+import { useRef } from "react";
 
-const team = {
-  src: "/images/person3.jpg",
-  width: 2048,
-  height: 1365,
-  alt: "Есөн Бэлчирийн хамт олон барилгын талбай дээр",
-};
-// ScrollMask draws a plain img, so the photo goes through Next's optimizer here, at its full width
-const teamSrc = getImageProps({ ...team, sizes: "100vw" }).props.src;
-
-/** The whole team, opened through react-bits' ScrollMask: a soft iris widens from the middle of the group from the
- *  moment the stage scrolls into view, and opens fully while it is pinned under the header, square-cornered on the
- *  white ground. Under reduced motion the iris follows the scroll without easing and the photo does not zoom. */
+/** The whole team, full-bleed straight under the opening, the two photos meeting with no gap: as tall as the screen
+ *  under the header from md, 4:5 on phones (a screen-tall crop there would keep only the middle of the group). It
+ *  settles from a slight zoom while its top travels up the screen; under reduced motion it stands still. */
 export function Team() {
   const reduced = useReducedMotion() ?? false;
+  const box = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: box, offset: ["start end", "start start"] });
+  const scale = useTransform(scrollYProgress, [0, 1], reduced ? [1, 1] : [1.12, 1]);
+
   return (
-    <ScrollMask
-      variant="iris"
-      src={teamSrc}
-      alt={team.alt}
-      scrollLength={1.1}
-      lead={1}
-      settle={0.8}
-      feather={18}
-      originX={50}
-      originY={45}
-      zoom={reduced ? 1 : 1.08}
-      calm={reduced}
-      radius={0}
-      background="var(--color-white)"
+    <figure
+      ref={box}
+      className="relative m-0 aspect-[4/5] overflow-hidden bg-night md:aspect-auto md:h-[calc(100svh-var(--header-h))]"
     >
-      <p className="absolute bottom-5 left-5 text-sm font-medium text-white/85 sm:bottom-7 sm:left-7">
+      <motion.div style={{ scale }} className="absolute inset-0">
+        <Image
+          src="/images/person3.jpg"
+          alt="Есөн Бэлчирийн хамт олон барилгын талбай дээр"
+          fill
+          sizes="100vw"
+          className="object-cover object-[50%_45%]"
+        />
+      </motion.div>
+      <div aria-hidden className="absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t from-ink/55 to-transparent" />
+      <figcaption className="absolute bottom-5 left-5 text-sm font-medium text-white/85 sm:bottom-7 sm:left-7">
         Есөн Бэлчирийн хамт олон
-      </p>
-    </ScrollMask>
+      </figcaption>
+    </figure>
   );
 }

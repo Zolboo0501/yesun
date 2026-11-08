@@ -27,9 +27,9 @@ const HOLD = 6000; // each photo's time on screen, in ms
 const FADE = 1.4; // the crossfade, in s
 
 /** The opening, short and on photographs: the city at dusk, a ceiling's ducts and an air conditioner being serviced
- *  taking turns under a night veil, each closing in slowly while it shows; over them the statement, one line on what
- *  the company does, and the four figures that say the most. The photos sink a little as the reader scrolls on; they
- *  change only while the opening is in view, and not at all under reduced motion. */
+ *  taking turns under a night veil, each closing in slowly while it shows; over them, at the foot, the statement and
+ *  one line on what the company does on the left and the four figures that say the most on the right. The photos sink
+ *  a little as the reader scrolls on; they change only while the opening is in view, and not under reduced motion. */
 export function Intro() {
   const reduced = useReducedMotion() ?? false;
   const hero = useRef<HTMLElement>(null);
@@ -88,48 +88,46 @@ export function Intro() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(22_23_27/0.55)_0%,transparent_65%)]" />
       </motion.div>
 
+      {/* the statement and one line at the foot on the left, the four figures beside them on the right */}
       <motion.div
         style={{ opacity: fade }}
-        className="mx-auto flex min-h-[min(88svh,58rem)] max-w-7xl flex-col justify-end px-4 pb-14 pt-32 sm:px-6 lg:px-8 lg:pb-20"
+        variants={stagger}
+        initial="hidden"
+        animate="show"
+        className="mx-auto grid min-h-[calc(100svh-var(--header-h))] max-w-7xl content-end gap-10 px-4 pb-14 pt-32 sm:px-6 lg:grid-cols-12 lg:items-end lg:gap-8 lg:px-8 lg:pb-20"
       >
-        <StaggeredText
-          as="h1"
-          text="2011 оноос хойш барилга бүрийн агаарыг хариуцаж байна."
-          delay={60}
-          duration={0.8}
-          easing={EASE_OUT}
-          from={{ opacity: 0, y: 14 }}
-          to={{ opacity: 1, y: 0 }}
-          className="block! max-w-[13em] pl-[0.9em] indent-[-0.9em] text-[clamp(2.5rem,1.2rem+3.8vw,5rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-white *:indent-0"
-        />
-
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          animate="show"
-          className="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-12 lg:items-end lg:gap-8"
-        >
+        <div className="lg:col-span-8">
+          <StaggeredText
+            as="h1"
+            text="Барилга бүрийн агаарыг хариуцна."
+            delay={60}
+            duration={0.8}
+            easing={EASE_OUT}
+            from={{ opacity: 0, y: 14 }}
+            to={{ opacity: 1, y: 0 }}
+            className="block! max-w-[11em] pl-[0.9em] indent-[-0.9em] text-[clamp(2.5rem,1.3rem+3.4vw,4.75rem)] font-semibold leading-[0.98] tracking-[-0.035em] text-white *:indent-0"
+          />
           <motion.p
             variants={rise}
-            className="max-w-[44ch] text-pretty text-step-body leading-[1.6] text-white/80 lg:col-span-5"
+            className="mt-6 max-w-[36ch] text-pretty text-step-body leading-[1.6] text-white/80 lg:mt-8"
           >
-            БХБЯ-ны тусгай зөвшөөрөлтэй. Агаар сэлгэлт, хөргөлтийн системийг зураг төслөөс угсралт, засвар үйлчилгээ
-            хүртэл нэг дор хийнэ.
+            Агаар сэлгэлт, хөргөлтийн системийн зураг төсөл, угсралт, засвар үйлчилгээ.
           </motion.p>
-          <motion.dl
-            variants={rise}
-            className="grid grid-cols-2 gap-x-6 gap-y-6 border-t border-white/20 pt-6 sm:grid-cols-4 lg:col-span-6 lg:col-start-7"
-          >
-            {facts.map((fact) => (
-              <div key={fact.label} className="flex flex-col-reverse justify-end gap-1">
-                <dt className="text-sm text-white/65">{fact.label}</dt>
-                <dd className="text-[clamp(1.5rem,1.2rem+0.9vw,2rem)] font-semibold tracking-[-0.03em] tabular-nums">
-                  {fact.value}
-                </dd>
-              </div>
-            ))}
-          </motion.dl>
-        </motion.div>
+        </div>
+        <dl className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4 lg:col-span-4 lg:col-start-9 lg:grid-cols-2">
+          {facts.map((fact) => (
+            <motion.div
+              key={fact.label}
+              variants={rise}
+              className="flex flex-col-reverse justify-end gap-1 border-t border-white/20 pt-4"
+            >
+              <dt className="text-sm text-white/65">{fact.label}</dt>
+              <dd className="text-[clamp(1.5rem,1.2rem+0.9vw,2rem)] font-semibold tracking-[-0.03em] tabular-nums">
+                {fact.value}
+              </dd>
+            </motion.div>
+          ))}
+        </dl>
       </motion.div>
     </section>
   );

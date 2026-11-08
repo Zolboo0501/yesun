@@ -7,13 +7,17 @@ import { ToneMappingMode } from "postprocessing";
 import { Suspense, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 
-// Built by scripts/scene3d/build_products.py: seven duct fittings joined into one run under a dark soffit.
-const MODEL = "/models/products/ducts.glb";
-const DRACO = "/draco/";
+// Built by scripts/scene3d/build_products.py: fifteen duct fittings joined into one run under a dark soffit.
+// The about page's product tile (components/about/ProductModel.tsx) shows the same run in the same room.
+export const MODEL = "/models/products/ducts.glb";
+export const DRACO = "/draco/";
 const BG = "#1f2226";
 
+/** Phones and small screens skip ambient occlusion and multisampling. */
+export const isLite = () => window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768;
+
 /** Product nodes in the GLB (`product_<id>`), in the order Products lists them. */
-const PRODUCTS = [
+export const PRODUCTS = [
   "rect", "bend", "offset", "transition", "spiral", "lateral", "insulated",
   "bend45", "reducer", "tee", "flex", "bend90", "stamp90", "flexins", "oval",
 ];
@@ -61,10 +65,7 @@ type SceneProps = {
 
 export default function ProductsScene({ progress, active, reducedMotion }: SceneProps) {
   const input = useRef<Input>({ px: 0, py: 0 });
-  // Phones and small screens skip ambient occlusion and multisampling.
-  const [lite] = useState(
-    () => window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768,
-  );
+  const [lite] = useState(isLite);
 
   return (
     <div
@@ -90,63 +91,76 @@ export default function ProductsScene({ progress, active, reducedMotion }: Scene
         }
         aria-label="Таазны доор угсарсан агаарын суваг, фасон эдлэлийн 3D дүрслэл"
       >
-        <color attach="background" args={[BG]} />
-        {/* the far ends of the run sink into the dark, as in an unlit plant room */}
-        <fog attach="fog" args={[BG, 9, 22]} />
-        <Environment resolution={256} environmentIntensity={0.5}>
-          {/* the room below: a broad soft glow that lights the undersides, as in the reference photo */}
-          <Lightformer intensity={1.2} position={[0, -4, 0]} rotation-x={-Math.PI / 2} scale={[20, 20, 1]} color="#dfe5ee" />
-          <Lightformer intensity={1.2} position={[8, 1, 2]} rotation-y={-Math.PI / 2} scale={[10, 4, 1]} color="#eef1f6" />
-          <Lightformer intensity={0.6} position={[-8, 1.5, 4]} rotation-y={Math.PI / 2} scale={[10, 4, 1]} color="#cfd6e2" />
-        </Environment>
-        {/* key from the front, side and below: the ducts throw their shadows up onto the soffit */}
-        <directionalLight
-          castShadow
-          position={[7, -0.5, 7]}
-          intensity={1.4}
-          color="#f3f5f9"
-          shadow-mapSize={[2048, 2048]}
-          shadow-camera-left={-9}
-          shadow-camera-right={9}
-          shadow-camera-top={9}
-          shadow-camera-bottom={-9}
-          shadow-camera-near={0.5}
-          shadow-camera-far={30}
-          shadow-bias={-0.0003}
-          shadow-normalBias={0.03}
-          shadow-radius={4}
-        />
-
+        <Stage />
         <Suspense fallback={null}>
           <Rig progress={progress} inputRef={input} animate={!reducedMotion} />
         </Suspense>
-
-        {lite ? (
-          <EffectComposer multisampling={0}>
-            <Bloom mipmapBlur intensity={0.3} luminanceThreshold={0.9} luminanceSmoothing={0.2} />
-            <ToneMapping mode={ToneMappingMode.AGX} />
-          </EffectComposer>
-        ) : (
-          <EffectComposer multisampling={4} enableNormalPass>
-            <SSAO
-              samples={16}
-              rings={4}
-              radius={0.08}
-              intensity={18}
-              bias={0.03}
-              luminanceInfluence={0.55}
-              worldDistanceThreshold={1.2}
-              worldDistanceFalloff={0.4}
-              worldProximityThreshold={0.5}
-              worldProximityFalloff={0.15}
-              resolutionScale={0.5}
-            />
-            <Bloom mipmapBlur intensity={0.3} luminanceThreshold={0.9} luminanceSmoothing={0.2} />
-            <ToneMapping mode={ToneMappingMode.AGX} />
-          </EffectComposer>
-        )}
+        <Effects lite={lite} />
       </Canvas>
     </div>
+  );
+}
+
+/** The room the run hangs in: a dark plant room whose far ends sink into fog, lit softly from below and by a key
+ *  that throws the ducts' shadows up onto the soffit. */
+export function Stage() {
+  return (
+    <>
+      <color attach="background" args={[BG]} />
+      {/* the far ends of the run sink into the dark, as in an unlit plant room */}
+      <fog attach="fog" args={[BG, 9, 22]} />
+      <Environment resolution={256} environmentIntensity={0.5}>
+        {/* the room below: a broad soft glow that lights the undersides, as in the reference photo */}
+        <Lightformer intensity={1.2} position={[0, -4, 0]} rotation-x={-Math.PI / 2} scale={[20, 20, 1]} color="#dfe5ee" />
+        <Lightformer intensity={1.2} position={[8, 1, 2]} rotation-y={-Math.PI / 2} scale={[10, 4, 1]} color="#eef1f6" />
+        <Lightformer intensity={0.6} position={[-8, 1.5, 4]} rotation-y={Math.PI / 2} scale={[10, 4, 1]} color="#cfd6e2" />
+      </Environment>
+      {/* key from the front, side and below: the ducts throw their shadows up onto the soffit */}
+      <directionalLight
+        castShadow
+        position={[7, -0.5, 7]}
+        intensity={1.4}
+        color="#f3f5f9"
+        shadow-mapSize={[2048, 2048]}
+        shadow-camera-left={-9}
+        shadow-camera-right={9}
+        shadow-camera-top={9}
+        shadow-camera-bottom={-9}
+        shadow-camera-near={0.5}
+        shadow-camera-far={30}
+        shadow-bias={-0.0003}
+        shadow-normalBias={0.03}
+        shadow-radius={4}
+      />
+    </>
+  );
+}
+
+/** Ambient occlusion, a faint bloom and AgX tone mapping; the lite path keeps only the bloom and tone mapping. */
+export function Effects({ lite }: { lite: boolean }) {
+  return lite ? (
+    <EffectComposer multisampling={0}>
+      <Bloom mipmapBlur intensity={0.3} luminanceThreshold={0.9} luminanceSmoothing={0.2} />
+      <ToneMapping mode={ToneMappingMode.AGX} />
+    </EffectComposer>
+  ) : (
+    <EffectComposer multisampling={4} enableNormalPass>
+      <SSAO
+        samples={16}
+        rings={4}
+        radius={0.08}
+        intensity={18}
+        bias={0.03}
+        luminanceInfluence={0.55}
+        worldDistanceThreshold={1.2}
+        worldDistanceFalloff={0.4}
+        worldProximityThreshold={0.5}
+        worldProximityFalloff={0.15}
+        resolutionScale={0.5}
+      />
+      <Bloom mipmapBlur intensity={0.3} luminanceThreshold={0.9} luminanceSmoothing={0.2} />
+      <ToneMapping mode={ToneMappingMode.AGX} />
+    </EffectComposer>
   );
 }
 
@@ -164,9 +178,9 @@ const toThree = (v: unknown) =>
     ? new THREE.Vector3(Number(v[0]), Number(v[2]), -Number(v[1]))
     : new THREE.Vector3();
 
-type Parts = ReturnType<typeof findParts>;
+export type Parts = ReturnType<typeof findParts>;
 
-function findParts(scene: THREE.Object3D) {
+export function findParts(scene: THREE.Object3D) {
   // Everything casts onto the soffit; the soffit itself would only shade the ducts from a light below.
   scene.traverse((o) => {
     if (!(o instanceof THREE.Mesh)) return;
@@ -177,7 +191,12 @@ function findParts(scene: THREE.Object3D) {
   });
   const products = PRODUCTS.map((id) => {
     const obj = scene.getObjectByName(`product_${id}`) ?? new THREE.Object3D();
-    return { obj, home: obj.position.clone(), turn: obj.rotation.y, focus: toThree(obj.userData.focus), f: 0 };
+    // useGLTF caches one scene for both pages, so a product's resting place is taken once, before anything moves it.
+    obj.userData.home ??= obj.position.clone();
+    obj.userData.turn ??= obj.rotation.y;
+    const home: THREE.Vector3 = obj.userData.home;
+    const turn: number = obj.userData.turn;
+    return { obj, home, turn, focus: toThree(obj.userData.focus), f: 0 };
   });
   return { products };
 }
