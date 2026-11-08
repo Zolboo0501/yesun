@@ -181,3 +181,19 @@
   }
 }
 
+/* The partners orbit (components/Footer.tsx): each logo's carrier turns about the centre and the logo turns back by as
+   much, so it stays upright. The whole orbit holds still while a logo is pointed at or focused, so it can be clicked,
+   and it does not turn at all for visitors who ask for less motion. */
+@keyframes orbit {
+  to {
+    rotate: 360deg;
+  }
+}
+.orbit:has(a:hover, a:focus-visible) .orbit-turn {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .orbit-turn {
+    animation: none;
+  }
+}

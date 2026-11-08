@@ -16,6 +16,9 @@ import { cn } from "@/lib/utils";
 export interface DollyGalleryImage {
   src: string;
   alt?: string;
+  /** Sizes of the image for the browser to choose from by the screen's density, and the width the tile shows it at */
+  srcSet?: string;
+  sizes?: string;
 }
 export interface DollyGalleryDrive {
   /** Move to an offset (px of depth; one image is `spacing`), eased as a drag is. Not clamped: the parent owns the
@@ -35,6 +38,9 @@ export interface DollyGalleryProps {
   scatter?: number;
   revealRange?: number;
   passRange?: number;
+  /** How far an image that has passed the front comes on toward the viewer, as a share of the depth it travels: 1 flies
+   *  it through the camera, a small value keeps it at the front, near its own size, while it fades */
+  passDepth?: number;
   parallaxX?: number;
   parallaxY?: number;
   parallaxSmooth?: number;
@@ -100,6 +106,7 @@ export const DollyGallery = ({
   scatter = 0.1,
   revealRange = 1.5,
   passRange = 1,
+  passDepth = 1,
   parallaxX = 0.12,
   parallaxY = 0.06,
   parallaxSmooth = 0.85,
@@ -202,7 +209,8 @@ export const DollyGallery = ({
           t >= 0
             ? 1 - clamp(t / Math.max(0.01, revealRange), 0, 1)
             : 1 - clamp(-t / Math.max(0.01, passRange), 0, 1);
-        if (alpha <= 0.002 || -depth >= perspective * 0.95) {
+        const z = depth >= 0 ? -depth : -depth * clamp(passDepth, 0, 1);
+        if (alpha <= 0.002 || z >= perspective * 0.95) {
           slot.style.visibility = "hidden";
           continue;
         }
@@ -224,7 +232,7 @@ export const DollyGallery = ({
         const rx = -py * tilt * rush * alpha;
         const ry = px * tilt * rush * alpha;
         slot.style.opacity = alpha.toFixed(3);
-        slot.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, ${(-depth).toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(${swell.toFixed(4)})`;
+        slot.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, ${z.toFixed(1)}px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) scale(${swell.toFixed(4)})`;
       }
       if (nearest >= 0 && nearest !== lastIndex.current) {
         lastIndex.current = nearest;
@@ -239,6 +247,7 @@ export const DollyGallery = ({
       infinite,
       revealRange,
       passRange,
+      passDepth,
       perspective,
       spread,
       scatter,
@@ -471,9 +480,12 @@ export const DollyGallery = ({
           >
             <img
               src={image.src}
+              srcSet={image.srcSet}
+              sizes={image.sizes}
               alt={image.alt ?? `Gallery image ${index + 1}`}
               draggable={false}
               loading="lazy"
+              decoding="async"
               style={{
                 filter:
                   grayscale > 0

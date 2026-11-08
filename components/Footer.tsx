@@ -3,18 +3,19 @@ import { contact, menu } from "@/constants/data";
 import { rise, stagger } from "@/lib/reveal";
 import { ArrowUpRight } from "lucide-react";
 import { MotionConfig, motion } from "motion/react";
+import type { CSSProperties } from "react";
 import { Facebook } from "./FacebookIcon";
 import Image from "next/image";
 import Link from "next/link";
 
 // fit: per-logo scale for files with large built-in margins.
 const partners: { name: string; image: string; href: string; fit?: string }[] = [
-  { name: "KANION", image: "/images/kanon.webp", href: "https://www.kanionco.com/" },
+  { name: "KANION", image: "/images/kanon.webp", href: "https://www.kanionco.com/", fit: "scale-[1.15]" },
   { name: "AUX", image: "/images/aux.png", href: "https://www.auxcool.com" },
   { name: "BALLU", image: "/images/ballu.png", href: "https://www.ballu.ru/" },
-  { name: "SHUFT", image: "/images/shuft.png", href: "https://www.shuft.com/" },
-  { name: "AIRONN", image: "/images/aironn.png", href: "https://www.aironn.com.tr/" },
-  { name: "LAVFILL", image: "/images/lavfill.jpg", href: "https://lavfill.en.alibaba.com/", fit: "scale-[2.2]" },
+  { name: "SHUFT", image: "/images/shuft.png", href: "https://www.shuft.com/", fit: "scale-[1.4]" },
+  { name: "AIRONN", image: "/images/aironn.png", href: "https://www.aironn.com.tr/", fit: "scale-[1.2]" },
+  { name: "LAVFILL", image: "/images/lavfill.jpg", href: "https://lavfill.en.alibaba.com/", fit: "scale-[1.6]" },
 ];
 
 const places = [
@@ -43,17 +44,17 @@ const Footer = () => (
 
 function Partners() {
   return (
-    <section aria-labelledby="partners-title" className="bg-white py-24 text-ink lg:py-32">
+    <section aria-labelledby="partners-title" className="bg-night py-24 text-white lg:py-32">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={stagger}
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.3 }}
-          className="grid gap-10 lg:grid-cols-12 lg:gap-8"
+          className="grid gap-12 lg:grid-cols-12 lg:items-center lg:gap-8"
         >
           <div className="lg:col-span-4">
-            <motion.p variants={rise} className={`${label} text-brand`}>
+            <motion.p variants={rise} className={`${label} text-white/60`}>
               Түнш брэндүүд
             </motion.p>
             <motion.h2
@@ -63,40 +64,74 @@ function Partners() {
             >
               Албан ёсны 6 түнш
             </motion.h2>
-            <motion.p variants={rise} className="mt-5 max-w-[40ch] text-step-body leading-relaxed">
+            <motion.p variants={rise} className="mt-5 max-w-[40ch] text-step-body leading-relaxed text-white/75">
               Хөргөлт, агаар сэлгэлтийн төхөөрөмжийг үйлдвэрлэгчээс нь шууд
               нийлүүлдэг.
             </motion.p>
           </div>
-          <motion.ul
-            variants={rise}
-            className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:col-span-8"
-          >
-            {partners.map((partner) => (
-              <li key={partner.name}>
-                <a
-                  href={partner.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`${partner.name} (шинэ цонхонд нээгдэнэ)`}
-                  className={`group grid aspect-[3/2] place-items-center bg-panel p-8 transition-colors hover:bg-[#dfe2e7] ${linkFocus}`}
-                >
-                  {/* multiply drops the white ground some logo files carry */}
-                  <Image
-                    src={partner.image}
-                    alt={partner.name}
-                    width={320}
-                    height={160}
-                    sizes="(min-width: 1024px) 18vw, 40vw"
-                    className={`max-h-16 w-auto object-contain mix-blend-multiply grayscale transition-[filter] duration-500 group-hover:grayscale-0 ${partner.fit ?? ""}`}
-                  />
-                </a>
-              </li>
-            ))}
-          </motion.ul>
+          <motion.div variants={rise} className="lg:col-span-8">
+            <PartnerOrbit />
+          </motion.div>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+/** The partners orbit the company's mark on dashed rings. At lg three ride the outer ring and three the inner one,
+ *  turning opposite ways; below lg all six share the outer ring, where two rings of logos would not clear each other.
+ *  --chip is a logo disc's size; the outer ring runs through the discs' centres, half a disc in from the edge. The
+ *  carriers are squares turned about the centre, so their corners would reach past the orbit and widen the page:
+ *  overflow-clip cuts them (and leaves a focus ring's width spare). */
+function PartnerOrbit() {
+  return (
+    <div className="orbit relative mx-auto aspect-square w-full max-w-[36rem] overflow-clip [overflow-clip-margin:0.5rem] [--chip:clamp(4.5rem,3rem+6vw,5.5rem)] lg:max-w-[46rem] lg:[--chip:clamp(5.5rem,1rem+6vw,7rem)]">
+      <div aria-hidden className="absolute inset-[calc(var(--chip)/2)] rounded-full border border-dashed border-white/20" />
+      <div aria-hidden className="absolute inset-1/4 rounded-full border border-dashed border-white/20" />
+      {/* the hub: the mark drawn white, as in the header, on a dark disc with a hairline and a soft glow round it (the
+          night ground's answer to the shade round the hub in the client's reference) */}
+      <div className="absolute left-1/2 top-1/2 grid size-[calc(var(--chip)*1.55)] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-white/15 bg-white/5 shadow-[0_0_90px_-20px_rgb(255_255_255/0.22)]">
+        <Image
+          src="/images/logo3.png"
+          alt="Есөн Бэлчир"
+          width={594}
+          height={420}
+          sizes="11rem"
+          className="h-auto w-[58%] brightness-0 invert"
+        />
+      </div>
+      <ul className="absolute inset-0">
+        {partners.map((partner, i) => {
+          // every other logo moves to the inner ring at lg, where it turns the other way
+          const inner = i % 2 === 1;
+          return (
+            <li
+              key={partner.name}
+              style={{ "--a": `${i * 60}deg` } as CSSProperties}
+              className={`orbit-turn pointer-events-none absolute inset-0 animate-[orbit_90s_linear_infinite] [transform:rotate(var(--a))] ${inner ? "lg:animate-[orbit_60s_linear_infinite_reverse]" : ""}`}
+            >
+              <a
+                href={partner.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${partner.name} (шинэ цонхонд нээгдэнэ)`}
+                className={`orbit-turn group pointer-events-auto absolute left-1/2 top-[calc(var(--chip)/2)] grid size-[var(--chip)] -translate-x-1/2 -translate-y-1/2 animate-[orbit_90s_linear_infinite_reverse] place-items-center rounded-full bg-white transition-shadow duration-200 [transform:rotate(calc(var(--a)*-1))] hover:shadow-[0_0_0_6px_rgb(255_255_255/0.16)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white ${inner ? "lg:top-1/4 lg:animate-[orbit_60s_linear_infinite]" : ""}`}
+              >
+                {/* multiply drops the white ground some logo files carry */}
+                <Image
+                  src={partner.image}
+                  alt={partner.name}
+                  width={300}
+                  height={200}
+                  sizes="7rem"
+                  className={`h-[46%] w-[70%] object-contain mix-blend-multiply grayscale transition-[filter] duration-500 group-hover:grayscale-0 ${partner.fit ?? ""}`}
+                />
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 

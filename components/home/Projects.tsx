@@ -2,6 +2,7 @@
 import { DollyGallery, type DollyGalleryDrive } from "@/components/react-bits/dolly-gallery";
 import { ArrowUpRight } from "lucide-react";
 import { useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { getImageProps } from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import { StepCopy, StepLine } from "./Step";
@@ -14,74 +15,108 @@ const subscribe = (change: () => void) => {
   return () => query.removeEventListener("change", change);
 };
 
-type Project = { src: string; title: string; subtitle: string; alt: string };
+type Project = { src: string; width: number; height: number; title: string; subtitle: string; alt: string };
 
-// Photos are the project photos resized to 1280px (public/images/carousel).
+// The client's original photos (public/images), with their pixel sizes.
 // The run goes from the museum to the mine, with repeat clients spaced apart.
 const projects: Project[] = [
   {
-    src: "/images/carousel/project2.webp",
+    src: "/images/project2.webp",
+    width: 1430,
+    height: 805,
     title: "Чингис хаан музей",
     subtitle: "Сэлгэлт, хөргөлт, тоног төхөөрөмж · 2021",
     alt: "Чингис хаан үндэсний музей",
   },
   {
-    src: "/images/carousel/project8.webp",
+    src: "/images/project8.webp",
+    width: 2048,
+    height: 1152,
     title: "Platinum Tower",
     subtitle: "Сэлгэлт, хөргөлт, нэгдсэн граж · 2023",
     alt: "Platinum Tower орон сууц",
   },
   {
-    src: "/images/carousel/project9.webp",
+    src: "/images/project9.webp",
+    width: 3072,
+    height: 1364,
     title: "Хүннү 2222",
     subtitle: "Канад сургууль, спорт цогцолбор · 2022",
     alt: "Хүннү 2222 төслийн Канад сургууль, спорт цогцолбор",
   },
   {
-    src: "/images/carousel/project11.webp",
+    src: "/images/project11.webp",
+    width: 1600,
+    height: 1067,
     title: "Нийслэлийн захиргааны төв",
     subtitle: "Цогцолборын агаар сэлгэлт · 2024",
     alt: "Нийслэлийн нутгийн захиргааны төв цогцолбор",
   },
   {
-    src: "/images/carousel/project12.webp",
+    src: "/images/project12.webp",
+    width: 760,
+    height: 428,
     title: "Эрдэнэс Таван Толгой",
     subtitle: "Ажилчдын байр, оффис, хөргөлт · 2024",
     alt: "Эрдэнэс Таван Толгойн ажилчдын байр, оффис барилга",
   },
   {
-    src: "/images/carousel/project7.webp",
+    src: "/images/project7.webp",
+    width: 1536,
+    height: 2048,
     title: "Одод хотхон",
     subtitle: "Сэлгэлт, хөргөлт, нэгдсэн граж · 2022",
     alt: "Одод хотхон орон сууцны хотхон",
   },
   {
-    src: "/images/carousel/project13.webp",
+    src: "/images/project13.webp",
+    width: 762,
+    height: 764,
     title: "Сансар Гарден",
     subtitle: "2 блокийн сэлгэлт, хөргөлт · 2024",
     alt: "Сансар Гарден орон сууцны хотхон",
   },
   {
-    src: "/images/carousel/project4.webp",
+    src: "/images/project4.webp",
+    width: 966,
+    height: 680,
     title: "Хүннү 2222",
     subtitle: "2-р ээлжийн орон сууц · 2020",
     alt: "Хүннү 2222 төслийн 2-р ээлжийн орон сууц",
   },
   {
-    src: "/images/carousel/project10.webp",
+    src: "/images/project10.webp",
+    width: 3840,
+    height: 2160,
     title: "Нисэх гарден хотхон",
     subtitle: "Орон сууцны агаар сэлгэлт · 2022",
     alt: "Нисэх гарден хотхон",
   },
   {
-    src: "/images/carousel/project.webp",
+    src: "/images/project.webp",
+    width: 1140,
+    height: 570,
     title: "Эрдэнэс Таван Толгой",
     subtitle: "Нүүрс баяжуулах үйлдвэр, агаар сэлгэлт · 2024",
     alt: "Эрдэнэс Таван Толгойн нүүрс баяжуулах үйлдвэр",
   },
 ];
-// a stable list, so the gallery builds its tiles once
-const images = projects.map(({ src, alt }) => ({ src, alt }));
+
+// Next's image optimizer serves each photo at the width the screen needs (never past the original). A tile crops its
+// photo to 1.45:1, so a wide photo is asked for at the width its height needs: the tile's height times the photo's
+// aspect, at most 820 × 566 at lg and 360 × 248 below. A stable list, so the gallery builds its tiles once.
+const TILE = { wide: [820, 566], narrow: [360, 248] } as const;
+const images = projects.map(({ src, width, height, alt }) => {
+  const need = ([w, h]: readonly [number, number]) => Math.round(Math.max(w, (h * width) / height));
+  const { props } = getImageProps({
+    src,
+    alt,
+    width,
+    height,
+    sizes: `(min-width: 1024px) ${need(TILE.wide)}px, ${need(TILE.narrow)}px`,
+  });
+  return { src: props.src, srcSet: props.srcSet, sizes: props.sizes, alt };
+});
 
 // A scroll stage like the hero's: the opening, then one step per project, a screen of scroll each. Each step holds
 // still for the first and last fifth of its scroll, then travels to the next.
@@ -130,13 +165,15 @@ export function Projects() {
       id="projects"
       ref={section}
       aria-label="Хэрэгжүүлсэн төслүүд"
-      className="relative bg-graphite text-white"
+      className="relative bg-night text-white"
       style={{ height: `${STEPS * 100}svh` }}
     >
       <div className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-clip">
         {/* The projects stand one behind another down the stage's depth and come to the front one per step, large,
-            in the right two thirds on desktop and above the copy on phones. The scroll drives them; the pointer only
-            leans them. */}
+            in the right three fifths on desktop and above the copy on phones. The scroll drives them; the pointer only
+            leans them, a little. Each photo stands centred, so it is whole inside the screen on every step. The photo
+            leaving the front fades where it stands instead of flying at the camera, so scrolling back brings the last
+            one in whole rather than huge and cut by the gallery's edge. */}
         <div className="absolute inset-x-0 top-0 h-[60%] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-full lg:w-[60%]">
           <DollyGallery
             images={images}
@@ -146,22 +183,26 @@ export function Projects() {
             borderRadius={0}
             grayscale={0.25}
             spacing={SPACING}
-            spread={0.05}
-            scatter={0.05}
+            spread={0}
+            scatter={0}
+            passRange={0.5}
+            passDepth={0.1}
+            parallaxX={0.02}
+            parallaxY={0.03}
             autoScroll={0}
             wheel={false}
             dragSpeed={0}
             driveRef={driveRef}
             label="Хэрэгжүүлсэн төслүүдийн зургууд"
-            className="touch-pan-y"
+            className="touch-pan-y overflow-visible"
           />
         </div>
 
         {/* Shade over the stage, as on the hero: dark under the copy and round the frame, open where the photos are. */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-graphite)_22%,rgb(31_34_38/0.6)_46%,transparent_64%)] lg:bg-[linear-gradient(90deg,var(--color-graphite)_8%,rgb(31_34_38/0.8)_24%,rgb(31_34_38/0.25)_34%,transparent_42%)]" />
-          <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-graphite to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-graphite/85 to-transparent" />
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-night)_22%,rgb(22_23_27/0.6)_46%,transparent_64%)] lg:bg-[linear-gradient(90deg,var(--color-night)_8%,rgb(22_23_27/0.8)_24%,rgb(22_23_27/0.25)_34%,transparent_42%)]" />
+          <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-night to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-night/85 to-transparent" />
         </div>
 
         <StepCopy
