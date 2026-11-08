@@ -1,4 +1,5 @@
 "use client";
+import { StepCopy } from "@/components/home/Step";
 import { contact } from "@/constants/data";
 import { ArrowUpRight } from "lucide-react";
 import {
@@ -195,6 +196,11 @@ export function Products() {
         <div className="absolute inset-0">
           {near && <ProductsScene progress={step} active={active} reducedMotion={reducedMotion} />}
         </div>
+        {/* Shade over the run, as on the home page's stages: dark under the copy, open where the product is. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--color-graphite)_18%,rgb(31_34_38/0.6)_42%,transparent_62%)] lg:bg-[linear-gradient(90deg,rgb(31_34_38/0.85)_4%,rgb(31_34_38/0.55)_24%,rgb(31_34_38/0.15)_36%,transparent_44%)]"
+        />
 
         {/* Technical frame around the stage, as in the hero. */}
         <p
@@ -234,9 +240,47 @@ export function Products() {
           </ol>
         </nav>
 
-        {steps.map((s, i) => (
-          <StepCopy key={s.tag} step={s} index={i} progress={step} />
-        ))}
+        {/* Each step's copy as on the home page's stages (components/home/Step.tsx): the name in two lines with the
+            second set in, a rule with one sentence beside it; low on the left on desktop, clear of the product list and
+            of the product, and at the foot on phones. */}
+        {steps.map((s, i) => {
+          const isProduct = i > 0 && i < last;
+          return (
+            <StepCopy
+              key={s.tag}
+              title={s.name}
+              text={s.text}
+              index={i}
+              progress={step}
+              heading={i === 0 ? "h1" : "h3"}
+              large={i === 0}
+              className={
+                i === 0
+                  ? "lg:left-[5vw] lg:top-auto lg:bottom-[12%] lg:translate-y-0"
+                  : "text-[clamp(2.25rem,0.75rem+2.4vw,2.875rem)] lg:left-[5vw] lg:top-auto lg:bottom-[12%] lg:w-[min(28rem,36vw)] lg:translate-y-0"
+              }
+            >
+              {isProduct && s.points && <p className="text-sm text-white/55">{s.points.join(" · ")}</p>}
+              {s.cta && (
+                <>
+                  <Link
+                    href="/contact"
+                    className="group inline-flex items-center gap-2 rounded-[3px] bg-white px-5 py-3 text-xs font-semibold text-graphite transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  >
+                    Инженертэй холбогдох
+                    <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
+                  </Link>
+                  <a
+                    href={`tel:${contact.phone}`}
+                    className="text-sm text-white/75 underline decoration-1 underline-offset-[6px] transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+                  >
+                    {contact.phone}
+                  </a>
+                </>
+              )}
+            </StepCopy>
+          );
+        })}
       </div>
     </section>
   );
@@ -266,78 +310,5 @@ function IndexItem({
         {label}
       </motion.button>
     </li>
-  );
-}
-
-function StepCopy({
-  step,
-  index,
-  progress,
-}: {
-  step: Step;
-  index: number;
-  progress: MotionValue<number>;
-}) {
-  const opacity = useTransform(progress, (s) =>
-    Math.max(0, 1 - Math.abs(s - index) * 2.5),
-  );
-  const y = useTransform(progress, (s) => (index - s) * 60);
-  const visibility = useTransform(opacity, (o) =>
-    o > 0.02 ? "visible" : "hidden",
-  );
-  const Heading = index === 0 ? "h2" : "h3";
-  const isProduct = index > 0 && index < last;
-
-  return (
-    <motion.div
-      style={{ opacity, y, visibility }}
-      className="absolute inset-x-0 bottom-12 bg-graphite px-4 pt-5 sm:px-6 lg:bottom-[14%] lg:left-[5vw] lg:right-auto lg:w-[40vw] lg:bg-transparent lg:p-0"
-    >
-      <div className="relative lg:bg-graphite/85 lg:p-10">
-        {/* Corner brackets */}
-        <span aria-hidden className="pointer-events-none absolute left-0 top-0 size-3.5 border-l-2 border-t-2 border-brand max-lg:hidden" />
-        <span aria-hidden className="pointer-events-none absolute right-0 top-0 size-3.5 border-r-2 border-t-2 border-brand max-lg:hidden" />
-        <span aria-hidden className="pointer-events-none absolute bottom-0 left-0 size-3.5 border-b-2 border-l-2 border-brand max-lg:hidden" />
-        <span aria-hidden className="pointer-events-none absolute bottom-0 right-0 size-3.5 border-b-2 border-r-2 border-brand max-lg:hidden" />
-
-        <p className="font-mono text-xs uppercase tracking-[0.18em] text-white/60">
-          {isProduct ? `${pad(index)} / ${pad(products.length)} · ${step.tag}` : step.tag}
-        </p>
-        <Heading className="mt-4 text-balance text-[clamp(2rem,1.3rem+2.6vw,3.75rem)] font-semibold leading-[0.98] tracking-[-0.04em]">
-          {step.name}
-        </Heading>
-        {step.lead && (
-          <p className="mt-3 text-lg font-medium tracking-[-0.01em] text-white/90">{step.lead}</p>
-        )}
-        <p className="mt-4 max-w-[44ch] text-step-body leading-relaxed text-white/70">{step.text}</p>
-        {step.points && (
-          <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85">
-            {step.points.map((point) => (
-              <li key={point} className="flex items-center gap-2">
-                <span aria-hidden className="size-1.5 bg-brand" />
-                {point}
-              </li>
-            ))}
-          </ul>
-        )}
-        {step.cta && (
-          <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <Link
-              href="/contact"
-              className="group inline-flex items-center gap-3 bg-white px-6 py-4 font-mono text-xs uppercase tracking-[0.16em] text-ink transition-colors hover:bg-brand hover:text-white active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              Инженертэй холбогдох
-              <ArrowUpRight className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </Link>
-            <a
-              href={`tel:${contact.phone}`}
-              className="font-mono text-xs uppercase tracking-[0.16em] underline decoration-1 underline-offset-[6px] transition-colors hover:text-white/70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
-            >
-              {contact.phone}
-            </a>
-          </div>
-        )}
-      </div>
-    </motion.div>
   );
 }

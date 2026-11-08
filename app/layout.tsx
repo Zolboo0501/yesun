@@ -1,3 +1,4 @@
+import { ContactBar } from "@/components/ContactBar";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { siteUrl } from "@/constants/data";
@@ -101,6 +102,7 @@ export default function RootLayout({
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <ContactBar />
       </body>
     </html>
   );

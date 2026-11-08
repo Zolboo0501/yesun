@@ -8,7 +8,10 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, CloseIcon, MenuIcon } from "./icons";
 
 // The page links, "Нүүр" first; "Холбоо барих" is the white button on the right instead.
-const links = [{ title: "Нүүр", href: "/" }, ...menu.filter((item) => item.href !== "/contact")];
+const links = [
+  { title: "Нүүр", href: "/" },
+  ...menu.filter((item) => item.href !== "/contact"),
+];
 const HEADER_PX = 64; // --header-h in globals.css; the scroll stages sit under it
 
 /**
@@ -95,7 +98,8 @@ export function Header() {
         <nav aria-label="Үндсэн цэс" className="hidden lg:block">
           <ul className="flex items-center gap-5 whitespace-nowrap text-[11px] font-semibold uppercase tracking-[0.06em] xl:gap-8">
             {links.map((item) => {
-              const current = item.href === "/" ? home : pathname.startsWith(item.href);
+              const current =
+                item.href === "/" ? home : pathname.startsWith(item.href);
               return (
                 <li key={item.href}>
                   <Link
@@ -116,12 +120,6 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-5 justify-self-end">
-          <a
-            href={`tel:${contact.phone}`}
-            className="hidden whitespace-nowrap text-[11px] font-medium text-white/85 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white xl:inline light:text-ink/80 light:hover:text-ink light:focus-visible:outline-brand"
-          >
-            {contact.phone}
-          </a>
           <Link
             href="/contact"
             className="hidden items-center gap-1.5 whitespace-nowrap rounded-[3px] bg-white px-3.5 py-2 text-[11px] font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:inline-flex light:bg-ink light:text-white light:hover:bg-ink/85 light:focus-visible:outline-brand"
@@ -137,7 +135,11 @@ export function Header() {
             aria-label={open ? "Цэс хаах" : "Цэс нээх"}
             className="-mr-2 grid size-11 place-items-center text-white transition-opacity hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:hidden light:text-ink light:focus-visible:outline-brand"
           >
-            {open ? <CloseIcon className="size-5" /> : <MenuIcon className="size-5" />}
+            {open ? (
+              <CloseIcon className="size-5" />
+            ) : (
+              <MenuIcon className="size-5" />
+            )}
           </button>
         </div>
       </div>
@@ -152,32 +154,44 @@ export function Header() {
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-x-0 bottom-0 top-[var(--header-h)] overflow-y-auto bg-night lg:hidden light:bg-white"
           >
-            <nav aria-label="Үндсэн цэс" className="flex min-h-full flex-col px-4 pb-10 pt-4 sm:px-6">
+            <nav
+              aria-label="Үндсэн цэс"
+              className="flex min-h-full flex-col px-4 pb-10 pt-4 sm:px-6"
+            >
               <ul>
-                {[...links, { title: "Холбоо барих", href: "/contact" }].map((item, i) => {
-                  const current = item.href === "/" ? home : pathname.startsWith(item.href);
-                  return (
-                    <motion.li
-                      key={item.href}
-                      initial={reducedMotion ? false : { opacity: 0, y: 12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.05 * i, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                      className="border-b border-white/10 light:border-ink/10"
-                    >
-                      <Link
-                        href={item.href}
-                        onClick={() => setOpen(false)}
-                        aria-current={current ? "page" : undefined}
-                        className={`flex items-center justify-between py-4 text-[1.75rem] font-semibold leading-tight tracking-[-0.02em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white light:focus-visible:outline-brand ${
-                          current ? "text-white/50 light:text-ink/50" : "text-white light:text-ink"
-                        }`}
+                {[...links, { title: "Холбоо барих", href: "/contact" }].map(
+                  (item, i) => {
+                    const current =
+                      item.href === "/" ? home : pathname.startsWith(item.href);
+                    return (
+                      <motion.li
+                        key={item.href}
+                        initial={reducedMotion ? false : { opacity: 0, y: 12 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          delay: 0.05 * i,
+                          duration: 0.45,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="border-b border-white/10 light:border-ink/10"
                       >
-                        {item.title}
-                        <ArrowUpRight className="size-5 text-white/40 light:text-ink/40" />
-                      </Link>
-                    </motion.li>
-                  );
-                })}
+                        <Link
+                          href={item.href}
+                          onClick={() => setOpen(false)}
+                          aria-current={current ? "page" : undefined}
+                          className={`flex items-center justify-between py-4 text-[1.75rem] font-semibold leading-tight tracking-[-0.02em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white light:focus-visible:outline-brand ${
+                            current
+                              ? "text-white/50 light:text-ink/50"
+                              : "text-white light:text-ink"
+                          }`}
+                        >
+                          {item.title}
+                          <ArrowUpRight className="size-5 text-white/40 light:text-ink/40" />
+                        </Link>
+                      </motion.li>
+                    );
+                  },
+                )}
               </ul>
               <div className="mt-auto flex flex-col gap-3 pt-12 text-sm text-white/70 light:text-ink/70">
                 <a href={`tel:${contact.phone}`}>{contact.phone}</a>

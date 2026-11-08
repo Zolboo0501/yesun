@@ -1,92 +1,108 @@
 "use client";
+import { Heading } from "@/components/about/Heading";
+import { rise, stagger } from "@/lib/reveal";
+import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
+import Image from "next/image";
 
-const principles = [
+// The factory's strengths, drawn from the old factory page's copy (cut short) and the facts approved on 2026-11-08,
+// each beside a photo of the plant.
+const features = [
   {
-    id: 1,
-    title: "Манай үйлдвэр",
-    items: [
-      "Манай үйлдвэр нь олон улсын стандартын дагуу тоноглогдсон бөгөөд:",
-      "Агаар сэргэлт, хөргөлт, шугам хоолойн & тоног төхөөрөмжийн үйлдвэрлэл",
-      "Захиалгат шийдэл, угсралт",
-      "Чанарын хяналт, туршилт",
-      "Төсөл хэрэгжилтийн бүрэн цикл зэрэг үйл ажиллагааг нэг дор гүйцэтгэдэг.",
-    ],
+    title: "Бүх шат нэг дор",
+    text: "Зураг төсөл, үйлдвэрлэл, суурилуулалт, тохируулга, засвар үйлчилгээг нэг дороос, нэгдсэн удирдлагатай хийнэ.",
+    points: ["Зураг төсөл", "Үйлдвэрлэл", "Угсралт", "Засвар үйлчилгээ"],
+    image: "/images/factory2.jpg",
+    alt: "Үйлдвэрийн цехэд хуудас зүсэж буй ажилчид",
   },
   {
-    id: 2,
-    title: "Бүтээгдэхүүн & Үйлчилгээ",
-    items: [
-      "Агааржуулалтын суваг",
-      "Агаар сэлгэлтийн төхөөрөмж",
-      "Агаар шүүгч, дуу намсгагч",
-      "Үйлдвэр, оффис, барилгын агаар сэргэлт, хөргөлт, шугам хоолойн шийдэл",
-      "Суурилуулалт, засвар үйлчилгээ",
-    ],
+    title: "Орчин үеийн тоног төхөөрөмж",
+    text: "1 800 м² үйлдвэрт 12 орчин үеийн тоног төхөөрөмжөөр суваг, фасон эдлэлийг төслийн хэмжээгээр хийнэ.",
+    points: ["1 800 м²", "12 тоног төхөөрөмж", "2021 оноос"],
+    image: "/images/factory12.jpg",
+    alt: "Металл хуудас зүсэх машин ба агаарын компрессор",
   },
   {
-    id: 3,
-    title: "Яагаад биднийг сонгох вэ?",
-    items: [
-      "Мэргэжлийн баг",
-      "Өндөр хүчин чадалтай үйлдвэр",
-      "Захиалагчид тохирсон шийдэл",
-      "Эрчим хүчний хэмнэлт",
-      "Баталгаат үйлчилгээ",
-    ],
+    title: "Стандарт, чанарын хяналт",
+    text: "Олон улсын стандарт, норм дүрмийг мөрдөж, бүтээгдэхүүн бүрийн чанар, аюулгүй байдлыг хяналт, туршилтаар баталгаажуулна.",
+    points: ["Олон улсын стандарт", "Хяналт, туршилт"],
+    image: "/images/factory7.jpg",
+    alt: "Үйлдвэрт хийсэн спираль хоолойнууд",
+  },
+  {
+    title: "Эрчим хүч хэмнэсэн шийдэл",
+    text: "Материал, тоног төхөөрөмж нь эрчим хүч хэмнэж, байгальд ээлтэй бөгөөд ашиглалтын зардлыг бууруулна.",
+    points: ["Эрчим хүч хэмнэлт", "Ашиглалтын зардал бага"],
+    image: "/images/factory6.jpg",
+    alt: "Спираль хоолой хийх машин, бэлэн суваг, сараалж",
+  },
+  {
+    title: "Барилга бүрт тохирсон",
+    text: "Үйлдвэр, оффис, орон сууц, эмнэлэг, сургуульд тохирсон суваг, тоног төхөөрөмж, агаар шүүгч, дуу намсгагчийг захиалгаар хийнэ.",
+    points: ["Захиалгат шийдэл", "Суурилуулалт", "Баталгаат үйлчилгээ"],
+    image: "/images/factory3.jpg",
+    alt: "Нугалах машинууд, хийгдэж буй сувгууд бүхий цех",
   },
 ];
 
-const Advantage = () => {
-  return (
-    <section className="py-24 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl lg:text-5xl text-gray-900 mb-6 font-bold">
-            Үйлдвэрийн <span className="text-[#0100FD]">онцлог</span>
-          </h2>
-        </motion.div>
+const pad = (n: number) => String(n).padStart(2, "0");
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {principles.map((principle, index) => (
-            <motion.div
-              key={principle.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.6,
-                delay: index * 0.2,
-                ease: "easeOut",
-              }}
-              className="bg-white rounded-lg p-8 shadow-md hover:shadow-xl transition-shadow duration-300"
-            >
-              <h3 className="text-xl font-bold text-gray-900 mb-6">
-                {principle.title}
-              </h3>
-              <ul className="space-y-3">
-                {principle.items.map((item, idx) => (
-                  <li
-                    key={idx}
-                    className="text-gray-700 leading-relaxed flex items-start"
-                  >
-                    <span className="mr-2 text-[#0100FD] font-bold">•</span>
-                    <span className="flex-1">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
+/** What sets the factory apart, as alternating rows: a photo of the plant on one side and, on the other, the
+ *  strength's number, name, one sentence and a few short facts; the sides swap from row to row, and on a phone the
+ *  photo comes first. */
+export default function Advantage() {
+  return (
+    <section id="features" aria-labelledby="features-title" className="bg-white text-ink">
+      <div className="mx-auto max-w-7xl px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+        <div className="grid gap-6 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-6">
+            <Heading id="features-title" text="Үйлдвэрийн онцлог" />
+          </div>
+          <p className="max-w-[44ch] text-pretty text-step-body leading-[1.65] text-ink/70 lg:col-span-5 lg:col-start-8 lg:self-end">
+            Агаар сэлгэлт, хөргөлтийн системийг зураг төслөөс засвар үйлчилгээ хүртэл нэг дор хийдэг үндэсний үйлдвэрлэгч.
+          </p>
         </div>
+
+        <ol className="mt-16 space-y-20 lg:mt-24 lg:space-y-28">
+          {features.map((feature, i) => (
+            <motion.li
+              key={feature.title}
+              variants={stagger}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className="grid items-center gap-8 md:grid-cols-2 md:gap-12 lg:gap-20"
+            >
+              <motion.figure
+                variants={rise}
+                className={cn("relative aspect-[4/3] overflow-hidden rounded-[24px] bg-ink/5", i % 2 === 1 && "md:order-2")}
+              >
+                <Image
+                  src={feature.image}
+                  alt={feature.alt}
+                  fill
+                  sizes="(min-width: 1280px) 600px, (min-width: 768px) 50vw, 100vw"
+                  className="object-cover"
+                />
+              </motion.figure>
+              <motion.div variants={rise} className="max-w-[34rem]">
+                <p className="font-mono text-xs tabular-nums tracking-[0.18em] text-ink/45">{pad(i + 1)}</p>
+                <h3 className="mt-4 text-balance text-[clamp(1.75rem,1.2rem+1.6vw,2.75rem)] font-semibold leading-[1.05] tracking-[-0.03em]">
+                  {feature.title}
+                </h3>
+                <p className="mt-4 text-pretty text-step-body leading-[1.65] text-ink/70">{feature.text}</p>
+                <ul className="mt-6 flex flex-wrap gap-2">
+                  {feature.points.map((point) => (
+                    <li key={point} className="rounded-full bg-ink/[0.05] px-3 py-1.5 text-sm font-medium text-ink/75">
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+            </motion.li>
+          ))}
+        </ol>
       </div>
     </section>
   );
-};
-
-export default Advantage;
+}

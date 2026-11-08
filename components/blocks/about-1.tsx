@@ -81,7 +81,10 @@ export default function About1({ members, header, displayProgressIndicators = tr
 
         <div className="order-1 min-w-0 lg:order-2 lg:col-span-9">
           <div className="mb-10">{header}</div>
-          <Carousel visibleMembers={visibleMembers} />
+          <Carousel
+            visibleMembers={visibleMembers}
+            onPick={(position) => handleIndexChange((activeIndex + position) % members.length)}
+          />
           {displayProgressIndicators && (
             <ProgressIndicators
               members={members}
@@ -144,13 +147,20 @@ function TeamMemberList({
   );
 }
 
-function Carousel({ visibleMembers }: { visibleMembers: About1Member[] }) {
+function Carousel({
+  visibleMembers,
+  onPick,
+}: {
+  visibleMembers: About1Member[];
+  /** a card behind the front one was clicked; its place in the row (1 next, 2 the one after) */
+  onPick: (position: number) => void;
+}) {
   return (
     <div className="relative w-full overflow-hidden" style={{ height: CAROUSEL_HEIGHT }}>
       <div className="flex h-full gap-6">
         <AnimatePresence mode="sync" initial={false}>
           {visibleMembers.map((member, position) => (
-            <CarouselCard key={member.name} member={member} position={position} />
+            <CarouselCard key={member.name} member={member} position={position} onPick={() => onPick(position)} />
           ))}
         </AnimatePresence>
       </div>
@@ -163,7 +173,7 @@ function Carousel({ visibleMembers }: { visibleMembers: About1Member[] }) {
   );
 }
 
-function CarouselCard({ member, position }: { member: About1Member; position: number }) {
+function CarouselCard({ member, position, onPick }: { member: About1Member; position: number; onPick: () => void }) {
   const isActive = position === 0;
   const isNext = position === 1;
 
@@ -171,6 +181,8 @@ function CarouselCard({ member, position }: { member: About1Member; position: nu
     <motion.div
       layout
       aria-hidden={!isActive}
+      // the cards waiting behind come to the front on a click (keyboards use the roster)
+      onClick={isActive ? undefined : onPick}
       initial={{ opacity: 0, x: 100 }}
       animate={{ opacity: 1, x: 0 }}
       exit={{
@@ -186,7 +198,7 @@ function CarouselCard({ member, position }: { member: About1Member; position: nu
           ease: CAROUSEL_CONFIG.easing,
         },
       }}
-      className="h-full w-[280px] shrink-0 sm:w-[320px] md:w-[400px]"
+      className={cn("group h-full w-[280px] shrink-0 sm:w-[320px] md:w-[400px]", !isActive && "cursor-pointer")}
     >
       <motion.div
         className="relative h-full w-full overflow-hidden rounded-[24px] bg-ink/[0.04]"
@@ -204,7 +216,10 @@ function CarouselCard({ member, position }: { member: About1Member; position: nu
               alt={member.name}
               fill
               sizes="(min-width: 768px) 400px, 320px"
-              className="object-cover object-[50%_20%]"
+              className={cn(
+                "object-cover object-[50%_20%] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-reduce:transition-none",
+                !isActive && "group-hover:scale-[1.04]",
+              )}
             />
           ) : (
             <div
@@ -215,7 +230,8 @@ function CarouselCard({ member, position }: { member: About1Member; position: nu
             </div>
           )}
 
-          <div className="absolute inset-0 bg-linear-to-t from-white/90 via-white/30 to-transparent" />
+          {/* a short dark shade only under the words, so the photo stays clear */}
+          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
 
           <CardContent member={member} isActive={isActive} isNext={isNext} />
         </motion.div>
@@ -237,10 +253,10 @@ function CardContent({ member, isActive, isNext }: { member: About1Member; isAct
 
   return (
     <div className={`absolute inset-x-0 bottom-0 ${paddingClasses}`}>
-      <h3 className={`mb-1 font-semibold tracking-[-0.02em] text-ink ${titleClasses}`}>{member.name}</h3>
-      <p className={`text-ink/70 ${roleClasses}`}>{member.role}</p>
+      <h3 className={`mb-1 font-semibold tracking-[-0.02em] text-white ${titleClasses}`}>{member.name}</h3>
+      <p className={`text-white/80 ${roleClasses}`}>{member.role}</p>
       {isActive && member.text && (
-        <p className="mt-3 max-w-[34ch] text-pretty text-sm leading-relaxed text-ink/75">{member.text}</p>
+        <p className="mt-3 max-w-[34ch] text-pretty text-sm leading-relaxed text-white/80">{member.text}</p>
       )}
     </div>
   );

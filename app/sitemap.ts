@@ -1,4 +1,5 @@
 import { siteUrl } from "@/constants/data";
+import { products } from "@/constants/products";
 import { MetadataRoute } from "next";
 
 const pages: {
@@ -12,6 +13,8 @@ const pages: {
   { path: "/factory", changeFrequency: "monthly", priority: 0.7 },
   { path: "/partner", changeFrequency: "monthly", priority: 0.7 },
   { path: "/projects", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/products", changeFrequency: "weekly", priority: 0.7 },
+  ...products.map(({ slug }) => ({ path: `/products/${slug}`, changeFrequency: "monthly" as const, priority: 0.5 })),
   { path: "/contact", changeFrequency: "monthly", priority: 0.5 },
 ];
 

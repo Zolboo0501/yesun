@@ -1,20 +1,22 @@
 "use client";
 
-import { memo, useCallback, useState, type CSSProperties } from "react";
+import { memo, useCallback, useState, type CSSProperties, type ReactNode } from "react";
 import { motion, useMotionValue, useTransform } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
 export interface PageFlipLeaf {
   id?: string;
-  front: string;
-  back: string;
+  /** An image URL, or any content for the page. */
+  front: string | ReactNode;
+  /** An image URL, or any content for the page. */
+  back: string | ReactNode;
   frontAlt?: string;
   backAlt?: string;
 }
 
 export interface PageFlipProps {
-  /** Leaves of the book, each with a front and a back image. */
+  /** Leaves of the book, each with a front and a back. */
   pages?: PageFlipLeaf[];
   /** Width of a single leaf in pixels. */
   pageWidth?: number;
@@ -44,8 +46,16 @@ export interface PageFlipProps {
   trigger?: "click" | "hover";
   /** Close every turned leaf when the pointer leaves the scene. */
   closeOnLeave?: boolean;
+  /** Close every turned leaf on a click beside the book. */
+  closeOnBackground?: boolean;
   /** Enable pointer and keyboard interaction. */
   interactive?: boolean;
+  /** Let each leaf take keyboard focus; turn it off when the page gives the book controls of its own. */
+  keyboard?: boolean;
+  /** Number of turned leaves, to drive the book from outside; leave it out and the book keeps its own. */
+  open?: number;
+  /** Called with the number of turned leaves a click or hover asks for. */
+  onOpenChange?: (open: number) => void;
   /** Optional className applied to the root. */
   className?: string;
   /** Optional inline style applied to the root. */
@@ -102,11 +112,51 @@ const DEFAULT_PAGES: PageFlipLeaf[] = [
   },
 ];
 
+/** One side of a leaf: an image for a URL, otherwise the content as it is. */
+function Face({
+  content,
+  alt,
+  paper,
+  radius,
+  back = false,
+}: {
+  content: string | ReactNode;
+  alt: string;
+  paper: string;
+  radius: number;
+  back?: boolean;
+}) {
+  const style: CSSProperties = {
+    background: paper,
+    borderRadius: radius,
+    backfaceVisibility: "hidden",
+    WebkitBackfaceVisibility: "hidden",
+    transform: back ? "rotateY(180deg) translateZ(1px)" : undefined,
+  };
+  if (typeof content === "string") {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element -- plain URLs stay plain images; pass next/image as content
+      <img
+        src={content}
+        alt={alt}
+        draggable={false}
+        className="absolute inset-0 h-full w-full object-cover"
+        style={style}
+      />
+    );
+  }
+  return (
+    <div className="absolute inset-0 overflow-hidden" style={style}>
+      {content}
+    </div>
+  );
+}
+
 interface LeafProps {
   index: number;
   total: number;
-  front: string;
-  back: string;
+  front: string | ReactNode;
+  back: string | ReactNode;
   frontAlt: string;
   backAlt: string;
   turned: boolean;
@@ -122,6 +172,7 @@ interface LeafProps {
   curve: readonly number[];
   shadow: number;
   interactive: boolean;
+  keyboard: boolean;
   onSelect: (index: number) => void;
   onReach: (index: number) => void;
   onRelease: () => void;
@@ -147,6 +198,7 @@ const Leaf = memo(function Leaf({
   curve,
   shadow,
   interactive,
+  keyboard,
   onSelect,
   onReach,
   onRelease,
@@ -155,6 +207,7 @@ const Leaf = memo(function Leaf({
   const stack = useTransform(spin, (value) =>
     value < -turnAngle / 2 ? total + index + 1 : total - index,
   );
+  const focusable = interactive && keyboard;
 
   return (
     <motion.div
@@ -193,33 +246,12 @@ const Leaf = memo(function Leaf({
           onSelect(index);
         }
       }}
-      role={interactive ? "button" : undefined}
-      aria-pressed={interactive ? turned : undefined}
-      tabIndex={interactive ? 0 : -1}
+      role={focusable ? "button" : undefined}
+      aria-pressed={focusable ? turned : undefined}
+      tabIndex={focusable ? 0 : -1}
     >
-      <img
-        src={front}
-        alt={frontAlt}
-        draggable={false}
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{
-          background: paper,
-          borderRadius: radius,
-          backfaceVisibility: "hidden",
-        }}
-      />
-      <img
-        src={back}
-        alt={backAlt}
-        draggable={false}
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{
-          background: paper,
-          borderRadius: radius,
-          backfaceVisibility: "hidden",
-          transform: "rotateY(180deg) translateZ(1px)",
-        }}
-      />
+      <Face content={front} alt={frontAlt} paper={paper} radius={radius} />
+      <Face content={back} alt={backAlt} paper={paper} radius={radius} back />
     </motion.div>
   );
 });
@@ -240,26 +272,39 @@ const PageFlip = ({
   shadow = 0.3,
   trigger = "click",
   closeOnLeave = true,
+  closeOnBackground = true,
   interactive = true,
+  keyboard = true,
+  open: openProp,
+  onOpenChange,
   className,
   style,
 }: PageFlipProps) => {
   const book = pages.length > 0 ? pages : DEFAULT_PAGES;
   const total = book.length;
 
-  const [open, setOpen] = useState(0);
+  const [ownOpen, setOwnOpen] = useState(0);
+  const open = openProp ?? ownOpen;
   const [hovered, setHovered] = useState(-1);
   const [cascade, setCascade] = useState(false);
 
   const curve = CURVES[ease] ?? CURVES.easeInOut;
 
+  const change = useCallback(
+    (next: number) => {
+      if (openProp === undefined) setOwnOpen(next);
+      onOpenChange?.(next);
+    },
+    [openProp, onOpenChange],
+  );
+
   const select = useCallback(
     (index: number) => {
       if (!interactive) return;
       setCascade(false);
-      setOpen((prev) => (index < prev ? index : index + 1));
+      change(index < open ? index : index + 1);
     },
-    [interactive],
+    [interactive, open, change],
   );
 
   const reach = useCallback(
@@ -268,9 +313,9 @@ const PageFlip = ({
       setHovered(index);
       if (trigger !== "hover") return;
       setCascade(false);
-      setOpen(index + 1);
+      change(index + 1);
     },
-    [interactive, trigger],
+    [interactive, trigger, change],
   );
 
   const release = useCallback(() => {
@@ -279,8 +324,8 @@ const PageFlip = ({
 
   const shutAll = useCallback(() => {
     setCascade(true);
-    setOpen(0);
-  }, []);
+    change(0);
+  }, [change]);
 
   return (
     <div
@@ -289,7 +334,7 @@ const PageFlip = ({
         className,
       )}
       style={{ perspective: `${perspective}px`, ...style }}
-      onClick={shutAll}
+      onClick={closeOnBackground ? shutAll : undefined}
       onPointerLeave={() => {
         setHovered(-1);
         if (closeOnLeave) shutAll();
@@ -313,7 +358,7 @@ const PageFlip = ({
           const turned = index < open;
           return (
             <Leaf
-              key={leaf.id ?? `${leaf.front}-${index}`}
+              key={leaf.id ?? `leaf-${index}`}
               index={index}
               total={total}
               front={leaf.front}
@@ -335,6 +380,7 @@ const PageFlip = ({
               curve={curve}
               shadow={shadow}
               interactive={interactive}
+              keyboard={keyboard}
               onSelect={select}
               onReach={reach}
               onRelease={release}

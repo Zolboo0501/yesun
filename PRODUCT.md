@@ -38,7 +38,7 @@ The figures behind that claim are **confirmed by the client** (2026-11-03):
 
 - **Language and market:** the site is in Mongolian (`lang="mn"`) and serves Ulaanbaatar and the provinces. The search terms the site targets are in `SEO_STRATEGY.md`.
 - **How clients decide:** project clients compare contractors on the projects they have delivered, so the project list is the site's main proof.
-- **Contact channels** (`constants/data.ts`): phones +976-8888-9085 and +976-8811-4570, email yusunbelchir@gmail.com, and the company's Facebook page.
+- **Contact channels** (`constants/data.ts`): phones +976-8888-9085 and +976-8811-4570, email yusunbelchir@gmail.com, the company's Facebook page, and its Messenger (https://m.me/100063493841008, given by the user on 2026-11-09).
 - **Opening hours:** the structured data says Mo–Sa 09:00–19:00. This is unconfirmed.
 
 ## Capabilities and Constraints

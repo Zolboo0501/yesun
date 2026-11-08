@@ -52,6 +52,18 @@ export function FacebookIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+/** The Messenger bubble with its bolt cut out, filled, as the brand draws it. */
+export function MessengerIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <path
+        fillRule="evenodd"
+        d="M12 2.5c-5.3 0-9.5 3.9-9.5 9 0 2.8 1.3 5.3 3.4 7l.1 2.8c0 .5.6.8 1 .6l2.7-1.3c.7.2 1.5.3 2.3.3 5.3 0 9.5-3.9 9.5-9S17.3 2.5 12 2.5ZM6.5 14.3l3.6-4.7 3 2.3 4.4-2.2-3.6 4.7-3-2.3Z"
+      />
+    </svg>
+  );
+}
+
 export function CloseIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...base} {...props}>

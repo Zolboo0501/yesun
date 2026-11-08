@@ -1,17 +1,14 @@
-import Catelog from "@/components/products/Catelog";
-import type { Metadata } from "next";
+import { Catalog } from "@/components/products/Catalog";
+import { pageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
-  title: "Бүтээгдэхүүн",
-  robots: { index: false, follow: true },
-};
+export const metadata = pageMetadata(
+  "Бүтээгдэхүүн",
+  "Есөн Бэлчир ХХК-ийн албан ёсны түнш брэндүүдийн агааржуулагч, сэнс, агаар боловсруулах төхөөрөмж: ангилал, брэндээр шүүж, хайна.",
+  "/products",
+);
 
-const page = () => {
-  return (
-    <>
-      <Catelog />
-    </>
-  );
-};
+// The partner brands' products: filters by kind and brand down the left, a search, the products
+// (components/products/Catalog.tsx); each opens /products/[slug].
+const Products = () => <Catalog />;
 
-export default page;
+export default Products;
