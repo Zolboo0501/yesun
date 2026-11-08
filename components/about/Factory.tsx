@@ -38,6 +38,7 @@ function PhotoTile({ photo, sizes }: { photo: (typeof photos)[keyof typeof photo
         src={photo.src}
         alt={photo.alt}
         fill
+        quality={90}
         sizes={sizes}
         className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
       />

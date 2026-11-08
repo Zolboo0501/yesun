@@ -58,6 +58,7 @@ export function Plant() {
                   src={photo.src}
                   alt={photo.alt}
                   fill
+                  quality={90}
                   sizes={photo.sizes}
                   className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03] motion-reduce:transition-none"
                 />

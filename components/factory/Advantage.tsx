@@ -81,6 +81,7 @@ export default function Advantage() {
                   src={feature.image}
                   alt={feature.alt}
                   fill
+                  quality={90}
                   sizes="(min-width: 1280px) 600px, (min-width: 768px) 50vw, 100vw"
                   className="object-cover"
                 />

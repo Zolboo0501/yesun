@@ -251,11 +251,37 @@ function TextPage({ project, index }: { project: Project; index: number }) {
   );
 }
 
+// The photos' own pixel sizes. A photo covers its page, so one wider than the page is cropped at the sides and shown
+// wider than the page: it is fetched at that width, or it would be stretched and soft.
+const photoSize: Record<string, [number, number]> = {
+  "/images/project.webp": [1140, 570],
+  "/images/project2.webp": [1430, 805],
+  "/images/project3.webp": [1194, 1200],
+  "/images/project4.webp": [966, 680],
+  "/images/project6.webp": [1237, 870],
+  "/images/project7.webp": [1536, 2048],
+  "/images/project8.webp": [2048, 1152],
+  "/images/project9.webp": [3072, 1364],
+  "/images/project10.webp": [3840, 2160],
+  "/images/project11.webp": [1600, 1067],
+  "/images/project12.webp": [760, 428],
+  "/images/project13.webp": [762, 764],
+};
+
 /** A right-hand page: the project's photograph, with a shade toward the spine. */
-function PhotoPage({ project, width }: { project: Project; width: number }) {
+function PhotoPage({ project, width, height }: { project: Project; width: number; height: number }) {
+  const [w, h] = photoSize[project.image] ?? [width, height];
+  const shown = Math.round(Math.max(width, (height * w) / h));
   return (
     <div className="relative h-full">
-      <Image src={project.image} alt={describe(project)} fill sizes={`${width}px`} className="object-cover" />
+      <Image
+        src={project.image}
+        alt={describe(project)}
+        fill
+        quality={90}
+        sizes={`${shown}px`}
+        className="object-cover"
+      />
       <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-[8%] bg-linear-to-r from-black/25 to-transparent" />
     </div>
   );
@@ -292,6 +318,7 @@ function ProjectCard({
           src={project.image}
           alt=""
           fill
+          quality={90}
           sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
           className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
         />
@@ -394,10 +421,10 @@ export function ProjectBook() {
     () =>
       Array.from({ length: N + 1 }, (_, k) => ({
         id: k === 0 ? "cover" : `project-${k}`,
-        front: k === 0 ? <Cover /> : <PhotoPage project={projects[k - 1]} width={width} />,
+        front: k === 0 ? <Cover /> : <PhotoPage project={projects[k - 1]} width={width} height={height} />,
         back: k < N ? <TextPage project={projects[k]} index={k} /> : <BackCover />,
       })),
-    [width],
+    [width, height],
   );
 
   const onPointerDown = (event: PointerEvent) => {

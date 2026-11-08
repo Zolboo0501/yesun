@@ -58,6 +58,7 @@ export function Intro() {
             alt="Есөн Бэлчирийн хоёр давхар үйлдвэрийн цех"
             fill
             priority
+            quality={90}
             sizes="(min-width: 1280px) 1216px, 100vw"
             className="object-cover object-[50%_60%]"
           />

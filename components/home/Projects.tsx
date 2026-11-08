@@ -105,6 +105,7 @@ const images = projects.map(({ src, width, height, alt }) => {
     alt,
     width,
     height,
+    quality: 90,
     sizes: `(min-width: 1024px) ${Math.round(820 * crop)}px, calc(min(820px, 100vw - 32px) * ${crop.toFixed(2)})`,
   });
   return { src: props.src, srcSet: props.srcSet, sizes: props.sizes, alt };
