@@ -143,7 +143,7 @@ export const heroScenes: HeroSceneConfig[] = [
     steps: [
       {
         tag: "Есөн Бэлчир",
-        title: "Инженерийн компани",
+        title: "Есөн Бэлчир",
         text: "Агаар сэлгэлт, хөргөлтийн системийг тооцоолж, үйлдвэрлэж, угсардаг инженерийн компани.",
       },
       {
@@ -494,7 +494,7 @@ export const heroScenes: HeroSceneConfig[] = [
   {
     id: "building",
     name: "Барилга",
-    model: "/models/hvac/building.glb?v=2",
+    model: "/models/hvac/building.glb?v=3",
     label:
       "Олон давхар барилгын зүсэлт: дээврийн төхөөрөмж, босоо суваг, давхар бүрийн суваг, зогсоолын сэнс",
     mood: {

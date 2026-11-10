@@ -255,14 +255,14 @@ function FooterView() {
             </CTA3>
           </div>
 
-          {/* the two places and the menu, three columns at lg; below lg the room under them keeps the menu clear
+          {/* the two places and the menu, three columns at lg; below wide the room under them keeps the menu clear
               of the contact bar at the foot of the screen */}
           <motion.div
             variants={stagger}
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.2 }}
-            className="grid gap-x-8 gap-y-12 border-t border-white/10 py-14 text-base leading-relaxed max-lg:pb-28 sm:grid-cols-2 lg:grid-cols-3 lg:py-16 light:border-ink/10"
+            className="grid gap-x-8 gap-y-12 border-t border-white/10 py-14 pb-28 text-base leading-relaxed sm:grid-cols-2 lg:grid-cols-3 lg:pt-16 wide:pb-16 light:border-ink/10"
           >
             {places.map(({ id, label: name, lines }) => (
               <motion.div key={id} variants={rise}>

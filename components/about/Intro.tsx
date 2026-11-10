@@ -94,7 +94,7 @@ export function Intro() {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="mx-auto grid min-h-[calc(100svh-var(--header-h))] max-w-7xl content-end gap-10 px-4 pb-14 pt-32 sm:px-6 lg:grid-cols-12 lg:items-end lg:gap-8 lg:px-8 lg:pb-20"
+        className="mx-auto grid min-h-[calc(100svh-var(--header-h))] max-w-7xl content-end gap-10 px-4 pb-[calc(var(--bar-room)+1.5rem)] pt-32 sm:px-6 lg:grid-cols-12 lg:items-end lg:gap-8 lg:px-8 wide:pb-20"
       >
         <div className="lg:col-span-8">
           <StaggeredText

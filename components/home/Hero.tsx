@@ -196,7 +196,7 @@ export function Hero() {
         </nav>
 
         {/* The buildings, small at the bottom left, the one on stage in white. */}
-        <nav aria-label="Объектууд" className="absolute bottom-5 left-4 sm:left-6 lg:left-8">
+        <nav aria-label="Объектууд" className="absolute bottom-[calc(var(--bar-room)+0.75rem)] left-4 sm:left-6 lg:bottom-5 lg:left-8">
           <ul className="flex gap-3 text-[13px] font-medium sm:gap-5">
             {heroScenes.map((scene, k) => (
               <SceneLink
@@ -213,7 +213,7 @@ export function Hero() {
 
 
         {/* from sm up; on a phone the site's contact bar carries the same links and the scene names need the row */}
-        <div className="absolute bottom-4 right-3 hidden items-center gap-1 text-white/70 sm:right-5 sm:flex lg:right-7">
+        <div className="absolute bottom-[calc(var(--bar-room)+0.5rem)] right-3 hidden items-center gap-1 text-white/70 sm:right-5 sm:flex lg:bottom-4 lg:right-7">
           <a
             href={contact.facebook}
             target="_blank"
@@ -298,8 +298,8 @@ function ScenePanel({
           copy for the white type to read (the left on desktop, the foot on phones), a touch at the foot for the
           building tabs, and the rest of the scene left clear. */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgb(22_23_27/0.82)_10%,rgb(22_23_27/0.4)_36%,transparent_58%)] lg:bg-[linear-gradient(90deg,rgb(22_23_27/0.72)_0%,rgb(22_23_27/0.45)_28%,rgb(22_23_27/0.1)_50%,transparent_62%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-night/45 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgb(22_23_27/0.82)_calc(10%_+_var(--bar-room)),rgb(22_23_27/0.4)_calc(36%_+_var(--bar-room)),transparent_calc(58%_+_var(--bar-room)))] lg:bg-[linear-gradient(90deg,rgb(22_23_27/0.72)_0%,rgb(22_23_27/0.45)_28%,rgb(22_23_27/0.1)_50%,transparent_62%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-[calc(var(--bar-room)+6rem)] bg-linear-to-t lg:h-24 from-night/45 to-transparent" />
       </div>
       {/* on stage before its model has drawn: the loading sign where the building will stand */}
       {drawing && !ready && (
@@ -372,8 +372,8 @@ function ContactActions() {
   );
 }
 
-/** The 3D's loading sign: a light running along a short line, and the words under it. It fades in after half a
- *  second, so a model that is already in never flashes it; under reduced motion the light holds still. */
+/** The 3D's loading sign: a light running along a short line; its words are for screen readers only. It fades in
+ *  after half a second, so a model that is already in never flashes it; under reduced motion the light holds still. */
 function Loader({ className }: { className?: string }) {
   return (
     <div
@@ -383,7 +383,7 @@ function Loader({ className }: { className?: string }) {
       <span aria-hidden className="relative block h-0.5 w-32 overflow-hidden rounded-full bg-white/15">
         <span className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-white/80 animate-[loader-sweep_1.2s_ease-in-out_infinite] motion-reduce:animate-none" />
       </span>
-      <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/65">3D загвар ачаалж байна</span>
+      <span className="sr-only">3D загвар ачаалж байна</span>
     </div>
   );
 }

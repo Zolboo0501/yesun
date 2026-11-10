@@ -199,7 +199,7 @@ export function Products() {
         {/* Shade over the run, as on the home page's stages: dark under the copy, open where the product is. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--color-graphite)_18%,rgb(31_34_38/0.6)_42%,transparent_62%)] lg:bg-[linear-gradient(90deg,rgb(31_34_38/0.85)_4%,rgb(31_34_38/0.55)_24%,rgb(31_34_38/0.15)_36%,transparent_44%)]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(0deg,var(--color-graphite)_calc(18%_+_var(--bar-room)),rgb(31_34_38/0.6)_calc(42%_+_var(--bar-room)),transparent_calc(62%_+_var(--bar-room)))] lg:bg-[linear-gradient(90deg,rgb(31_34_38/0.85)_4%,rgb(31_34_38/0.55)_24%,rgb(31_34_38/0.15)_36%,transparent_44%)]"
         />
 
         {/* Technical frame around the stage, as in the hero. */}
@@ -211,9 +211,8 @@ export function Products() {
         </p>
         <div
           aria-hidden
-          className="pointer-events-none absolute bottom-5 left-5 flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.16em] text-white/50"
+          className="pointer-events-none absolute bottom-[calc(var(--bar-room)+0.75rem)] left-5 flex h-4 items-center lg:bottom-5"
         >
-          Гүйлгэж танилцана
           <span className="relative h-px w-16 bg-white/15">
             <motion.span
               style={{ scaleX: scrollYProgress }}
@@ -223,7 +222,7 @@ export function Products() {
         </div>
         <p
           aria-hidden
-          className="pointer-events-none absolute bottom-5 right-5 font-mono text-[11px] uppercase tracking-[0.16em] text-white/50"
+          className="pointer-events-none absolute bottom-[calc(var(--bar-room)+0.75rem)] right-5 font-mono lg:bottom-5 text-[11px] uppercase tracking-[0.16em] text-white/50"
         >
           <motion.span>{counter}</motion.span> / {pad(steps.length)}
         </p>

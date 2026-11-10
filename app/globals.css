@@ -66,10 +66,18 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --spacing-128: 32rem;
   --spacing-144: 36rem;
+  /* from here the page container leaves a margin wide enough for the contact bar at the left edge */
+  --breakpoint-wide: 90rem;
 }
 
 :root {
   --header-h: 4.5rem; /* the floating pill header: a 56px bar with 8px above and below; the scroll stages pin under it */
+  /* the foot of the screen the contact bar takes below wide (components/ContactBar.tsx: its 58px pill and the 1rem or
+     safe area under it); the scroll stages keep their copy above it. None from wide, where the bar stands at the left. */
+  --bar-room: calc(max(1rem, env(safe-area-inset-bottom)) + 3.625rem);
+  @variant wide {
+    --bar-room: 0px;
+  }
   --radius: 0.625rem;
   --background: #ffffff;
   --foreground: #333333;

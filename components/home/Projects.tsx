@@ -194,7 +194,7 @@ export function Projects() {
 
         {/* Shade over the stage, as on the hero: dark under the copy and round the frame, open where the photos are. */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-white)_22%,rgb(255_255_255/0.6)_46%,transparent_64%)] lg:bg-[linear-gradient(90deg,var(--color-white)_8%,rgb(255_255_255/0.8)_24%,rgb(255_255_255/0.25)_34%,transparent_42%)]" />
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-white)_calc(22%_+_var(--bar-room)),rgb(255_255_255/0.6)_calc(46%_+_var(--bar-room)),transparent_calc(64%_+_var(--bar-room)))] lg:bg-[linear-gradient(90deg,var(--color-white)_8%,rgb(255_255_255/0.8)_24%,rgb(255_255_255/0.25)_34%,transparent_42%)]" />
           <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-white to-transparent" />
           <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-white/85 to-transparent" />
         </div>

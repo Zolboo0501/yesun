@@ -1,6 +1,7 @@
 import { ContactBar } from "@/components/ContactBar";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { siteUrl } from "@/constants/data";
 import { productMenu } from "@/constants/products";
 import { shareMetadata, siteName } from "@/lib/metadata";
@@ -100,6 +101,7 @@ export default function RootLayout({
         className={`scroll-smooth font-sans ${golos.variable} ${mono.variable}`}
         suppressHydrationWarning
       >
+        <SmoothScroll />
         <Header productMenu={productMenu} />
         <main id="main">{children}</main>
         <Footer />

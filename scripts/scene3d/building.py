@@ -5,9 +5,11 @@ spec says "room": "building", exports the GLB and exits. Blender metres, Z up; -
 camera looks in through, so the building is open toward it like a section drawing.
 
 What it holds:
-  site, trees,   the street around the building: pavers, a road with its markings and curbs, lawns,
-  context        street trees and lamps, two cars on the road, three neighbouring blocks in the
-                 distance, and the cut earth around the parking level. All fade in the exploded view.
+  site           the ground the building stands on: pavers, a road with its markings and curbs, lawns,
+                 and the cut earth around the parking level. It stays in every view, so the x-ray and
+                 the exploded view keep the building on its ground instead of in a black void.
+  street, trees, street lamps and bollards, street trees, two cars on the road, three neighbouring
+  context        blocks in the distance. These fade with the fit-out, so they never hide the system.
   slab           the concrete structure (slabs, basement walls, columns, the core and the shaft, the
                  parapet), one material, so the web template can fade it to leave the system alone
   glass, facade  a curtain wall on three faces: vision glass floor to ceiling, spandrel glass over each
@@ -23,8 +25,8 @@ What it holds:
                  exhaust duct in the parking level. Explode extras pull each floor's network toward
                  the camera and lift the roof plant; a `floor` extra on each level's parts (0 = ground,
                  -1 = parking, 5 = roof plant) lets the web template bring one floor forward and dim the rest.
-Everything but the structure and the HVAC carries fade_explode (glass included), so the web template can
-fade it to leave the system, either pulled apart or in place inside a ghosted structure.
+Everything but the ground, the structure and the HVAC carries fade_explode (glass included), so the web
+template can fade it to leave the system, either pulled apart or in place inside a ghosted structure.
 No lettering anywhere: signs, plates and markings are plain shapes.
 """
 import math
@@ -180,14 +182,18 @@ def build(g):
         site.box((0.12, FAR - Y0, 0.006), (x, (Y0 + FAR) / 2, -0.097), paint)
     for k in range(6):                                                    # a crossing behind the building
         site.box((0.5, 3.0, 0.006), (ROAD_X0 + 0.8 + k * 1.05, 12.0, -0.097), paint)
+    # the ground stays in the x-ray and the exploded view: it is cut at the front, so it never hides the system
+    site.build()
+
+    street = Part("street")
     for y in (-1.0, 11.0, 23.0):                                         # street lamps on the kerb, arms over the road
-        site.cyl(0.07, 6.0, (-10.45, y, 3.0), dark_metal, seg=12, r2=0.05)
-        site.box((1.2, 0.07, 0.07), (-11.0, y, 5.95), dark_metal)
-        site.rbox((0.55, 0.24, 0.1), (-11.55, y, 5.9), dark_metal, 0.03)
-        site.box((0.45, 0.17, 0.01), (-11.55, y, 5.845), M["downlight"])
+        street.cyl(0.07, 6.0, (-10.45, y, 3.0), dark_metal, seg=12, r2=0.05)
+        street.box((1.2, 0.07, 0.07), (-11.0, y, 5.95), dark_metal)
+        street.rbox((0.55, 0.24, 0.1), (-11.55, y, 5.9), dark_metal, 0.03)
+        street.box((0.45, 0.17, 0.01), (-11.55, y, 5.845), M["downlight"])
     for y in (-3.5, -2.0, 6.5):                                           # bollards along the pavement
-        site.cyl(0.08, 0.9, (-9.7, y, 0.45), dark_metal, seg=12)
-    site.build(fade_explode=1)
+        street.cyl(0.08, 0.9, (-9.7, y, 0.45), dark_metal, seg=12)
+    street.build(fade_explode=1)
 
     trees = Part("trees")
     for x, y, h in ((-9.0, 11.5, 7.5), (-2.5, 12.0, 6.8), (4.0, 11.0, 7.2), (10.5, 12.0, 6.6), (-22.5, 2.0, 7.0),
