@@ -1,10 +1,10 @@
 "use client";
 import { Environment, Lightformer, useGLTF } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Bloom, EffectComposer, SSAO, ToneMapping } from "@react-three/postprocessing";
 import type { MotionValue } from "motion/react";
 import { ToneMappingMode } from "postprocessing";
-import { Suspense, useRef, useState, type RefObject } from "react";
+import { Suspense, useEffect, useRef, useState, type RefObject } from "react";
 import * as THREE from "three";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 import { heroScenes, type HeroSceneConfig } from "./heroScenes";
@@ -117,6 +117,7 @@ export default function HeroScene({ config, progress, active, reducedMotion, onR
             animate={!reducedMotion}
             onReady={onReady}
           />
+          <WarmUp active={active} />
         </Suspense>
 
         {lite ? (
@@ -164,8 +165,8 @@ const toThree = (v: unknown) =>
 
 // Shadows: everything solid casts except the feature ceiling and the slab (they would black out
 // the plenum); the room shell casts too, which is what keeps the sun to patches by the windows.
-const NO_CAST = new Set(["ceiling_reveal", "slab", "glass", "meeting_glass", "city"]);
-const NO_RECEIVE = new Set(["glass", "meeting_glass", "city"]);
+const NO_CAST = new Set(["ceiling_reveal", "slab", "glass", "meeting_glass", "cooler_glass", "city"]);
+const NO_RECEIVE = new Set(["glass", "meeting_glass", "cooler_glass", "city"]);
 
 type Parts = ReturnType<typeof findParts>;
 
@@ -231,11 +232,14 @@ function findParts(scene: THREE.Object3D) {
   // Exploded-view parts carry their offsets from Blender as glTF extras.
   const exploding: { obj: THREE.Object3D; home: THREE.Vector3; sys: THREE.Vector3; ahu: THREE.Vector3; delay: number }[] = [];
   const fading: { mesh: THREE.Mesh; material: THREE.Material; base: number }[] = [];
-  // the AHU's fan, plus any other fan the model marks to spin (the kindergarten's unit has two)
+  // the AHU's fan, plus any other fan the model marks to spin (the kindergarten's unit has two); fans marked
+  // spin_up stand upright, like a rooftop unit's condenser fans, and turn about the vertical
   const fans: THREE.Object3D[] = [];
+  const upFans: THREE.Object3D[] = [];
   scene.traverse((o) => {
     const d = o.userData;
-    if (o.name === "ahu_fan" || d.spin) fans.push(o);
+    if (d.spin_up) upFans.push(o);
+    else if (o.name === "ahu_fan" || d.spin) fans.push(o);
     if (d.explode_sys || d.explode_ahu) {
       exploding.push({
         obj: o,
@@ -270,6 +274,7 @@ function findParts(scene: THREE.Object3D) {
     floors,
     door: scene.getObjectByName("ahu_door"),
     fans,
+    upFans,
   };
 }
 
@@ -394,7 +399,10 @@ function Rig({
       parts.slab.visible = s.slab > 0.02;
     }
     if (parts.door) parts.door.rotation.y = -staged(s.ahu, 0.05) * 1.2;
-    if (animate) for (const fan of parts.fans) fan.rotation.z += delta * (1 + s.ahu * 6);
+    if (animate) {
+      for (const fan of parts.fans) fan.rotation.z += delta * (1 + s.ahu * 6);
+      for (const fan of parts.upFans) fan.rotation.y += delta * (1 + s.ahu * 6);
+    }
 
     // Released drags ease the room back so every shot frames what it should.
     if (!input.dragging) input.yaw = damp(input.yaw, 0, 2.5, delta);
@@ -426,3 +434,27 @@ function Rig({
 
 // the first scene loads with the page; the others are mounted (and so fetched) a scene ahead of being seen
 useGLTF.preload(heroScenes[0].model, DRACO);
+
+/** A scene's first frame compiles every shader (the lights, the shadow map, the environment, the effects) and uploads
+ *  every texture, which can hold the page for a moment. A scene waiting beside the one on stage (mounted, its model in,
+ *  but not drawing) draws that first frame once while the browser is idle, so it slides in without a stall. */
+function WarmUp({ active }: { active: boolean }) {
+  const advance = useThree((state) => state.advance);
+  const warmed = useRef(false);
+  useEffect(() => {
+    if (active || warmed.current) return;
+    const run = () => {
+      if (warmed.current) return;
+      warmed.current = true;
+      advance(performance.now());
+    };
+    // Safari has no requestIdleCallback: a short wait stands in for it
+    if ("requestIdleCallback" in window) {
+      const idle = window.requestIdleCallback(run, { timeout: 2000 });
+      return () => window.cancelIdleCallback(idle);
+    }
+    const timer = setTimeout(run, 400);
+    return () => clearTimeout(timer);
+  }, [active, advance]);
+  return null;
+}

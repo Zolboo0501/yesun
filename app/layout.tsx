@@ -2,6 +2,7 @@ import { ContactBar } from "@/components/ContactBar";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { siteUrl } from "@/constants/data";
+import { productMenu } from "@/constants/products";
 import { shareMetadata, siteName } from "@/lib/metadata";
 import type { Metadata } from "next";
 import { golos, mono } from "./fonts";
@@ -99,7 +100,7 @@ export default function RootLayout({
         className={`scroll-smooth font-sans ${golos.variable} ${mono.variable}`}
         suppressHydrationWarning
       >
-        <Header />
+        <Header productMenu={productMenu} />
         <main id="main">{children}</main>
         <Footer />
         <ContactBar />

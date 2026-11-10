@@ -94,8 +94,8 @@ export function Glyph({ active, className, children, ...p }: Draw & { active: bo
     <svg
       viewBox="0 0 512 512"
       fill="none"
-      stroke="white"
-      strokeWidth={22}
+      stroke="currentColor"
+      strokeWidth={12}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden
@@ -205,7 +205,7 @@ export function ServiceIcon(p: Draw) {
       <Line d={circle(214, 300, 32)} {...p} delay={0.4} />
       <g className="animate-[rock_2.6s_ease-in-out_infinite] motion-reduce:animate-none" style={about(326, 172)}>
         <g transform={`translate(118 64) scale(${WRENCH_SCALE})`}>
-          <Line d={WRENCH} {...p} strokeWidth={22 / WRENCH_SCALE} className="fill-graphite" delay={0.5} />
+          <Line d={WRENCH} {...p} strokeWidth={12 / WRENCH_SCALE} className="fill-white" delay={0.5} />
         </g>
       </g>
     </>

@@ -62,7 +62,7 @@ export function ProductDetail({ product }: { product: Product }) {
             {product.features.length > 0 && (
               <ul className="mt-6 space-y-2.5">
                 {product.features.map((feature) => (
-                  <li key={feature} className="flex gap-3 text-[0.9375rem] leading-snug">
+                  <li key={feature} className="flex gap-3 text-base leading-snug">
                     <Check aria-hidden className="mt-0.5 size-4 shrink-0 text-brand" />
                     {feature}
                   </li>
@@ -72,14 +72,14 @@ export function ProductDetail({ product }: { product: Product }) {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/contact"
-                className="group inline-flex min-h-12 items-center gap-2 rounded-[3px] bg-ink px-5 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 Үнийн санал авах
                 <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
               </Link>
               <a
                 href={`tel:${contact.phone}`}
-                className="inline-flex min-h-12 items-center rounded-[3px] border border-ink/20 px-5 text-sm font-semibold tabular-nums transition-[border-color,transform] duration-200 hover:border-ink/50 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                className="inline-flex min-h-12 items-center rounded-full border border-ink/20 px-5 text-sm font-semibold tabular-nums transition-[border-color,transform] duration-200 hover:border-ink/50 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 {contact.phone}
               </a>

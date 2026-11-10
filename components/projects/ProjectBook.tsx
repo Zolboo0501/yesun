@@ -159,38 +159,138 @@ const initials = (name: string) =>
     .map((part) => part[0])
     .join("");
 
-/** The front cover: the catalogue's name, its years and how to open it. */
+// Book cloth: threads running one way and across, as a tile of SVG noise stretched along each, laid over the cloth's
+// colour so it darkens and lightens the navy like a woven buckram.
+const LINEN = `url("data:image/svg+xml,${encodeURIComponent(
+  "<svg xmlns='http://www.w3.org/2000/svg' width='256' height='256'>" +
+    "<filter id='a'><feTurbulence type='fractalNoise' baseFrequency='0.03 0.9' numOctaves='3' seed='2' stitchTiles='stitch'/><feColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 1'/></filter>" +
+    "<filter id='b'><feTurbulence type='fractalNoise' baseFrequency='0.9 0.03' numOctaves='3' seed='7' stitchTiles='stitch'/><feColorMatrix values='1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 0 0 0 0.5'/></filter>" +
+    "<rect width='256' height='256' filter='url(#a)'/><rect width='256' height='256' filter='url(#b)'/></svg>",
+)}")`;
+
+// The binding side, from its edge in: the spine rolling away into shade with a catch of light on it, then the hinge
+// pressed into the board, its far lip lit.
+const hinge = (side: "left" | "right") =>
+  `linear-gradient(${side === "left" ? 90 : 270}deg, rgb(0 0 0 / 0.5), rgb(0 0 0 / 0.18) 0.8cqw, rgb(255 255 255 / 0.06) 1.8cqw, rgb(0 0 0 / 0.1) 3.8cqw, rgb(0 0 0 / 0.55) 4.7cqw, rgb(255 255 255 / 0.12) 5.3cqw, rgb(255 255 255 / 0.02) 6.4cqw, transparent 9cqw)`;
+
+/** A hardcover's cloth under a cover's words: the navy weave, light falling from the top left and shade toward the
+ *  far corner, the spine and its hinge on the binding side, a frame pressed into the board, and its rounded edge. */
+function Cloth({ spine }: { spine: "left" | "right" }) {
+  const left = spine === "left";
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0">
+      <div className="absolute inset-0 opacity-55 mix-blend-overlay" style={{ backgroundImage: LINEN }} />
+      <div className="absolute inset-0 bg-[radial-gradient(130%_90%_at_15%_0%,rgb(255_255_255/0.12),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_100%_100%,rgb(0_0_0/0.3),transparent_55%)]" />
+      <div className="absolute inset-0" style={{ backgroundImage: hinge(spine) }} />
+      {/* pressed in, so lit from the top left: dark on its near walls, light on its far ones */}
+      <div
+        className={cn(
+          "absolute inset-y-[5cqw] rounded-[2px] border border-black/50 shadow-[1px_1px_0_rgb(255_255_255/0.07),inset_1px_1px_0_rgb(255_255_255/0.07)]",
+          left ? "left-[10.5cqw] right-[5cqw]" : "left-[5cqw] right-[10.5cqw]",
+        )}
+      />
+      <div className="absolute inset-0 shadow-[inset_0_1px_1px_rgb(255_255_255/0.14),inset_0_-1px_2px_rgb(0_0_0/0.5),inset_-1px_0_2px_rgb(0_0_0/0.35)]" />
+    </div>
+  );
+}
+
+/** The front cover, made like a hardcover: the cloth with its spine on the left, the company debossed at the top, the
+ *  catalogue's name stamped in silver foil with a foil rule under it, its years, and how to open it. */
 function Cover() {
   return (
     <div className="@container h-full">
-      <div className="relative flex h-full flex-col justify-between bg-graphite p-[7cqw] text-white">
-        <p className="font-mono text-[max(10px,2.2cqw)] uppercase tracking-[0.18em] text-white/55">Есөн Бэлчир ХХК</p>
-        <div>
-          <p className="text-balance text-[max(1.5rem,7cqw)] font-semibold leading-none tracking-[-0.03em]">
+      <div className="relative flex h-full flex-col justify-between bg-[#16203a] py-[10cqw] pl-[15cqw] pr-[10cqw] text-white">
+        <Cloth spine="left" />
+        <p className="relative font-mono text-[max(10px,2.2cqw)] uppercase tracking-[0.18em] text-white/50 [text-shadow:0_1px_0_rgb(0_0_0/0.5)]">
+          Есөн Бэлчир ХХК
+        </p>
+        <div className="relative">
+          <p className="text-balance bg-[linear-gradient(100deg,#f4f6f9_0%,#c5cbd6_32%,#ffffff_50%,#b6bdca_68%,#eef1f5_100%)] bg-clip-text text-[max(1.5rem,7cqw)] font-semibold leading-[1.02] tracking-[-0.03em] text-transparent [filter:drop-shadow(0_-1px_0_rgb(0_0_0/0.55))_drop-shadow(0_1px_0_rgb(255_255_255/0.1))]">
             Хэрэгжүүлсэн төслүүд
           </p>
+          <span aria-hidden className="mt-[3.5cqw] block h-px w-[16cqw] bg-linear-to-r from-[#c5cbd6] to-transparent" />
           <p className="mt-[3cqw] text-[max(0.8125rem,2.8cqw)] text-white/65">
             150 гаруй объектоос онцлох {N} нь · {FIRST}–{LAST}
           </p>
         </div>
-        <p className="flex items-center gap-2 self-end text-[max(11px,2.4cqw)] font-medium text-white/80">
+        <p className="relative flex items-center gap-2 self-end text-[max(11px,2.4cqw)] font-medium text-white/80">
           Нээх <ArrowRight aria-hidden className="size-[1.1em]" />
         </p>
-        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-[6cqw] bg-linear-to-r from-black/30 to-transparent" />
       </div>
     </div>
   );
 }
 
-/** The back cover, last page of the book. */
+/** The back cover, last page of the book: the same cloth, its spine on the right. */
 function BackCover() {
   return (
     <div className="@container h-full">
-      <div className="flex h-full flex-col justify-end bg-graphite p-[7cqw] text-white">
-        <p className="text-balance text-[max(1.25rem,5.4cqw)] font-semibold leading-[1.1] tracking-[-0.025em]">
+      <div className="relative flex h-full flex-col justify-end bg-[#16203a] py-[10cqw] pl-[10cqw] pr-[15cqw] text-white">
+        <Cloth spine="right" />
+        <p className="relative text-balance text-[max(1.25rem,5.4cqw)] font-semibold leading-[1.1] tracking-[-0.025em]">
           Дараагийн төсөл таных байж болно.
         </p>
-        <p className="mt-[2.5cqw] text-[max(0.8125rem,2.6cqw)] text-white/65">Инженертэй холбогдож, төслөө ярилцаарай.</p>
+        <p className="relative mt-[2.5cqw] text-[max(0.8125rem,2.6cqw)] text-white/65">Инженертэй холбогдож, төслөө ярилцаарай.</p>
+      </div>
+    </div>
+  );
+}
+
+// Pages seen edge on: paper with the faint lines between the leaves, lit from above and in shade toward the outside.
+const pageEdges = (side: "left" | "right") =>
+  `linear-gradient(${side === "right" ? 90 : 270}deg, rgb(11 16 32 / 0.04), rgb(11 16 32 / 0.2)), linear-gradient(180deg, rgb(255 255 255 / 0.35), transparent 25%, rgb(11 16 32 / 0.06)), repeating-linear-gradient(90deg, #f7f5f0 0 1px, #dbd7ce 1px 2px)`;
+
+/** What lies under one side of the book and moves with it: that side's pages seen edge on past its outer edge, as
+ *  many as lie there, in front of the board's edge, a little shorter at the far side as they recede, and the soft
+ *  shadow the book casts on the white. It starts under the leaves so their rounded corners show board, not page, and
+ *  fades out once no leaf is left on its side. */
+function PageBlock({
+  side,
+  count,
+  total,
+  width,
+  height,
+  edge,
+}: {
+  side: "left" | "right";
+  count: number;
+  total: number;
+  width: number;
+  height: number;
+  /** the edge of the whole book, every leaf on one side */
+  edge: number;
+}) {
+  const right = side === "right";
+  const t = Math.max(2, Math.round((edge * count) / total));
+  const under = 6;
+  return (
+    <div
+      aria-hidden
+      className="absolute top-0 rounded-[6px] shadow-[0_1px_1px_rgb(11_16_32/0.08),0_6px_12px_-4px_rgb(11_16_32/0.16),0_18px_28px_-16px_rgb(11_16_32/0.3)] transition-[width,opacity] duration-700 ease-[cubic-bezier(0.65,0,0.35,1)]"
+      style={{
+        height,
+        width: width + t,
+        // the left side's pages lie past the spine, which is the book's left edge
+        ...(right ? { left: 0 } : { right: width }),
+        opacity: count > 0 ? 1 : 0,
+        transform: "translateZ(-1px)",
+      }}
+    >
+      <div
+        className="absolute inset-y-0 rounded-[6px] bg-[#121a30]"
+        style={{
+          width: t + under,
+          ...(right ? { right: 0 } : { left: 0 }),
+          clipPath: right
+            ? "polygon(0 0, 100% 3px, 100% calc(100% - 3px), 0 100%)"
+            : "polygon(0 3px, 100% 0, 100% 100%, 0 calc(100% - 3px))",
+        }}
+      >
+        <div
+          className="absolute inset-y-[3px]"
+          style={{ width: t + under - 2, ...(right ? { left: 0 } : { right: 0 }), backgroundImage: pageEdges(side) }}
+        />
       </div>
     </div>
   );
@@ -254,7 +354,7 @@ function TextPage({ project, index }: { project: Project; index: number }) {
 // The photos' own pixel sizes. A photo covers its page, so one wider than the page is cropped at the sides and shown
 // wider than the page: it is fetched at that width, or it would be stretched and soft.
 const photoSize: Record<string, [number, number]> = {
-  "/images/project.webp": [1140, 570],
+  "/images/project.webp": [2280, 1140],
   "/images/project2.webp": [1430, 805],
   "/images/project3.webp": [1194, 1200],
   "/images/project4.webp": [966, 680],
@@ -264,7 +364,7 @@ const photoSize: Record<string, [number, number]> = {
   "/images/project9.webp": [3072, 1364],
   "/images/project10.webp": [3840, 2160],
   "/images/project11.webp": [1600, 1067],
-  "/images/project12.webp": [760, 428],
+  "/images/project12.webp": [2029, 1143],
   "/images/project13.webp": [762, 764],
 };
 
@@ -384,12 +484,16 @@ export function ProjectBook() {
     return () => observer.disconnect();
   }, []);
 
-  // The pages fill the room the screen leaves. A landscape screen opens the book into spreads, two pages side by
-  // side, each within 1.4:1 either way so a very wide or tall screen does not stretch them; a portrait screen (a
-  // phone, a tablet held upright) turns one page at a time, as large as the room.
+  // The pages fill the room the screen leaves, less the page block beside the book and its shadow under it. A
+  // landscape screen opens the book into spreads, two pages side by side, each within 1.4:1 either way so a very
+  // wide or tall screen does not stretch them; a portrait screen (a phone, a tablet held upright) turns one page at
+  // a time, as large as the room.
   const spread = screen.w >= 600 && screen.w >= screen.h * 1.05;
-  const width = spread ? Math.min(Math.floor(box.w / 2), Math.round(box.h * 1.4)) : box.w;
-  const height = spread ? Math.min(box.h, Math.round(width * 1.4)) : box.h;
+  const edge = Math.round(Math.min(14, Math.max(6, box.w / 110)));
+  const side = edge + 10;
+  const room = { w: box.w - 2 * side, h: box.h - 24 };
+  const width = spread ? Math.min(Math.floor(room.w / 2), Math.round(room.h * 1.4)) : room.w;
+  const height = spread ? Math.min(room.h, Math.round(width * 1.4)) : room.h;
   // A spread can turn past the last photo to the back cover; a single page stops on the last photo.
   const max = spread ? N + 1 : N;
   const shown = Math.min(open, max);
@@ -442,14 +546,14 @@ export function ProjectBook() {
   const counter = shown === 0 ? "Нүүр" : shown > N ? "Төгсгөл" : `${pad(shown)} / ${pad(N)}`;
   const project = current >= 0 ? projects[current] : null;
   const roundButton =
-    "flex size-12 cursor-pointer items-center justify-center rounded-full border border-white/25 text-white transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent";
+    "flex size-12 cursor-pointer items-center justify-center rounded-full border border-ink/20 text-ink transition-colors hover:bg-ink/[0.05] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent";
 
   return (
     <MotionConfig reducedMotion="user">
       <section
         ref={frame}
         aria-labelledby="projects-title"
-        className="flex h-[calc(100svh-var(--header-h))] min-h-[34rem] flex-col bg-night text-white"
+        className="flex h-[calc(100svh-var(--header-h))] min-h-[34rem] flex-col bg-white text-ink"
       >
         <h1 id="projects-title" className="sr-only">
           Хэрэгжүүлсэн төслүүд
@@ -476,16 +580,22 @@ export function ProjectBook() {
               pageRadius={6}
               pageColor="#f5f6f8"
               perspective={2800}
-              spineShift={spread ? width / 2 : 0}
+              // a single page slides to the stage's left edge once open, so the turned leaves go out of sight
+              spineShift={spread ? width / 2 : -side}
               peekAngle={spread ? 6 : 0}
               duration={0.75}
-              shadow={0.35}
+              shadow={0.25}
               closeOnLeave={false}
               closeOnBackground={false}
               keyboard={false}
               open={shown}
               onOpenChange={(next) => setOpen(Math.min(next, max))}
-            />
+              // the book stands at the top, its shadow falling into the room under it
+              className="items-start"
+            >
+              <PageBlock side="left" count={shown} total={N + 1} width={width} height={height} edge={edge} />
+              <PageBlock side="right" count={N + 1 - shown} total={N + 1} width={width} height={height} edge={edge} />
+            </PageFlip>
           )}
         </div>
 
@@ -494,24 +604,24 @@ export function ProjectBook() {
           <div aria-live="polite" className={spread ? "sr-only" : "mb-4 min-h-[6.25rem]"}>
             {project ? (
               <>
-                <p className="font-mono text-xs tabular-nums tracking-[0.14em] text-white/45">
+                <p className="font-mono text-xs tabular-nums tracking-[0.14em] text-ink/45">
                   {pad(current + 1)} / {pad(N)} · {project.year}
                 </p>
                 <p className="mt-1.5 text-lg font-semibold leading-tight tracking-[-0.02em]">{project.title}</p>
-                <p className="mt-1 text-sm text-white/60">
+                <p className="mt-1 text-sm text-ink/60">
                   {[project.scope, project.work.join(", ")].filter(Boolean).join(" · ")}
                 </p>
-                <p className="mt-0.5 text-sm text-white/60">Хариуцсан инженер: {project.engineer}</p>
+                <p className="mt-0.5 text-sm text-ink/60">Хариуцсан инженер: {project.engineer}</p>
               </>
             ) : (
-              <p className="text-sm text-white/60">
+              <p className="text-sm text-ink/60">
                 {shown === 0 ? "Хуудсыг дарж эсвэл шударч нээнэ." : "Дараагийн төсөл таных байж болно."}
               </p>
             )}
           </div>
 
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-            <p className="hidden text-sm text-white/55 sm:block">Хуудсан дээр дарж эсвэл ← → товчоор эргүүлнэ.</p>
+            <p className="hidden text-sm text-ink/55 sm:block">Хуудсан дээр дарж эсвэл ← → товчоор эргүүлнэ.</p>
             <div className="col-start-2 flex items-center gap-3">
               <button
                 type="button"
@@ -522,7 +632,7 @@ export function ProjectBook() {
               >
                 <ArrowLeft aria-hidden className="size-5" />
               </button>
-              <span className="min-w-[5.5rem] text-center font-mono text-sm tabular-nums text-white/70">{counter}</span>
+              <span className="min-w-[5.5rem] text-center font-mono text-sm tabular-nums text-ink/70">{counter}</span>
               <button
                 type="button"
                 onClick={() => turn(1)}
@@ -537,7 +647,7 @@ export function ProjectBook() {
               {shown === max && (
                 <Link
                   href="/contact"
-                  className="group inline-flex items-center gap-2 rounded-[3px] bg-white px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                 >
                   Инженертэй холбогдох
                   <ArrowUpRight

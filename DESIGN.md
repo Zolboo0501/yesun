@@ -54,15 +54,14 @@ typography:
     letterSpacing: "-0.02em"
   button:
     fontFamily: "Golos Text, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "0.75rem"
+    fontSize: "0.875rem"
     fontWeight: 600
     lineHeight: 1.33
   nav:
     fontFamily: "Golos Text, ui-sans-serif, system-ui, sans-serif"
-    fontSize: "11px"
-    fontWeight: 600
-    lineHeight: 1.5
-    letterSpacing: "0.06em"
+    fontSize: "14px"
+    fontWeight: 500
+    lineHeight: 1.43
   small:
     fontFamily: "Golos Text, ui-sans-serif, system-ui, sans-serif"
     fontSize: "clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem)"
@@ -83,6 +82,7 @@ typography:
 rounded:
   none: "0px"
   sm: "3px"
+  full: "9999px"
 spacing:
   gutter-sm: "16px"
   gutter-md: "24px"
@@ -95,7 +95,7 @@ components:
     backgroundColor: "{colors.ink}"
     textColor: "{colors.white}"
     typography: "{typography.label}"
-    rounded: "{rounded.none}"
+    rounded: "{rounded.full}"
     padding: "16px 24px"
   button-primary-hover:
     backgroundColor: "{colors.brand}"
@@ -104,7 +104,7 @@ components:
     backgroundColor: "{colors.white}"
     textColor: "{colors.night}"
     typography: "{typography.button}"
-    rounded: "{rounded.sm}"
+    rounded: "{rounded.full}"
     padding: "12px 20px"
   button-primary-on-dark-hover:
     backgroundColor: "#ffffffd9"
@@ -138,10 +138,10 @@ The world is local and factual. All copy is Mongolian. Every figure shown is one
 - One accent, electric brand blue. It appears as small squares, hairline progress rules, focus outlines and the hover fill of buttons.
 - Semibold Golos Text headlines with tight negative tracking, sized with clamp().
 - JetBrains Mono uppercase, tracked at 0.16em, is the voice of annotation: column labels, meta lines, the brand list and measurements. Buttons and links speak Golos.
-- Square corners throughout. No shadows.
+- Square corners on surfaces, pill buttons (every button fully rounded since 2026-11-10, at the user's request). No shadows.
 - The scenes are driven by scroll, are paused when off screen, hold still under reduced motion, and run a lighter path on phones.
 
-**The header and the hero's first screen are the exception (dark cinematic, since 2026-11-07, after the client's reference image).** One deep charcoal, night `#16171b` (a token in `globals.css`), runs from the header into the hero, the way a full-bleed photograph runs under a transparent menu. Everything on it is white: the logo (drawn white with a filter), small uppercase Golos links (semibold, 11px, 0.06em; the current page at 45% white), and one small white button with a 3px radius. Hero headings are large Golos semibold (`clamp(2.5rem, 1.1rem + 4.2vw, 6rem)`, line-height 0.95, tracking -0.035em) in two lines, the second set in by 0.9em, with a short white rule and the step text beside it. On first load a night curtain lies over the header and the hero, and scroll-mask's iris (`components/react-bits/scroll-mask.tsx`) opens it from the subject once the first 3D frame is drawn (1.6 s; skipped under reduced motion; a CSS timer lifts it after 4 s if the script never runs), the 3D settling from a slight zoom and the heading's words running as the iris reaches them. Each step's heading and text come in word by word, fading in as they rise a few pixels into place and stopping there (no blur, no overshoot), whenever that step or its scene arrives (`components/react-bits/staggered-text.tsx`). Over the stage, a mouse brings up a white drafting crosshair with rulers and a mono coordinate chip; a drag measures and a click pins a point, and the step lines name their step in the chip (`components/react-bits/drafting-cursor.tsx`; fine pointers only). Icons are the inline set in `components/icons.tsx`. Brand blue appears in neither. Every rule below still holds for the rest of the home page.
+**The header and the hero's first screen are the exception (dark cinematic, since 2026-11-07, after the client's reference image).** One deep charcoal, night `#16171b` (a token in `globals.css`), runs from the header into the hero, the way a full-bleed photograph runs under a transparent menu. Everything on it is white: the logo (drawn white with a filter), uppercase Golos links (semibold, 13px, 0.05em, from 1280px; the current page at 45% white), and one white button with a 3px radius. Hero headings are large Golos semibold (`clamp(2.5rem, 1.1rem + 4.2vw, 6rem)`, line-height 0.95, tracking -0.035em) in two lines, the second set in by 0.9em, with a short white rule and the step text beside it. On first load a night curtain lies over the header and the hero, and scroll-mask's iris (`components/react-bits/scroll-mask.tsx`) opens it from the subject once the first 3D frame is drawn (1.6 s; skipped under reduced motion; a CSS timer lifts it after 4 s if the script never runs), the 3D settling from a slight zoom and the heading's words running as the iris reaches them. Each step's heading and text come in word by word, fading in as they rise a few pixels into place and stopping there (no blur, no overshoot), whenever that step or its scene arrives (`components/react-bits/staggered-text.tsx`). Over the stage, a mouse brings up a white drafting crosshair with rulers and a mono coordinate chip; a drag measures and a click pins a point, and the step lines name their step in the chip (`components/react-bits/drafting-cursor.tsx`; fine pointers only). Icons are the inline set in `components/icons.tsx`. Brand blue appears in neither. Every rule below still holds for the rest of the home page.
 
 ## Colors
 
@@ -179,18 +179,18 @@ A cool, nearly neutral palette of blue-black, blue-grey and graphite, carrying a
 **Character:** a clear, modern Cyrillic grotesque set heavy and tight for statements, paired with a technical mono for labels and controls. Together they read like a specification sheet.
 
 ### Hierarchy
-- **Display** (600, clamp 2.5–6rem, line-height 0.95, tracking -0.035em, the second line set in by 0.9em): the statements of the scroll stages, the hero's steps (the h1 is the first), the Projects opening, and the footer's closing h2 "Төслөө хамтдаа ярилцъя.".
+- **Display** (600, clamp 2.5–6rem, line-height 0.95, tracking -0.035em, the second line set in by 0.9em): the statements of the scroll stages, the hero's steps (the h1 is the first), the Projects opening, and the footer's closing h2 "Төслөө хамтдаа ярилцъя." (centred since 2026-11-10 in the repo's `components/blocks/cta-3.tsx`: three glassy tiles with the air, headset and cooling icons over slowly turning dashed rings, the line, a pill button, then the engineers' faces and the phones, email and hours as outlined pills).
 - **Headline** (600, clamp 2–3.75rem, line-height 0.98, tracking -0.04em, balanced): the section headings that carry a sentence or a short claim, Company's four parts and the Partners heading. Each project's name in the Projects stage is a caption-sized step between the two, clamp 2.25–2.875rem.
 - **Figure** (600, 1.5rem, tracking -0.03em, tabular numerals): proof values in the facts list.
 - **Title** (600, 1.125rem, tracking -0.01em): the Products lead line.
 - **Body** (400, fluid 1.0625–1.1875rem, line-height 1.625): every supporting paragraph, with a measure of 44–56ch.
 - **Caption** (400, 16px, line-height 1.55): the hero's step text, each project's "systems · year" line and the footer's address and menu lists. 16px is the floor for anything read.
 - **Small** (400, fluid 0.8125–0.875rem): fact labels and the WebGL fallback text.
-- **Button** (600, 12px, sentence case): every button label, on the white 3px button; a secondary link is the same size at 500, underlined.
-- **Nav** (600, 11px, uppercase, tracking 0.06em): the header's page links, the current page at 50% white (5.2:1 on night).
+- **Button** (600, 14px, sentence case): every button label on every page, the header's included (one size since the 2026-11-10 typeset pass; they had drifted between 11, 12 and 14px); a secondary link beside a button is the same size at 500, underlined.
+- **Nav** (500, 14px, sentence case): the header's page links in the flat bar of `components/blocks/navigation-15.tsx` (since 2026-11-10, at the user's request, after navigation-12's floating pill): a 72px bar across the page (`--header-h`) with a hairline under it, white on every page (the home page too since 2026-11-10, when its sections after the 3D hero turned white and the globe's lines black), the logo at 24px, the links white 60% (ink 60% on white) with a 1px line under the current page that slides to the link pointed at or focused, and "Холбоо барих" as an outlined pill with an arrow that fills under the pointer. The links show from 1280px; below that the menu button opens a drawer from the right (full width on phones, 28rem from sm, over a dimmed page): the links large with arrows, then the phones, the email and the button; it is a dialog (focus moves in and back, the page holds still, Escape or the backdrop closes it). Products opens its panel as a card under the bar. The hero's building tabs are 13px at 500.
 - **Menu** (600, 1.75rem, tracking -0.02em): the page links in the phone menu sheet.
 - **Label** (mono 400, 0.75rem, uppercase, tracking 0.16em): the Company brand list.
-- **Micro** (mono 400, 11px, uppercase, tracking 0.16em, 0.2em when set vertically): the frame annotations around the scroll stages, the footer's column labels. The hero's vertical "Гүйлгэх" is the Golos cut of the same step (11px, 0.18em).
+- **Micro** (mono 400, 11px, uppercase, tracking 0.16em, 0.2em when set vertically; 11px is the floor, nothing on the site is set smaller): the frame annotations around the scroll stages, the footer's column labels.
 
 ### Named Rules
 **The Tight Statement Rule.** Headings are semibold, sized with clamp(), balanced with text-wrap, and tracked between -0.035em (Display) and -0.04em (Headline), never tighter. Never set a heading at regular weight or with neutral tracking. Supporting prose is set with text-wrap: pretty, so no line ends on one word.
@@ -219,7 +219,7 @@ The house is flat. There are no box-shadows on the home page but one: the partne
 
 ## Shapes
 
-Every corner the house draws is square (0px), including buttons, copy panels and the brand squares. The one round figure is the partners orbit (its dashed rings and white discs, after the client's reference), and the about page's timeline ribbon (after the client's reference too) is the one curve, with round discs at its years; its photos (20px), the home page's service cards (28px) and the footer's contact card (24px, its list 18px, with round faces; since 2026-11-09) are the rounded exceptions, each at the user's request. Otherwise the recurring geometry is rectilinear:
+Every corner the house draws is square (0px), copy panels and the brand squares included; buttons are the exception, fully rounded pills on every page since 2026-11-10 (the user's request). The one round figure is the partners orbit (its dashed rings and white discs, after the client's reference), and the about page's timeline ribbon (after the client's reference too) is the one curve, with round discs at its years; its photos (20px), the home page's service cards (28px) and the footer's contact card (24px, its list 18px, with round faces; since 2026-11-09) are the rounded exceptions, each at the user's request. Otherwise the recurring geometry is rectilinear:
 - small solid squares of brand blue (6px list bullets in Products);
 - 1px hairline dividers at 15% opacity above each fact and above the Company brand list;
 - a thin progress rule (1px track, filled brand in Hero, white in Products and ink in Company).
@@ -229,7 +229,7 @@ Every corner the house draws is square (0px), including buttons, copy panels and
 
 ### Buttons
 Small, white and direct, the hero's button everywhere on the home page (hero, Company, Projects, footer). Every button carries a forward arrow.
-- **Primary on dark grounds:** white fill, night label in the Button style (Golos 12px semibold, sentence case), 3px radius, padding 12px 20px; a 14px ArrowUpRight follows the label after an 8px gap.
+- **Primary on dark grounds:** white fill, night label in the Button style (Golos 12px semibold, sentence case), fully rounded (a pill), padding 12px 20px; a 14px ArrowUpRight follows the label after an 8px gap.
 - **Hover / Focus:** the fill dims to 85% white and the arrow nudges 1px up and to the right; on press the button scales to 0.98; focus shows a 2px white outline offset by 2px.
 - **Beside it:** the phone as a 12px medium link at 85% white, or a secondary link at the same size, underlined in white 30% that turns full white on hover. They sit 24px to the right and wrap below.
 - **On light grounds** (the older pages): ink fill with white text, otherwise the same.
@@ -239,7 +239,7 @@ A two-column definition list. Each fact sits under a 15% ink hairline, with the 
 
 ### Scroll Stage (signature)
 A pinned 3D or WebGL scene with a technical frame of micro annotations: a vertical label at the top left and a step counter at the bottom right.
-- **Hero** (dark cinematic, see Overview): four buildings (office, kindergarten, school, building) slide in one after another on the night ground. Each scene is shaded like a photograph under type: a light overall dim, dark under the copy (the left on desktop, the bottom on phones) and along the top and bottom edges, open where the building stands; the building's fog melts its far ground into the night. In the building's fourth step the structure turns to a faint ghost and the fit-out, glazing and street fade, so every floor's ductwork shows in place, each duct in its air's site-tape colour (sky supply, butter return, peach exhaust); the same colours carry the exploded view at the end. After it the camera comes down the five floors one step each, from the top: that floor's network at full strength, the others dimmed, and each floor's copy naming one part of the system (the fire damper and control box by the shaft, the main stepping down, the diffusers, the return along the back, the air curtain over the entrance). The step copy floats without a panel: the two-line heading, the rule and the text, and on the last step the white button with the phone beside it. Around it, as in the reference: one short line per step down the right edge (six for a room, eleven for the building; the current one long and bright, sliding to the next as you scroll; each a jump link), the four building names small at the bottom left (the current one white, each a jump link), a vertical "Гүйлгэх" over a hairline, and Facebook, email and phone icons at the bottom right.
+- **Hero** (dark cinematic, see Overview): five buildings (office, kindergarten, school, shop, building) slide in one after another on the night ground. The shop is the one room with an open ceiling: its spiral ducts and jet nozzles show from the first step, and its plant stands in one casing on the roof. Each scene is shaded like a photograph under type: a light overall dim, dark under the copy (the left on desktop, the bottom on phones) and along the top and bottom edges, open where the building stands; the building's fog melts its far ground into the night. In the building's fourth step the structure turns to a faint ghost and the fit-out, glazing and street fade, so every floor's ductwork shows in place, each duct in its air's site-tape colour (sky supply, butter return, peach exhaust); the same colours carry the exploded view at the end. After it the camera comes down the five floors one step each, from the top: that floor's network at full strength, the others dimmed, and each floor's copy naming one part of the system (the fire damper and control box by the shaft, the main stepping down, the diffusers, the return along the back, the air curtain over the entrance). The step copy floats without a panel: the two-line heading, the rule and the text, and on the last step the white button with the phone beside it. Around it, as in the reference: one short line per step down the right edge (six for a room, eleven for the building; the current one long and bright, sliding to the next as you scroll; each a jump link), the five building names small at the bottom left (the current one white, each a jump link), and Facebook, email and phone icons at the bottom right from `sm` up (on phones the site's contact bar carries them and the names take the row).
 - **Products:** a "Гүйлгэж танилцана" progress rule at the bottom left. Since 2026-11-09 (the user's call) its step copy is the home page's (`components/home/Step.tsx`), with no panel or corner brackets: the product's name in two lines with the second set in (clamp 2.25–2.875rem; the opening's at the hero size, as the page's h1), a rule with its sentence beside it, its points in one small white 55% line, and on the last step the white "Инженертэй холбогдох" button with the phone beside it. It sits low on the left at lg (5vw in, 12% up, under the product list and clear of the product) and at the foot on phones, over a graphite shade (dark under the copy, open where the product is).
 
 Products also adds a jump index of its 15 items at the top left, at lg; the current item is at full opacity and the rest at 45%.
@@ -339,7 +339,7 @@ One bar, `--header-h` (4rem) tall and sticky, so every scroll stage pins right u
 ## Do's and Don'ts
 
 ### Do:
-- **Do** use the white button on night, graphite or ink grounds and the ink one on panel or white grounds, both in the Button style with a 3px radius.
+- **Do** use the white button on night, graphite or ink grounds and the ink one on panel or white grounds, both in the Button style, fully rounded.
 - **Do** pair one primary button with at most one underlined mono secondary link.
 - **Do** keep the home page on the one night ground from the header to the footer, and every other page white from the header to the footer.
 - **Do** keep brand blue to squares, hairline rules, focus rings and hover fills.

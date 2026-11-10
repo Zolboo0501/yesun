@@ -36,6 +36,7 @@ export function StepCopy({
   progress,
   heading = "h2",
   large = false,
+  tone = "dark",
   reveal,
   className,
   children,
@@ -46,6 +47,8 @@ export function StepCopy({
   /** the stage's step, travelling between whole numbers */
   progress: MotionValue<number>;
   heading?: "h1" | "h2" | "h3";
+  /** the stage's ground: white type on a dark one (the default), ink on a white one */
+  tone?: "dark" | "light";
   /** the text a size up, for a stage whose copy carries the section on its own (the projects) */
   large?: boolean;
   /** the hero's first-load curtain, 0 closed to 1 open: the words run once more as it reaches them */
@@ -96,12 +99,12 @@ export function StepCopy({
         easing={EASE_OUT}
         from={HEADING_FROM}
         to={SHOWN}
-        className={`font-semibold leading-[0.95] tracking-[-0.035em] text-white ${lineB ? "pl-[0.9em] indent-[-0.9em] *:indent-0" : ""}`}
+        className={`font-semibold leading-[0.95] tracking-[-0.035em] ${tone === "light" ? "text-ink" : "text-white"} ${lineB ? "pl-[0.9em] indent-[-0.9em] *:indent-0" : ""}`}
       />
       <div className="mt-[0.4em] flex items-start gap-5 pl-[0.9em]">
         <span
           aria-hidden
-          className={`h-px w-12 shrink-0 bg-white/60 sm:w-16 ${large ? "mt-[0.85rem] sm:mt-[0.95rem]" : "mt-[0.7rem]"}`}
+          className={`h-px w-12 shrink-0 sm:w-16 ${tone === "light" ? "bg-ink/60" : "bg-white/60"} ${large ? "mt-[0.85rem] sm:mt-[0.95rem]" : "mt-[0.7rem]"}`}
         />
         <StaggeredText
           key={run}
@@ -111,11 +114,10 @@ export function StepCopy({
           easing={EASE_OUT}
           from={TEXT_FROM}
           to={SHOWN}
-          className={
-            large
-              ? "max-w-[38ch] text-step-body leading-[1.55] text-white/80"
-              : "max-w-[34ch] text-base leading-[1.55] text-white/75"
-          }
+          // a plain string, not cn(): tailwind-merge reads the custom size text-step-body as a colour and drops it
+          className={`${large ? "max-w-[38ch] text-step-body" : "max-w-[34ch] text-base"} leading-[1.55] ${
+            tone === "light" ? "text-ink/75" : large ? "text-white/80" : "text-white/75"
+          }`}
         />
       </div>
       {children && <div className="mt-[0.45em] flex flex-wrap items-center gap-x-6 gap-y-3 pl-[0.9em]">{children}</div>}
@@ -130,9 +132,12 @@ export function StepLine({
   label,
   step,
   onSelect,
+  tone = "dark",
 }: {
   index: number;
   label: string;
+  /** the stage's ground, as StepCopy's */
+  tone?: "dark" | "light";
   /** the stage's step, travelling between whole numbers */
   step: MotionValue<number>;
   onSelect: () => void;
@@ -147,11 +152,11 @@ export function StepLine({
       onClick={onSelect}
       aria-label={`Алхам ${index + 1}: ${label}`}
       data-cursor-label={label}
-      className="group flex h-4 w-10 items-center justify-end focus-visible:outline-2 focus-visible:outline-white"
+      className={`group flex h-4 w-10 items-center justify-end focus-visible:outline-2 ${tone === "light" ? "focus-visible:outline-brand" : "focus-visible:outline-white"}`}
     >
       <motion.span
         style={{ scaleX, opacity }}
-        className="block h-0.5 w-full origin-right bg-white shadow-[0_0_0_0.5px_rgb(0_0_0/0.25)] group-hover:!opacity-100"
+        className={`block h-0.5 w-full origin-right group-hover:!opacity-100 ${tone === "light" ? "bg-ink" : "bg-white shadow-[0_0_0_0.5px_rgb(0_0_0/0.25)]"}`}
       />
     </button>
   );

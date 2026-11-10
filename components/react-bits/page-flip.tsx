@@ -60,6 +60,8 @@ export interface PageFlipProps {
   className?: string;
   /** Optional inline style applied to the root. */
   style?: CSSProperties;
+  /** Drawn under the leaves and moving with the book, such as the edges of its pages beside them. */
+  children?: ReactNode;
 }
 
 const CURVES = {
@@ -160,6 +162,8 @@ interface LeafProps {
   frontAlt: string;
   backAlt: string;
   turned: boolean;
+  /** the uppermost leaf on its side of the spine: only it casts a shadow, or the stacked leaves' shadows add up */
+  top: boolean;
   peek: boolean;
   delay: number;
   width: number;
@@ -186,6 +190,7 @@ const Leaf = memo(function Leaf({
   frontAlt,
   backAlt,
   turned,
+  top,
   peek,
   delay,
   width,
@@ -222,7 +227,7 @@ const Leaf = memo(function Leaf({
         borderRadius: radius,
         cursor: interactive ? "pointer" : "default",
         boxShadow:
-          shadow > 0
+          shadow > 0 && top
             ? `${Math.round(4 * shadow)}px ${Math.round(6 * shadow)}px ${Math.round(
                 34 * shadow,
               )}px rgba(0,0,0,${Math.min(shadow * 0.75, 1)})`
@@ -279,6 +284,7 @@ const PageFlip = ({
   onOpenChange,
   className,
   style,
+  children,
 }: PageFlipProps) => {
   const book = pages.length > 0 ? pages : DEFAULT_PAGES;
   const total = book.length;
@@ -348,12 +354,14 @@ const PageFlip = ({
           perspective: `${perspective}px`,
           transformStyle: "preserve-3d",
         }}
-        animate={{ x: open > 0 ? spineShift : 0 }}
+        // open, the spread is centred; shut on either cover, the closed book is
+        animate={{ x: open <= 0 ? 0 : open >= total ? 2 * spineShift : spineShift }}
         transition={{
           duration: Math.max(duration * 0.8, 0.1),
           ease: "easeOut",
         }}
       >
+        {children}
         {book.map((leaf, index) => {
           const turned = index < open;
           return (
@@ -366,6 +374,7 @@ const PageFlip = ({
               frontAlt={leaf.frontAlt ?? ""}
               backAlt={leaf.backAlt ?? ""}
               turned={turned}
+              top={index === open || index === open - 1}
               peek={
                 interactive && !turned && hovered === index && index === open
               }

@@ -1,4 +1,4 @@
-"""The kindergarten's and the school's ventilation, each built to a structure of its own.
+"""The kindergarten's, the school's and the shop's ventilation, each built to a structure of its own.
 
 build_scene.py builds the shell and the 600 grid ceiling for every room, and the office's system: an
 air handling unit in the plenum, two rectangular mains along the room, flex drops and square
@@ -11,6 +11,12 @@ diffusers. These two functions build the other rooms' systems in its place:
 - school: a sectional air handling unit at the back (mixing box, bag filters, coil, plug fan) fed by
   an outdoor air duct from the window wall and an egg-crate return grille under its mixing box, a VAV
   box, a rectangular trunk down the room and three branches across it over linear slot diffusers.
+- retail: a shop under an open ceiling ("ceiling_border": false). A packaged rooftop unit on its curb
+  (mixing box with an outdoor air hood, filters, coil, blower, compressors, a condenser with two fans on
+  top), a supply drop through the slab to a header and two round spiral mains with jet nozzles over the
+  aisles, a return drop to a grille box, and an air curtain over the shop's door (the shell's door bay).
+  Its condenser fans carry spin_up=1: their axes stand upright, and HeroScene.tsx turns them about the
+  vertical.
 
 Both keep the node contract HeroScene.tsx reads: ahu_door (origin on its hinge, opening towards the
 camera), ahu_fan (origin on its axis, which runs along y), the explode_sys / explode_ahu / delay
@@ -509,4 +515,248 @@ def school(g):
             trapeze(hang, M, x, y, BOX_TOP, BW, "x", SLAB_Z)
     trapeze(hang, M, -4.2, CY, ZC - 0.15, 0.45, "x", SLAB_Z)
     grid_wires(hang, M, (-3.0, -1.0, 0.5, 2.8), (-1.5, 0.3, 1.8), PZ + 0.03, SLAB_Z)
+    hang.build(fade_explode=1)
+
+
+# ---------------------------------------------------------------- retail
+def jet_nozzle(p, M, base, d):
+    """An adjustable jet nozzle on a duct's side: a collar, a ball joint and a cone aimed along d."""
+    d, b = Vector(d).normalized(), Vector(base)
+    p.cyl(0.075, 0.05, b + d * 0.015, M["duct"], seg=24, direction=d)
+    p.ball(0.064, b + d * 0.07, M["white_metal"])
+    p.cyl(0.06, 0.15, b + d * 0.15, M["white_metal"], seg=24, r2=0.04, direction=d)
+    p.cyl(0.041, 0.01, b + d * 0.226, M["black"], seg=24, direction=d)
+
+
+def retail(g):
+    """A packaged rooftop unit: the whole plant in one casing on the roof, its ducts dropping through the slab into
+    an open ceiling, and an air curtain over the shop's door. Downflow: return air rises into the mixing box, passes
+    the filters and the coil, and the blower pushes it down a drop to a header that splits into two round spiral
+    mains, one over each aisle, with jet nozzles aimed down at the shelves either side. The compressors and the
+    condenser (two fans on top) sit in the same casing. ahu_door opens the blower section; the condenser fans
+    carry spin_up=1 (their axes stand upright)."""
+    Part, M = g["Part"], g["M"]
+    SLAB_Z, RX0 = g["SLAB_Z"], g["RX0"]
+    ROOF = SLAB_Z + 0.15                                   # top of the roof slab
+    X0, X1, Y0, Y1 = -1.3, 1.3, 1.3, 2.75                  # the rooftop unit, its access side towards the open front
+    C0 = ROOF + 0.3                                        # top of its curb: the casing's underside
+    Z0, Z1 = C0, C0 + 1.05
+    ZC, CX, CY = (C0 + C0 + 1.05) / 2, (X0 + X1) / 2, (Y0 + Y1) / 2
+    L, D, H, th = X1 - X0, Y1 - Y0, Z1 - Z0, 0.03
+    MIX, FIL, COIL, FAN, COMP = -0.95, -0.62, -0.32, 0.42, 0.82   # where each section ends, left to right
+    SYS = [0.0, 0.0, 1.6]                                  # the unit rises as one in the exploded view
+    Z, R = 3.45, 0.2                                       # the exposed round ducts: centre line, radius (Ø400)
+    HY, MAINS, END = 1.75, (-0.95, 1.15), -3.2             # header along x; a main down each aisle, to END
+    SUP, RET = (0.1, HY), (-1.05, 2.35)                    # openings under the blower and under the mixing box
+    NOZ = (1.0, -0.2, -1.4, -2.6)                          # jet nozzle pairs along each main
+    RB0, RB1 = 3.02, 3.32                                  # the return box under its drop
+
+    # ------------------------------------------------ the shop: header, two mains with nozzles, the return box
+    sx, sy = SUP
+    for k, xm in enumerate(MAINS):
+        sgn = 1 if xm > sx else -1
+        m = Part(f"supply_main_{k}", origin=(xm, (HY + END) / 2, Z))
+        pipe(m, rounded([(sx, HY, Z), (xm, HY, Z), (xm, END, Z)], 0.35), R, M["duct"], seg=32)
+        m.helix((sx + sgn * 0.08, HY, Z), (sgn, 0, 0), abs(xm - sx) - 0.45, R + 0.002, M["duct"], pitch=0.14)
+        m.helix((xm, HY - 0.4, Z), (0, -1, 0), HY - 0.4 - END - 0.05, R + 0.002, M["duct"], pitch=0.14)
+        m.cyl(R, 0.012, (xm, END - 0.006, Z), M["duct"], axis="y", seg=32)
+        m.cyl(R + 0.006, 0.03, (xm, HY - 0.55, Z), M["accent"], axis="y", seg=32)          # volume damper
+        m.box((0.012, 0.08, 0.012), (xm, HY - 0.55, Z + R + 0.03), M["black"])             # its lever
+        m.cyl(R + 0.004, 0.05, (xm, HY - 0.8, Z), M["skyblue"], axis="y", seg=32)          # supply tape
+        for y in NOZ:
+            for s in (-1, 1):
+                d = Vector((s * math.cos(0.6), 0.0, -math.sin(0.6)))
+                jet_nozzle(m, M, Vector((xm, y, Z)) + d * R, d)
+        m.build(explode_sys=[sgn * 0.35, 0.0, 0.55], delay=0.3 + 0.05 * k)
+
+    drop = Part("supply_drop", origin=(sx, sy, (Z + Z0) / 2))
+    z_low = Z + R - 0.06
+    drop.box((0.55, 0.4, Z0 - z_low), (sx, sy, (Z0 + z_low) / 2), M["duct"])
+    drop.box((0.6, 0.45, 0.03), (sx, sy, SLAB_Z - 0.18), M["accent"])
+    drop.box((0.56, 0.41, 0.05), (sx, sy, SLAB_Z - 0.3), M["skyblue"])
+    drop.build(bevel=0.004, explode_sys=[0.0, 0.0, 1.05], delay=0.15)
+
+    rx, ry = RET
+    rd = Part("return_drop", origin=(rx, ry, (RB1 + Z0) / 2))
+    rd.box((0.5, 0.4, Z0 - RB1 + 0.02), (rx, ry, (Z0 + RB1 - 0.02) / 2), M["duct_wrap"])
+    rd.box((0.55, 0.45, 0.03), (rx, ry, SLAB_Z - 0.18), M["accent"])
+    rd.box((0.51, 0.41, 0.05), (rx, ry, SLAB_Z - 0.3), M["butter"])
+    rd.build(bevel=0.004, explode_sys=[0.0, 0.0, 1.05], delay=0.2)
+    rb = Part("return_box", origin=(rx, ry, (RB0 + RB1) / 2))
+    rb.box((0.9, 0.6, RB1 - RB0), (rx, ry, (RB0 + RB1) / 2), M["duct_wrap"])
+    egg_crate(rb, M, rx, ry, RB0 - 0.02, w=0.86, d=0.56)
+    rb.build(bevel=0.003, explode_sys=[0.0, 0.0, 0.5], delay=0.35)
+
+    # ------------------------------------------------ the air curtain over the shop's door (the shell's door bay)
+    bays = np.linspace(g["RY0"], g["RY1"], 7)
+    DY, AX = (bays[1] + bays[2]) / 2, RX0 + 0.21
+    ac = Part("air_curtain", origin=(AX, DY, 2.5))
+    ac.rbox((0.28, 1.5, 0.26), (AX, DY, 2.5), M["white_metal"], 0.02)
+    ac.box((0.11, 1.42, 0.012), (AX - 0.05, DY, 2.365), M["black"])                     # discharge slot, down at the door
+    for k in range(9):                                                                   # intake slots on its room side
+        ac.box((0.004, 1.3, 0.008), (AX + 0.141, DY, 2.43 + k * 0.016), M["black"])
+    ac.build(bevel=0.002, explode_sys=[0.9, 0.0, 0.25], delay=0.2)
+
+    # ------------------------------------------------ the rooftop unit
+    curb = Part("rtu_curb", origin=(CX, CY, (ROOF + C0) / 2))
+    for (a, b, cx_, cy_) in ((L - 0.1, 0.06, CX, Y0 + 0.08), (L - 0.1, 0.06, CX, Y1 - 0.08),
+                             (0.06, D - 0.1, X0 + 0.08, CY), (0.06, D - 0.1, X1 - 0.08, CY)):
+        curb.box((a, b, C0 - ROOF), (cx_, cy_, (ROOF + C0) / 2), M["steel"])
+        curb.box((a + 0.06, b + 0.06, 0.02), (cx_, cy_, C0 - 0.01), M["steel"])
+    curb.build(bevel=0.003, explode_sys=[0.0, 0.0, 1.15], delay=0.1)
+
+    # the casing: floor, back and left end, the mixing box's fixed front, solid walls round the compressors, posts
+    base = Part("ahu_base", origin=(CX, CY, ZC))
+    base.box((L, D, th), (CX, CY, Z0 + th / 2), M["ahu"])
+    base.box((L - 0.07, D - 0.07, 0.004), (CX, CY, Z0 + th + 0.002), M["ahu_inner"])
+    base.box((COMP - X0, th, H), ((X0 + COMP) / 2, Y1 - th / 2, ZC), M["ahu"])
+    base.box((th, D, H), (X0 + th / 2, CY, ZC), M["ahu"])
+    base.box((MIX - X0, th, H - 0.1), ((X0 + MIX) / 2, Y0 + th / 2, ZC), M["ahu"])
+    for zz in (Z0 + 0.025, Z1 - 0.025):
+        base.box((COMP - X0, th, 0.05), ((X0 + COMP) / 2, Y0 + th / 2, zz), M["ahu"])
+    for xx in (FAN, COMP):
+        base.box((th, D - 0.06, H - 0.06), (xx, CY, ZC), M["ahu_inner"])
+    for xx in (X0 + 0.02, MIX, FIL, COIL, FAN, COMP, X1 - 0.02):
+        base.box((0.04, th + 0.01, H + 0.004), (xx, Y0 + th / 2 - 0.005, ZC), M["accent"])
+    # the condenser coil wraps the far end: finned faces on its front, back and end, a frame round each
+    for k in range(int((X1 - COMP - 0.06) / 0.016)):
+        x = COMP + 0.04 + k * 0.016
+        for yy in (Y0 + 0.01, Y1 - 0.01):
+            base.box((0.004, 0.02, H - 0.1), (x, yy, ZC), M["fins"])
+    for k in range(int((D - 0.06) / 0.016)):
+        base.box((0.02, 0.004, H - 0.1), (X1 - 0.01, Y0 + 0.03 + k * 0.016, ZC), M["fins"])
+    for zz in (Z0 + 0.03, Z1 - 0.03):
+        for yy in (Y0 + 0.01, Y1 - 0.01):
+            base.box((X1 - COMP, 0.03, 0.04), ((COMP + X1) / 2, yy, zz), M["ahu"])
+        base.box((0.03, D, 0.04), (X1 - 0.01, CY, zz), M["ahu"])
+    base.box((0.08, 0.07, 0.24), (X1 + 0.03, Y0 + 0.3, ZC + 0.2), M["black"])           # disconnect switch on the end
+    # condensate drain from the coil section, down to the roof through a trap
+    dx = (FIL + COIL) / 2
+    base.tube([(dx, Y0 + 0.02, Z0 + 0.07), (dx, Y0 - 0.08, Z0 + 0.07), (dx, Y0 - 0.08, Z0 - 0.12), (dx + 0.06, Y0 - 0.08, Z0 - 0.2),
+               (dx + 0.12, Y0 - 0.08, Z0 - 0.12), (dx + 0.12, Y0 - 0.08, Z0 - 0.06), (dx + 0.12, Y0 - 0.3, Z0 - 0.06),
+               (dx + 0.12, Y0 - 0.3, ROOF + 0.02)], 0.013, M["plastic"], seg=8)
+    base.build(bevel=0.004, explode_sys=SYS, explode_ahu=[0.0, 0.0, 0.0], delay=0.0)
+
+    # the top: a plate over the whole casing, two condenser fans in raised shrouds with wire guards
+    top = Part("ahu_top", origin=(CX, CY, Z1))
+    top.box((L, D, th), (CX, CY, Z1 - th / 2), M["ahu"])
+    for xx in (MIX, FIL, COIL, FAN, COMP):
+        top.box((0.04, D + 0.004, 0.006), (xx, CY, Z1 + 0.001), M["accent"])
+    FANS = [((COMP + X1) / 2, Y0 + 0.4), ((COMP + X1) / 2, Y1 - 0.4)]
+    for fx, fy in FANS:
+        top.cyl(0.21, 0.004, (fx, fy, Z1 + 0.002), M["black"], seg=40)
+        pipe(top, [(fx, fy, Z1), (fx, fy, Z1 + 0.12)], 0.22, M["ahu"], seg=40)
+        for rr in (0.07, 0.14, 0.215):
+            top.tube([(fx + rr * math.cos(t), fy + rr * math.sin(t), Z1 + 0.125) for t in np.linspace(0, 2 * math.pi, 32, endpoint=False)],
+                     0.004, M["black"], closed=True, seg=5)
+        for i in range(8):
+            a = 2 * math.pi * i / 8
+            top.tube([(fx, fy, Z1 + 0.125), (fx + 0.215 * math.cos(a), fy + 0.215 * math.sin(a), Z1 + 0.125)], 0.003, M["black"], seg=5)
+    for xx in (X0 + 0.1, X1 - 0.1):
+        for yy in (Y0 + 0.12, Y1 - 0.12):
+            top.cyl(0.03, 0.05, (xx, yy, Z1 + 0.025), M["black"], seg=16)
+    top.build(bevel=0.004, explode_sys=SYS, explode_ahu=[0.0, 0.0, 0.55], delay=0.0)
+    for i, (fx, fy) in enumerate(FANS):
+        fz = Z1 + 0.06
+        f = Part(f"rtu_condenser_fan_{i}", origin=(fx, fy, fz))
+        f.cyl(0.035, 0.06, (fx, fy, fz), M["black"], seg=16)
+        for k in range(4):
+            a = 2 * math.pi * k / 4 + i * 0.4
+            f.box((0.17, 0.075, 0.006), (fx + math.cos(a) * 0.11, fy + math.sin(a) * 0.11, fz), M["steel"],
+                  rot=Matrix.Rotation(a, 4, "Z") @ Matrix.Rotation(0.38, 4, "X"))
+        f.build(explode_sys=SYS, explode_ahu=[0.0, 0.0, 0.55], delay=0.0, spin_up=1)
+
+    # the outdoor air hood on the far left end, its mouth facing down behind a bird screen
+    hx = X0 - 0.17
+    hood = Part("rtu_hood", origin=(hx, CY, ZC + 0.1))
+    hood.box((0.38, D - 0.3, 0.02), (hx, CY, Z1 - 0.15), M["ahu"], rot=Matrix.Rotation(-0.35, 4, "Y"))
+    for s in (-1, 1):
+        hood.box((0.34, 0.02, 0.52), (hx, CY + s * (D - 0.32) / 2, ZC + 0.05), M["ahu"])
+    hood.box((0.3, D - 0.34, 0.01), (hx, CY, ZC - 0.2), M["black"])
+    hood.box((0.02, D - 0.32, 0.06), (X0 - 0.01, CY, ZC - 0.12), M["mint"])
+    hood.build(bevel=0.003, explode_sys=SYS, explode_ahu=[-0.45, 0.0, 0.0], delay=0.05)
+
+    # lift-off panels on the filter, coil and compressor sections; the blower section has the hinged door
+    for name, x0, x1, delay in (("rtu_panel_filter", MIX, FIL, 0.1), ("rtu_panel_coil", FIL, COIL, 0.15), ("rtu_panel_comp", FAN, COMP, 0.12)):
+        pn = Part(name, origin=((x0 + x1) / 2, Y0, ZC))
+        pn.box((x1 - x0 - 0.04, th, H - 0.1), ((x0 + x1) / 2, Y0 + th / 2, ZC), M["ahu"])
+        for dz in (-0.18, 0.18):
+            pn.box((0.08, 0.025, 0.02), ((x0 + x1) / 2, Y0 - 0.012, ZC + dz), M["accent"])
+        if name == "rtu_panel_comp":
+            for k in range(8):
+                pn.box((x1 - x0 - 0.12, 0.006, 0.02), ((x0 + x1) / 2, Y0 - 0.002, ZC - 0.32 + k * 0.03), M["black"])
+        pn.build(bevel=0.003, explode_sys=SYS, explode_ahu=[0.0, -0.55, 0.0], delay=delay)
+
+    HINGE = (COIL + 0.03, Y0 + 0.002, ZC)
+    door = Part("ahu_door", origin=HINGE)
+    dw, dh = FAN - COIL - 0.06, H - 0.106
+    door.box((dw, 0.026, dh), (HINGE[0] + dw / 2, HINGE[1] + 0.012, ZC), M["ahu"])
+    for dz in (-0.14, 0.14):
+        door.box((0.02, 0.03, 0.1), (HINGE[0] + dw - 0.06, HINGE[1] - 0.012, ZC + dz), M["accent"])
+        door.cyl(0.012, 0.03, (HINGE[0] + 0.006, HINGE[1] - 0.004, ZC + dz * 1.6), M["accent"], seg=10)
+    door.build(bevel=0.003, explode_sys=SYS, explode_ahu=[0.0, -0.3, 0.0], delay=0.05)
+
+    # inside, left to right: pleated filters in a vee, the finned coil with its headers, the blower and its motor,
+    # two scroll compressors with their copper lines
+    fl = Part("ahu_filter", origin=((MIX + FIL) / 2, CY, ZC))
+    for s in (-1, 1):
+        for k in range(7):
+            yy = Y0 + 0.12 + k * (D - 0.24) / 6
+            fl.box((0.22, 0.012, H - 0.16), ((MIX + FIL) / 2, yy, ZC), M["filter"], rot=Matrix.Rotation(s * 0.5 + (k % 2) * 0.2, 4, "Z"))
+        fl.box((0.3, D - 0.1, 0.02), ((MIX + FIL) / 2, CY, ZC + s * (H / 2 - 0.07)), M["steel"])
+    fl.build(explode_sys=SYS, explode_ahu=[0.0, -0.75, 0.15], delay=0.35)
+
+    xc = (FIL + COIL) / 2
+    coil = Part("ahu_coil", origin=(xc, CY, ZC))
+    for k in range(40):
+        coil.box((0.12, 0.004, H - 0.14), (xc, Y0 + 0.07 + k * (D - 0.14) / 39, ZC), M["fins"])
+    for zz in np.linspace(Z0 + 0.12, Z1 - 0.12, 5):
+        coil.cyl(0.011, D - 0.1, (xc - 0.03, CY, zz), M["copper"], axis="y", seg=12)
+    for xx in (xc - 0.03, xc + 0.03):
+        coil.cyl(0.02, H - 0.12, (xx, Y0 + 0.05, ZC), M["copper"], seg=14)
+    coil.box((0.26, D - 0.08, 0.03), (xc, CY, Z0 + th + 0.03), M["steel"])               # drain pan
+    coil.build(explode_sys=SYS, explode_ahu=[0.0, -0.6, 0.35], delay=0.25)
+
+    fx, fy, fz = (COIL + FAN) / 2, Y0 + 0.36, ZC + 0.05
+    fan(Part, M, "ahu_fan", (fx, fy, fz), 0.25, 0.22, 18, explode_sys=SYS, explode_ahu=[0.0, -0.85, 0.0], delay=0.3)
+    motor = Part("ahu_motor", origin=(fx, fy + 0.3, fz))
+    motor.cyl(0.09, 0.22, (fx, fy + 0.3, fz), M["accent"], axis="y", seg=28)
+    foot = fz - 0.09 - (Z0 + th)
+    motor.box((0.16, 0.2, foot), (fx, fy + 0.3, Z0 + th + foot / 2), M["black"])
+    motor.build(bevel=0.003, explode_sys=SYS, explode_ahu=[0.35, -0.6, 0.0], delay=0.35)
+
+    cp = Part("rtu_compressors", origin=((FAN + COMP) / 2, CY, Z0 + 0.25))
+    cxp = (FAN + COMP) / 2
+    for k, yy in enumerate((Y0 + 0.42, Y0 + 0.92)):
+        cp.cyl(0.11, 0.3, (cxp, yy, Z0 + th + 0.17), M["black"], seg=24)
+        cp.ball(0.11, (cxp, yy, Z0 + th + 0.32), M["black"], scale=(1, 1, 0.45))
+        cp.box((0.26, 0.26, 0.03), (cxp, yy, Z0 + th + 0.015), M["steel"])
+        cp.tube([(cxp, yy, Z0 + th + 0.36), (cxp, yy, Z0 + 0.62 + k * 0.08), (COMP + 0.05, yy, Z0 + 0.62 + k * 0.08)], 0.012, M["copper"], seg=8)
+        cp.tube([(cxp - 0.1, yy, Z0 + th + 0.25), (FAN - 0.04, yy, Z0 + th + 0.25), (FAN - 0.04, yy, Z0 + 0.8)], 0.016, M["copper"], seg=8)
+    cp.box((0.2, 0.08, 0.3), (cxp, Y1 - 0.1, ZC + 0.2), M["grey"])                     # the controls box
+    cp.build(bevel=0.002, explode_sys=SYS, explode_ahu=[0.0, -0.35, 0.25], delay=0.3)
+
+    if g["HVAC"]["sprinkler"]:
+        spy, spz = -0.8, 3.86
+        spr = Part("sprinkler", origin=(0, spy, spz))
+        spr.cyl(0.03, 6.4, (0, spy, spz), M["sprinkler"], axis="x", seg=16)
+        for x in (-2.0, 0.1, 2.2):
+            spr.cyl(0.014, 0.26, (x, spy, spz - 0.13), M["sprinkler"], seg=10)
+            spr.cyl(0.026, 0.008, (x, spy, spz - 0.27), M["chrome"], seg=16)
+        spr.build(explode_sys=[0.0, 0.0, 1.9], delay=0.0)
+
+    hang = Part("hangers")
+    for xm in MAINS:
+        for y in (0.4, -1.0, -2.0, -3.0):
+            band(hang, M, xm, y, Z, R, "y", SLAB_Z)
+    for x in (-0.45, 0.65):
+        band(hang, M, x, HY, Z, R, "x", SLAB_Z)
+    for ddx in (-0.38, 0.38):
+        for ddy in (-0.24, 0.24):
+            hang.cyl(0.005, SLAB_Z - RB1, (rx + ddx, ry + ddy, (SLAB_Z + RB1) / 2), M["steel"], seg=8)
+    for ddy in (-0.6, 0.6):
+        hang.cyl(0.006, SLAB_Z - 2.63, (AX, DY + ddy, (SLAB_Z + 2.63) / 2), M["steel"], seg=8)
+    if g["HVAC"]["sprinkler"]:
+        for x in (-3.0, -1.0, 1.0, 3.0):
+            hang.cyl(0.004, SLAB_Z - 3.89, (x, -0.8, (SLAB_Z + 3.89) / 2), M["steel"], seg=6)
     hang.build(fade_explode=1)

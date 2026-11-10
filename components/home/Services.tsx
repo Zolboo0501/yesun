@@ -50,7 +50,7 @@ function Card({
   const [first, ...rest] = service.title.split(" ");
   const { Icon } = service;
   return (
-    <article className="flex h-full flex-col rounded-[20px] bg-graphite p-6 text-white shadow-[0_-14px_36px_-12px_rgb(0_0_0/0.55),0_40px_80px_-28px_rgb(0_0_0/0.8)] sm:p-8 lg:rounded-[28px] lg:p-12">
+    <article className="flex h-full flex-col rounded-[20px] bg-white p-6 text-ink shadow-[0_-6px_20px_-12px_rgb(11_16_32/0.06),0_24px_48px_-28px_rgb(11_16_32/0.14)] sm:p-8 lg:rounded-[28px] lg:p-12">
       <div className="flex min-h-0 flex-1 items-center justify-center pb-6 lg:pb-4">
         <Glyph seen={seen} active={active} reduced={reduced} className="aspect-square h-full max-h-[22rem] w-auto">
           <Icon seen={seen} reduced={reduced} />
@@ -61,7 +61,7 @@ function Card({
           <span className="block">{first}</span>
           {rest.length > 0 && <span className="block pl-[0.9em]">{rest.join(" ")}</span>}
         </h3>
-        <p className="max-w-[40ch] text-pretty text-step-body leading-[1.55] text-white/75 lg:justify-self-end">
+        <p className="max-w-[40ch] text-pretty text-step-body leading-[1.55] text-ink/75 lg:justify-self-end">
           {service.text}
         </p>
       </div>
@@ -81,7 +81,7 @@ export function Services() {
   const [front, setFront] = useState(0);
 
   return (
-    <section id="services" aria-labelledby="services-title" className="relative bg-night text-white">
+    <section id="services" aria-labelledby="services-title" className="relative bg-white text-ink">
       <div className="mx-auto max-w-7xl px-4 pt-24 sm:px-6 lg:px-8 lg:pt-32">
         <div className="text-[clamp(2rem,1.3rem+2.6vw,3.75rem)]">
           <h2 id="services-title" className="font-semibold leading-[0.98] tracking-[-0.04em]">
@@ -97,8 +97,8 @@ export function Services() {
             />
           </h2>
           <div className="mt-[0.45em] flex items-start gap-5 pl-[0.9em]">
-            <span aria-hidden className="mt-[0.8rem] h-px w-12 shrink-0 bg-white/60 sm:w-16" />
-            <p className="max-w-[38ch] text-pretty text-step-body leading-[1.55] text-white/80">
+            <span aria-hidden className="mt-[0.8rem] h-px w-12 shrink-0 bg-ink/60 sm:w-16" />
+            <p className="max-w-[38ch] text-pretty text-step-body leading-[1.55] text-ink/80">
               Бид агаар сэлгэлт, хөргөлтийн системийн бүх ажлыг мэргэжлийн түвшинд хийдэг.
             </p>
           </div>
@@ -112,7 +112,7 @@ export function Services() {
           peek={28}
           scaleStep={0.06}
           blur={0}
-          dim={0.5}
+          dim={0.12}
           smooth={0.14}
           depth={3}
           cardWidth={1216}

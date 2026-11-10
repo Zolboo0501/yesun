@@ -46,8 +46,8 @@ const projects: Project[] = [
   },
   {
     src: "/images/project12.webp",
-    width: 760,
-    height: 428,
+    width: 2029,
+    height: 1143,
     title: "Эрдэнэс Таван Толгой",
     subtitle: "Ажилчдын байр, оффис, хөргөлт · 2024",
     alt: "Эрдэнэс Таван Толгойн ажилчдын байр, оффис барилга",
@@ -86,8 +86,8 @@ const projects: Project[] = [
   },
   {
     src: "/images/project.webp",
-    width: 1140,
-    height: 570,
+    width: 2280,
+    height: 1140,
     title: "Эрдэнэс Таван Толгой",
     subtitle: "Нүүрс баяжуулах үйлдвэр, агаар сэлгэлт · 2024",
     alt: "Эрдэнэс Таван Толгойн нүүрс баяжуулах үйлдвэр",
@@ -157,7 +157,7 @@ export function Projects() {
       id="projects"
       ref={section}
       aria-label="Хэрэгжүүлсэн төслүүд"
-      className="relative bg-night text-white"
+      className="relative bg-white text-ink"
       style={{ height: `${STEPS * 100}svh` }}
     >
       <div className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-clip">
@@ -172,7 +172,9 @@ export function Projects() {
             infinite={false}
             itemWidth={820}
             aspectRatio={1.45}
-            borderRadius={0}
+            borderRadius={20}
+            // no frame, only a soft shadow under each rounded photo, so it lifts off the white ground
+            tileClassName="shadow-[0_24px_48px_-12px_rgb(11_16_32/0.25),0_60px_120px_-30px_rgb(11_16_32/0.3)]"
             grayscale={0.25}
             spacing={SPACING}
             spread={0}
@@ -192,12 +194,13 @@ export function Projects() {
 
         {/* Shade over the stage, as on the hero: dark under the copy and round the frame, open where the photos are. */}
         <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-night)_22%,rgb(22_23_27/0.6)_46%,transparent_64%)] lg:bg-[linear-gradient(90deg,var(--color-night)_8%,rgb(22_23_27/0.8)_24%,rgb(22_23_27/0.25)_34%,transparent_42%)]" />
-          <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-night to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-night/85 to-transparent" />
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-white)_22%,rgb(255_255_255/0.6)_46%,transparent_64%)] lg:bg-[linear-gradient(90deg,var(--color-white)_8%,rgb(255_255_255/0.8)_24%,rgb(255_255_255/0.25)_34%,transparent_42%)]" />
+          <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-white to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-white/85 to-transparent" />
         </div>
 
         <StepCopy
+          tone="light"
           title="Хэрэгжүүлсэн төслүүд."
           text="Музейгээс уурхай хүртэл 150 гаруй объектод агаар сэлгэлт, хөргөлт угсарсан."
           index={0}
@@ -206,7 +209,7 @@ export function Projects() {
         >
           <Link
             href="/projects"
-            className="group inline-flex items-center gap-2 rounded-[3px] bg-white px-5 py-3 text-xs font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
             Бүх төсөл
             <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
@@ -217,6 +220,7 @@ export function Projects() {
         {projects.map((p, i) => (
           <StepCopy
             key={i}
+            tone="light"
             title={p.title}
             text={p.subtitle.replace(" · ", "\u00a0·\u00a0")}
             index={i + 1}
@@ -234,6 +238,7 @@ export function Projects() {
           {Array.from({ length: STEPS }, (_, i) => (
             <StepLine
               key={i}
+              tone="light"
               index={i}
               label={i === 0 ? "Эхлэл" : projects[i - 1].title}
               step={step}

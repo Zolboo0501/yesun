@@ -49,7 +49,7 @@ function PhotoTile({ photo, sizes }: { photo: (typeof photos)[keyof typeof photo
           {photo.facts.map((fact) => (
             <span
               key={fact}
-              className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-sm"
+              className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm"
             >
               {fact}
             </span>
@@ -108,7 +108,7 @@ export function Factory() {
             <dl className="grid grid-cols-3 gap-4 border-t border-ink/10 pt-5">
               {figures.map((figure) => (
                 <div key={figure.label}>
-                  <dt className="text-[11px] leading-snug text-ink/55">{figure.label}</dt>
+                  <dt className="text-step-small leading-snug text-ink/60">{figure.label}</dt>
                   <dd className="mt-1 text-lg font-semibold tracking-[-0.02em] tabular-nums">{figure.value}</dd>
                 </div>
               ))}

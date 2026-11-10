@@ -50,7 +50,7 @@ function BrandCard({ brand }: { brand: Brand }) {
           </span>
         </div>
         <p className="mt-5 font-semibold leading-snug text-ink">{brand.category}</p>
-        <p className="mt-1.5 text-pretty text-[0.9375rem] leading-[1.6] text-ink/70">{brand.summary}</p>
+        <p className="mt-1.5 text-pretty text-base leading-[1.6] text-ink/70">{brand.summary}</p>
         <ul className="mt-5 flex flex-wrap gap-1.5">
           {brand.points.map((point) => (
             <li key={point} className="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-ink/75">
@@ -151,7 +151,7 @@ export function Brands() {
           </div>
           <Link
             href="/contact"
-            className="group inline-flex shrink-0 items-center gap-2 self-start rounded-[3px] bg-white px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:self-auto"
+            className="group inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:self-auto"
           >
             Инженертэй холбогдох
             <ArrowUpRight aria-hidden className="size-4 transition-transform group-hover:-translate-y-px group-hover:translate-x-px" />

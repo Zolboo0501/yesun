@@ -209,7 +209,7 @@ function Browser({ filters }: { filters: Filters }) {
                 style={{ transform: `scale(${picked.logoScale})` }}
               />
             </span>
-            <p className="flex-1 text-pretty text-[0.9375rem] leading-[1.6] text-ink/70">
+            <p className="flex-1 text-pretty text-base leading-[1.6] text-ink/70">
               <span className="font-semibold text-ink">{picked.category}.</span> {picked.summary}
             </p>
             <Link
@@ -237,7 +237,7 @@ function Browser({ filters }: { filters: Filters }) {
             <button
               type="button"
               onClick={clear}
-              className="mt-6 inline-flex min-h-11 cursor-pointer items-center rounded-[3px] bg-ink px-5 text-xs font-semibold text-white transition-[background-color,transform] hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              className="mt-6 inline-flex min-h-11 cursor-pointer items-center rounded-full bg-ink px-5 text-sm font-semibold text-white transition-[background-color,transform] hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
               Шүүлтүүрийг арилгах
             </button>
@@ -271,7 +271,7 @@ function Facet({
           aria-pressed={on}
           onClick={() => onSelect(on && id ? null : id)}
           className={cn(
-            "flex min-h-10 w-full cursor-pointer items-center justify-between gap-3 rounded-[12px] px-3 py-2 text-left text-[0.9375rem] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+            "flex min-h-10 w-full cursor-pointer items-center justify-between gap-3 rounded-full px-4 py-2 text-left text-base transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
             on ? "bg-ink font-semibold text-white" : "text-ink/75 hover:bg-ink/[0.05] hover:text-ink",
           )}
         >

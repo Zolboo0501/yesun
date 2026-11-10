@@ -113,7 +113,7 @@ export function ProductTile() {
         </div>
         <Link
           href="/factory#products"
-          className="group pointer-events-auto inline-flex shrink-0 items-center gap-2 self-start rounded-[3px] border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-semibold text-white backdrop-blur-sm transition-colors duration-200 hover:border-white/60 hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:self-auto"
+          className="group pointer-events-auto inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-white/30 bg-white/10 px-4 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition-colors duration-200 hover:border-white/60 hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:self-auto"
         >
           Бүх бүтээгдэхүүн
           <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />

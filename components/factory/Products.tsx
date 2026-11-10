@@ -265,7 +265,7 @@ export function Products() {
                 <>
                   <Link
                     href="/contact"
-                    className="group inline-flex items-center gap-2 rounded-[3px] bg-white px-5 py-3 text-xs font-semibold text-graphite transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                    className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-graphite transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                   >
                     Инженертэй холбогдох
                     <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
@@ -304,7 +304,7 @@ function IndexItem({
         type="button"
         style={{ opacity }}
         onClick={onSelect}
-        className="flex items-baseline gap-3 text-left font-mono text-[10px] uppercase tracking-[0.14em] transition-opacity hover:!opacity-100 focus-visible:!opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+        className="flex items-baseline gap-3 text-left font-mono text-[11px] uppercase tracking-[0.14em] transition-opacity hover:!opacity-100 focus-visible:!opacity-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
       >
         <span className="tabular-nums text-white/60">{pad(index)}</span>
         {label}

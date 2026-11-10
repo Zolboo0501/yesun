@@ -48,4 +48,15 @@ const places = [
   { id: "factory", label: "Үйлдвэр", lines: ["Хан-Уул дүүрэг, 10-р хороо", "Морингийн зам 42"], pin: [47.8570456, 106.7557945] },
 ] as const;
 
-export { contact, menu, places, siteUrl };
+// The engineers, as the team page lists them (the home page shows the four with photographs); the two safety
+// engineers have no photo yet and show their initials there.
+const engineers: { name: string; role: string; image?: string; text?: string }[] = [
+  { name: "Н.Энхмэнд", role: "Ерөнхий менежер", image: "/images/member.jpg", text: "2011 оноос хойш" },
+  { name: "Б.Бэхбат", role: "Инженерийн багийн ахлагч", image: "/images/member2.jpg", text: "17 жилийн туршлагатай" },
+  { name: "Ц.Хосбаяр", role: "ХАС-ийн мэргэшсэн инженер", image: "/images/member3.jpg", text: "5 жилийн туршлагатай" },
+  { name: "Д.Хангай", role: "ХАС-ийн мэргэшсэн инженер", image: "/images/member4.jpg", text: "5 жилийн туршлагатай" },
+  { name: "С.Энхзаяа", role: "ХАБЭА-н инженер" },
+  { name: "М.Далайсайхан", role: "ХАБЭА-н инженер" },
+];
+
+export { contact, engineers, menu, places, siteUrl };

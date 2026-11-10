@@ -50,7 +50,7 @@ assert CEIL_TYPE in ("slats", "tiles", "open"), f"unknown ceiling type {CEIL_TYP
 # every room shares the shell and ceiling; the office's HVAC is built here, the kindergarten's and school's in
 # systems.py, and each room's furniture in rooms.py (the building has its own builder, building.py)
 ROOM = SPEC.get("room", "office")
-assert ROOM in ("office", "kindergarten", "school", "building"), f"unknown room {ROOM}"
+assert ROOM in ("office", "kindergarten", "school", "retail", "building"), f"unknown room {ROOM}"
 CACHE = os.path.expanduser(SPEC["cache_dir"])
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -626,14 +626,17 @@ if FEAT["windows"]:
     shell.box((0.15, RY1 - RY0, CEIL + 0.05 - WIN_HEAD), (RX0 - 0.075, (RY0 + RY1) / 2, (CEIL + 0.05 + WIN_HEAD) / 2), M["plaster"], uv=uvs("plaster"))
 else:
     shell.box((0.15, RY1 - RY0, CEIL + 0.05), (RX0 - 0.075, (RY0 + RY1) / 2, (CEIL + 0.05) / 2), M["plaster"], uv=uvs("plaster"))
-for x0, x1, y0, y1 in ((RX0, RX1, RY0, SY0), (RX0, RX1, SY1, RY1), (RX0, SX0, SY0, SY1), (SX1, RX1, SY0, SY1)):
-    shell.box((x1 - x0, y1 - y0, 0.05), ((x0 + x1) / 2, (y0 + y1) / 2, CEIL + 0.025), M["plaster"], uv=uvs("plaster", "x"))
-FASCIA_Z0 = LOW - 0.08                             # dropped plaster frame around the zone
-for (sx, sy, cx, cy) in (
-    (SX1 - SX0 + 0.12, 0.06, 0, SY0 - 0.03), (SX1 - SX0 + 0.12, 0.06, 0, SY1 + 0.03),
-    (0.06, SY1 - SY0, SX0 - 0.03, 0), (0.06, SY1 - SY0, SX1 + 0.03, 0),
-):
-    shell.box((sx, sy, CEIL - FASCIA_Z0), (cx, cy, (CEIL + FASCIA_Z0) / 2), M["plaster"], uv=uvs("plaster", "x"))
+# the plaster ceiling round the feature zone and its dropped frame; without it ("ceiling_border": false) the whole
+# room is open to the slab, an exposed ceiling, and the walls' tops are the slab's colour (its void walls)
+if FEAT.get("ceiling_border", True):
+    for x0, x1, y0, y1 in ((RX0, RX1, RY0, SY0), (RX0, RX1, SY1, RY1), (RX0, SX0, SY0, SY1), (SX1, RX1, SY0, SY1)):
+        shell.box((x1 - x0, y1 - y0, 0.05), ((x0 + x1) / 2, (y0 + y1) / 2, CEIL + 0.025), M["plaster"], uv=uvs("plaster", "x"))
+    FASCIA_Z0 = LOW - 0.08                         # dropped plaster frame around the zone
+    for (sx, sy, cx, cy) in (
+        (SX1 - SX0 + 0.12, 0.06, 0, SY0 - 0.03), (SX1 - SX0 + 0.12, 0.06, 0, SY1 + 0.03),
+        (0.06, SY1 - SY0, SX0 - 0.03, 0), (0.06, SY1 - SY0, SX1 + 0.03, 0),
+    ):
+        shell.box((sx, sy, CEIL - FASCIA_Z0), (cx, cy, (CEIL + FASCIA_Z0) / 2), M["plaster"], uv=uvs("plaster", "x"))
 if FEAT["linear_lights"]:
     for x in (-4.25, 4.25):
         shell.box((0.04, RY1 - RY0 - 0.6, 0.012), (x, (RY0 + RY1) / 2, CEIL - 0.004), M["black"])
@@ -658,7 +661,20 @@ if FEAT["windows"]:
     win.box((0.3, RY1 - RY0, 0.04), (RX0 + 0.13, (RY0 + RY1) / 2, 0.06), M["white_panel"])
     for i in range(6):
         y0, y1 = bays[i] + 0.03, bays[i + 1] - 0.03
-        glass.box((0.012, y1 - y0, 2.24), (RX0, (y0 + y1) / 2, 1.18), M["glass"])
+        if i == FEAT.get("door_bay", -1):
+            # an entrance in this bay: two sliding glass leaves on their own tracks under the transom, each framed,
+            # with a pull handle by the meeting stiles
+            yc = (y0 + y1) / 2
+            for s, (ly0, ly1) in ((-1, (y0, yc + 0.03)), (1, (yc - 0.03, y1))):
+                lx = RX0 + (0.035 if s < 0 else 0.085)
+                glass.box((0.012, ly1 - ly0 - 0.08, 2.08), (lx, (ly0 + ly1) / 2, 1.16), M["glass"])
+                for z, h in ((0.1, 0.08), (2.24, 0.06)):
+                    win.box((0.045, ly1 - ly0, h), (lx, (ly0 + ly1) / 2, z), M["frame"])
+                for yy in (ly0 + 0.025, ly1 - 0.025):
+                    win.box((0.045, 0.05, 2.2), (lx, yy, 1.17), M["frame"])
+                win.cyl(0.012, 0.9, (lx + 0.05, yc - s * 0.11, 1.05), M["chrome"], seg=10)
+        else:
+            glass.box((0.012, y1 - y0, 2.24), (RX0, (y0 + y1) / 2, 1.18), M["glass"])
         glass.box((0.012, y1 - y0, WIN_HEAD - 2.36), (RX0, (y0 + y1) / 2, (2.33 + WIN_HEAD) / 2), M["glass"])
         if FEAT["blinds"]:
             drop = (0.25, 0.9, 0.5, 1.2, 0.35, 0.7)[i]
@@ -1097,6 +1113,10 @@ elif ROOM == "school":
     from rooms import school
 
     school(globals())
+elif ROOM == "retail":
+    from rooms import retail
+
+    retail(globals())
 
 if FEAT["planter"]:
     pl = Part("planter")
@@ -1193,8 +1213,11 @@ if FEAT["pendant_ring"] or FEAT["pendant_linear"]:
 # ---------------------------------------------------------------- export
 export_glb()
 if DO_RENDER:
-    preview((
+    shots = [
         ("office.png", (1.4, -6.2, 1.55), (-0.9, 1.0, 1.95), 24, ()),
         ("xray.png", (2.2, -5.2, 1.3), (0.4, -0.5, 3.0), 24, ("ceiling_reveal",)),
         ("plenum.png", (6.5, -8.5, 9.5), (-0.3, 0, 3.0), 30, ("slab",)),
-    ))
+    ]
+    if ROOM == "retail":                            # its unit stands on the roof
+        shots.append(("roof.png", (3.4, -4.8, 7.6), (0.0, 2.0, 5.0), 30, ()))
+    preview(tuple(shots))

@@ -8,7 +8,7 @@ the camera looks in from. No lettering anywhere: words belong to the page, not t
 import math
 
 import numpy as np
-from mathutils import Matrix
+from mathutils import Matrix, Vector
 
 
 def _ctx(g):
@@ -487,3 +487,236 @@ def school(g):
     fp = Part("floor_plant")
     floor_plant(fp, M, rng, -4.45, -4.15)
     fp.build(parent=furniture)
+
+
+# ---------------------------------------------------------------- retail
+def stock(p, rng, packs, label, a0, a1, front, z, depth, along, face, hmax):
+    """Goods on one shelf, from a0 to a1 along its axis ("x" or "y"): blocks of one product each, faced up to the
+    shelf's front edge (`front`, on the other axis; `face` +1 or -1 is the way the fronts look), most with a lighter
+    label band across them. Colour and shape only, never lettering."""
+    a = a0
+    while a < a1 - 0.1:
+        w = min(rng.uniform(0.12, 0.38), a1 - a)
+        h = rng.uniform(0.45, 1.0) * hmax
+        d = depth * rng.uniform(0.7, 0.95)
+        mat = packs[int(rng.integers(0, len(packs)))]
+        c, b = a + w / 2, front - face * d / 2
+        band = label if rng.random() < 0.7 else packs[int(rng.integers(0, len(packs)))]
+        if along == "y":
+            p.box((d, w - 0.01, h), (b, c, z + h / 2), mat)
+            if rng.random() < 0.65:
+                p.box((0.004, w - 0.03, h * 0.32), (front + face * 0.001, c, z + h * 0.55), band)
+        else:
+            p.box((w - 0.01, d, h), (c, b, z + h / 2), mat)
+            if rng.random() < 0.65:
+                p.box((w - 0.03, 0.004, h * 0.32), (c, front + face * 0.001, z + h * 0.55), band)
+        a += w
+
+
+def gondola(p, M, rng, packs, label, gx, y0, y1, levels=(0.13, 0.5, 0.87, 1.24), top=1.62, depth=0.42):
+    """A double-sided shelf unit down the room (along y): a dark plinth, a white spine and end panels, four shelves
+    a side with grey price rails and their tickets, goods on every shelf, and an end cap at the front."""
+    L, yc = y1 - y0, (y0 + y1) / 2
+    W = 2 * depth + 0.05
+    p.box((W, L, 0.1), (gx, yc, 0.05), M["plastic"])
+    p.box((0.05, L, top), (gx, yc, top / 2), M["white"])
+    for ye in (y0 + 0.015, y1 - 0.015):
+        p.box((W, 0.03, top), (gx, ye, top / 2), M["white"])
+    p.box((W, L, 0.03), (gx, yc, top + 0.015), M["white"])
+    for s in (-1, 1):
+        front = gx + s * (0.025 + depth)
+        for k, z in enumerate(levels):
+            p.box((depth, L - 0.06, 0.022), (gx + s * (0.025 + depth / 2), yc, z), M["white"])
+            p.box((0.012, L - 0.06, 0.04), (front + s * 0.006, yc, z - 0.005), M["grey"])
+            for t in np.arange(y0 + 0.2, y1 - 0.12, 0.36):
+                p.box((0.004, 0.055, 0.028), (front + s * 0.0125, t + rng.uniform(-0.06, 0.06), z - 0.005), label)
+            hmax = (levels[k + 1] - z if k + 1 < len(levels) else top - z) - 0.08
+            stock(p, rng, packs, label, y0 + 0.04, y1 - 0.04, front, z + 0.011, depth - 0.03, "y", s, hmax)
+    # the end cap: three shelves facing the front, where the offers stand
+    e0 = y0 - depth
+    p.box((W, depth, 0.1), (gx, (e0 + y0) / 2, 0.05), M["plastic"])
+    for z in (0.13, 0.55, 0.97):
+        p.box((W - 0.04, depth, 0.022), (gx, (e0 + y0) / 2, z), M["white"])
+        p.box((W - 0.04, 0.012, 0.04), (gx, e0 - 0.006, z - 0.005), M["grey"])
+        stock(p, rng, packs, label, gx - W / 2 + 0.03, gx + W / 2 - 0.03, e0, z + 0.011, depth - 0.03, "x", -1, 0.33)
+    for xe in (gx - W / 2 + 0.015, gx + W / 2 - 0.015):
+        p.box((0.03, depth, 1.3), (xe, (e0 + y0) / 2, 0.65), M["white"])
+
+
+def crate(p, M, uvs, rng, c, w, d, tilt, fruit, r):
+    """An open oak crate centred on c (its bottom), tipped towards -x by `tilt`, heaped with one kind of fruit."""
+    R = Matrix.Rotation(-tilt, 4, "Y")
+    R3, C = R.to_3x3(), Vector(c)
+
+    def put(size, off, mat, **kw):
+        p.box(size, C + R3 @ Vector(off), mat, rot=R, **kw)
+
+    put((w, d, 0.015), (0, 0, 0.0075), M["wood"], uv=uvs("wood", "y"))
+    for sx in (-1, 1):
+        put((0.015, d, 0.15), (sx * (w / 2 - 0.0075), 0, 0.075), M["wood"], uv=uvs("wood", "y"))
+    for sy in (-1, 1):
+        put((w, 0.015, 0.15), (0, sy * (d / 2 - 0.0075), 0.075), M["wood"], uv=uvs("wood", "x"))
+    for layer, inset in ((0, 0.0), (1, 0.09)):
+        nx, ny = int((w - 2 * inset - 0.03) / (2 * r)), int((d - 2 * inset - 0.03) / (2 * r))
+        for i in range(nx):
+            for j in range(ny):
+                off = Vector((-w / 2 + inset + 0.015 + r + i * 2 * r + rng.uniform(-0.006, 0.006),
+                              -d / 2 + inset + 0.015 + r + j * 2 * r + rng.uniform(-0.006, 0.006),
+                              0.015 + r + layer * r * 1.6))
+                p.ball(r * rng.uniform(0.9, 1.05), C + R3 @ off, fruit, subdiv=1)
+
+
+def coolers(p, glass, M, rng, glow, drinks, x0, x1, yf, depth, n):
+    """Upright drinks coolers along the back wall: lit inside, five shelves of bottles in blocks of one drink, glass
+    doors in black frames with chrome handles, a dark canopy with a lit strip over them (no words)."""
+    H, yb = 2.05, yf + depth
+    xc, dw = (x0 + x1) / 2, (x1 - x0) / n
+    p.box((x1 - x0, depth, 0.12), (xc, yf + depth / 2, 0.06), M["plastic"])
+    for k in range(int((x1 - x0) / 0.05)):
+        p.box((0.02, 0.004, 0.05), (x0 + 0.04 + k * 0.05, yf - 0.002, 0.06), M["black"])
+    p.box((x1 - x0 + 0.04, depth + 0.02, 0.3), (xc, yf + depth / 2, H + 0.15), M["plastic"])
+    p.box((x1 - x0 - 0.12, 0.012, 0.09), (xc, yf - 0.012, H + 0.15), glow)
+    for xe, s in ((x0, -1), (x1, 1)):
+        p.box((0.04, depth, H), (xe + s * 0.02, yf + depth / 2, H / 2), M["plastic"])
+    p.box((x1 - x0, 0.02, H - 0.16), (xc, yb - 0.03, 0.12 + (H - 0.16) / 2), glow)
+    for z in (0.25, 0.6, 0.95, 1.3, 1.65):
+        p.box((x1 - x0, depth - 0.14, 0.012), (xc, yf + 0.07 + (depth - 0.14) / 2, z), M["grey"])
+        for k in range(n):
+            mat, cap = drinks[(k * 3 + int(z * 7)) % len(drinks)]
+            h = rng.uniform(0.2, 0.27)
+            for i in range(8):
+                bx = x0 + k * dw + 0.07 + i * (dw - 0.14) / 7
+                by = yf + 0.16
+                p.cyl(0.032, h, (bx, by, z + 0.006 + h / 2), mat, seg=8)
+                p.cyl(0.014, 0.05, (bx, by, z + 0.006 + h + 0.025), cap, seg=8)
+    # the doors: frames on every edge, a handle by each door's free edge, glass in the no-shadow part
+    for k in range(n + 1):
+        p.box((0.05, 0.05, H - 0.12), (x0 + k * dw, yf - 0.025, 0.12 + (H - 0.12) / 2), M["black"])
+    for z in (0.145, H - 0.025):
+        p.box((x1 - x0, 0.05, 0.05), (xc, yf - 0.025, z), M["black"])
+    for k in range(n):
+        hx = x0 + (k + 1) * dw - 0.08
+        p.cyl(0.012, 0.6, (hx, yf - 0.07, 1.12), M["chrome"], seg=10)
+        glass.box((dw - 0.05, 0.01, H - 0.22), (x0 + (k + 0.5) * dw, yf - 0.03, 0.12 + (H - 0.12) / 2), M["glass"])
+
+
+def retail(g):
+    """A small supermarket in the shell, under an open ceiling: three gondolas down the room, drinks coolers along
+    the back wall, wall shelves and a produce stand on the right, the till by the shopfront with the entrance doors
+    (the shell's door bay), baskets by the door, linear lights over the gondolas, a staff door at the back right."""
+    Part, M, furniture, uvs, rng = _ctx(g)
+    material, SLAB_Z, RX0, RX1, RY1 = g["material"], g["SLAB_Z"], g["RX0"], g["RX1"], g["RY1"]
+    colours = crayons(g)
+    packs = colours + [M["book3"], M["book1"], M["book2"], M["book4"], M["mint"], M["skyblue"], M["butter"], M["peach"]]
+    label = M["book3"]
+
+    gd = Part("gondolas")
+    for gx in (-2.0, 0.1, 2.2):
+        gondola(gd, M, rng, packs, label, gx, -2.4, 1.4)
+    gd.build(parent=furniture)
+
+    # drinks along the back wall, behind glass that casts no shadow
+    glow = material("cooler_glow", "eef5ff", 0.0, 0.4, emit=2.2)
+    drinks = [(material("drink_cola", "3a1c13", 0.2, 0.2), colours[0]),
+              (material("drink_water", "bcd9ea", 0.1, 0.12), M["skyblue"]),
+              (colours[4], M["white"]), (colours[3], M["white"]), (colours[2], colours[3]), (colours[0], M["white"])]
+    cl = Part("coolers")
+    cg = Part("cooler_glass")
+    coolers(cl, cg, M, rng, glow, drinks, -3.2, 3.2, 2.95, 0.63, 8)
+    cl.build(parent=furniture)
+    cg.build()
+
+    # wall shelves on the right wall, a produce stand in front of them
+    ws = Part("wall_shelves")
+    WX1, WD, wy0, wy1 = RX1 - 0.02, 0.42, -1.4, 2.3
+    front = WX1 - WD
+    ws.box((WD, wy1 - wy0, 0.1), (WX1 - WD / 2, (wy0 + wy1) / 2, 0.05), M["plastic"])
+    ws.box((0.03, wy1 - wy0, 2.0), (WX1 - 0.015, (wy0 + wy1) / 2, 1.0), M["white"])
+    for ye in (wy0 + 0.015, wy1 - 0.015):
+        ws.box((WD, 0.03, 2.0), (WX1 - WD / 2, ye, 1.0), M["white"])
+    levels = (0.13, 0.52, 0.91, 1.3, 1.69)
+    for k, z in enumerate(levels):
+        ws.box((WD, wy1 - wy0 - 0.06, 0.022), (WX1 - WD / 2, (wy0 + wy1) / 2, z), M["white"])
+        ws.box((0.012, wy1 - wy0 - 0.06, 0.04), (front - 0.006, (wy0 + wy1) / 2, z - 0.005), M["grey"])
+        hmax = (levels[k + 1] - z if k + 1 < len(levels) else 2.0 - z) - 0.08
+        stock(ws, rng, packs, label, wy0 + 0.04, wy1 - 0.04, front, z + 0.011, WD - 0.03, "y", -1, hmax)
+    ws.box((WD + 0.02, wy1 - wy0, 0.03), (WX1 - WD / 2, (wy0 + wy1) / 2, 2.015), M["white"])
+    ws.build(parent=furniture)
+
+    pr = Part("produce")
+    PX0, PX1, PY0, PY1 = 4.1, 5.15, -4.0, -1.75
+    fruit = [colours[0], colours[4], colours[2], colours[3], material("fruit_apple_green", "8db84a", 0.0, 0.35)]
+    for x, z in ((PX0 + 0.25, 0.0), (PX0 + 0.75, 0.0)):
+        for dy in (-1, 1):
+            pr.box((0.05, 0.05, 0.6 + z), (x, (PY0 + PY1) / 2 + dy * ((PY1 - PY0) / 2 - 0.05), (0.6 + z) / 2), M["black"])
+    pr.box((0.6, PY1 - PY0, 0.03), (PX0 + 0.3, (PY0 + PY1) / 2, 0.6), M["wood"], uv=uvs("wood", "y"))
+    pr.box((0.45, PY1 - PY0, 0.03), (PX0 + 0.78, (PY0 + PY1) / 2, 0.92), M["wood"], uv=uvs("wood", "y"))
+    pr.box((0.06, PY1 - PY0, 0.95), (PX1 - 0.03, (PY0 + PY1) / 2, 0.475), M["black"])
+    for k, y in enumerate(np.linspace(PY0 + 0.38, PY1 - 0.38, 3)):
+        crate(pr, M, uvs, rng, (PX0 + 0.3, y, 0.62), 0.5, 0.66, 0.22, fruit[k % 5], 0.042)
+        crate(pr, M, uvs, rng, (PX0 + 0.8, y, 0.94), 0.4, 0.66, 0.3, fruit[(k + 3) % 5], 0.04)
+    pr.build(parent=furniture)
+
+    # the till by the shopfront: oak front towards the aisles, a dark top with a short belt, the screen to the cashier
+    ck = Part("checkout")
+    CX0, CX1, CY0, CY1 = -3.95, -3.35, -1.3, 0.5
+    cx, cy = (CX0 + CX1) / 2, (CY0 + CY1) / 2
+    ck.box((CX1 - CX0, CY1 - CY0, 0.86), (cx, cy, 0.43), M["white_panel"])
+    ck.box((0.02, CY1 - CY0, 0.78), (CX1 + 0.01, cy, 0.45), M["wood"], uv=uvs("wood", "z"))
+    ck.box((CX1 - CX0 + 0.06, CY1 - CY0 + 0.04, 0.04), (cx, cy, 0.88), M["plastic"])
+    ck.box((0.4, 0.62, 0.012), (cx + 0.05, CY1 - 0.36, 0.906), M["black"])
+    for dx in (-0.21, 0.21):
+        ck.box((0.012, 0.62, 0.03), (cx + 0.05 + dx, CY1 - 0.36, 0.915), M["chrome"])
+    sx, sy = CX0 + 0.16, cy - 0.2
+    ck.cyl(0.02, 0.22, (sx, sy, 1.01), M["plastic"], seg=10)
+    ck.rbox((0.03, 0.36, 0.25), (sx, sy, 1.23), M["plastic"], 0.008, rot=Matrix.Rotation(0.15, 4, "Y"))
+    # the screen on the monitor's cashier side, leaning back with it
+    ck.quad([(sx - 0.033, sy + 0.17, 1.125), (sx - 0.033, sy - 0.17, 1.125), (sx, sy - 0.17, 1.34), (sx, sy + 0.17, 1.34)], M["screen"])
+    ck.rbox((0.08, 0.15, 0.04), (cx + 0.12, cy - 0.45, 0.925), M["plastic"], 0.01, rot=Matrix.Rotation(-0.3, 4, "Y"))
+    ck.rbox((0.12, 0.14, 0.09), (CX0 + 0.1, cy + 0.15, 0.945), M["white"], 0.01)
+    # a rack of small goods at the till's near end, and the cashier's stool
+    rx, ry = cx, CY0 - 0.25
+    ck.box((0.42, 0.42, 0.06), (rx, ry, 0.03), M["plastic"])
+    for z in (0.15, 0.45, 0.75, 1.05):
+        ck.box((0.42, 0.4, 0.015), (rx, ry, z), M["white"])
+        stock(ck, rng, colours + [M["book3"], M["peach"]], label, rx - 0.19, rx + 0.19, ry - 0.2, z + 0.008, 0.36, "x", -1, 0.2)
+    ck.box((0.02, 0.4, 1.2), (rx + 0.2, ry, 0.6), M["white"])
+    ck.box((0.02, 0.4, 1.2), (rx - 0.2, ry, 0.6), M["white"])
+    ck.cyl(0.18, 0.02, (CX0 - 0.45, cy, 0.01), M["black"], seg=24)
+    ck.cyl(0.025, 0.62, (CX0 - 0.45, cy, 0.32), M["chrome"], seg=10)
+    ck.cyl(0.17, 0.05, (CX0 - 0.45, cy, 0.66), M["plastic"], seg=24)
+    ck.build(parent=furniture)
+
+    # by the door: a mat inside it and a stack of baskets
+    door_bays = np.linspace(g["RY0"], RY1, 7)
+    dy0, dy1 = door_bays[1], door_bays[2]
+    by = Part("entrance")
+    by.box((1.0, dy1 - dy0 - 0.1, 0.012), (RX0 + 0.62, (dy0 + dy1) / 2, 0.006), M["plastic"])
+    bx0, byc = RX0 + 0.55, dy0 - 0.35
+    for k in range(5):
+        z = 0.02 + k * 0.055
+        for (sx_, sy_, ox, oy) in ((0.45, 0.012, 0, -0.165), (0.45, 0.012, 0, 0.165), (0.012, 0.33, -0.225, 0), (0.012, 0.33, 0.225, 0)):
+            by.box((sx_, sy_, 0.24), (bx0 + ox, byc + oy, z + 0.12), colours[0])
+        by.box((0.45, 0.33, 0.01), (bx0, byc, z + 0.005), colours[0])
+    for s in (-1, 1):
+        by.tube([(bx0 - 0.1, byc + s * 0.15, 0.48), (bx0, byc + s * 0.15, 0.6), (bx0 + 0.1, byc + s * 0.15, 0.48)], 0.008, M["plastic"], seg=6)
+    by.build(parent=furniture, bevel=0.001)
+
+    # linear lights hung from the slab: over the gondolas, the till and the right-hand aisle
+    lt = Part("shop_lights")
+    for gx, y0, y1 in ((-2.0, -2.4, 1.4), (0.1, -2.4, 1.4), (2.2, -2.4, 1.4), (-3.65, -1.6, 0.8), (3.7, -3.2, 1.8)):
+        lt.box((0.07, y1 - y0, 0.06), (gx, (y0 + y1) / 2, 2.95), M["black"])
+        lt.box((0.045, y1 - y0 - 0.04, 0.006), (gx, (y0 + y1) / 2, 2.917), M["panel_led"])
+        for y in (y0 + 0.6, y1 - 0.6):
+            lt.cyl(0.003, SLAB_Z - 2.98, (gx, y, (SLAB_Z + 2.98) / 2), M["black"], seg=5)
+    lt.build(parent=furniture)
+
+    # the staff door at the back of the right wall: architrave, an oak leaf, lever and kick plate
+    dr = Part("door")
+    DY0, DY1, DH, xw = 2.55, 3.4, 2.1, RX1
+    dr.box((0.03, DY1 - DY0 + 0.16, DH + 0.08), (xw - 0.015, (DY0 + DY1) / 2, (DH + 0.08) / 2), M["white_panel"])
+    dr.box((0.045, DY1 - DY0, DH), (xw - 0.04, (DY0 + DY1) / 2, DH / 2), M["wood"], uv=uvs("wood", "z"))
+    dr.box((0.03, 0.14, 0.02), (xw - 0.085, DY0 + 0.12, 1.0), M["chrome"])
+    dr.cyl(0.022, 0.025, (xw - 0.072, DY0 + 0.06, 1.0), M["chrome"], axis="x", seg=12)
+    dr.box((0.006, DY1 - DY0 - 0.04, 0.1), (xw - 0.065, (DY0 + DY1) / 2, 0.07), M["chrome"])
+    dr.build(parent=furniture, bevel=0.002)

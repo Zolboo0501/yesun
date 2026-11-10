@@ -31,6 +31,8 @@ export interface DollyGalleryProps {
   itemWidth?: number;
   aspectRatio?: number;
   borderRadius?: number;
+  /** classes for every photo's tile, such as a border or a shadow */
+  tileClassName?: string;
   grayscale?: number;
   perspective?: number;
   spacing?: number;
@@ -124,6 +126,7 @@ export const DollyGallery = ({
   driveRef,
   onIndexChange,
   className,
+  tileClassName,
   children,
 }: DollyGalleryProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -475,7 +478,10 @@ export const DollyGallery = ({
               if (node) slots.current[k] = node;
               else delete slots.current[k];
             }}
-            className="invisible absolute overflow-hidden bg-neutral-800 will-change-[transform,opacity] [backface-visibility:hidden]"
+            className={cn(
+              "invisible absolute overflow-hidden bg-neutral-800 will-change-[transform,opacity] [backface-visibility:hidden]",
+              tileClassName,
+            )}
             style={tileStyle}
             aria-hidden={k >= list.length}
           >

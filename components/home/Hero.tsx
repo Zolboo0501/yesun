@@ -94,6 +94,15 @@ export function Hero() {
   useMotionValueEvent(reveal, "change", (p) => {
     if (curtain.current) paintCurtain(curtain.current, p);
   });
+  // The scenes whose model has drawn; one on stage without it shows the loading sign.
+  const [ready, setReady] = useState<number[]>([]);
+  const markReady = useCallback(
+    (k: number) => {
+      setReady((r) => (r.includes(k) ? r : [...r, k]));
+      open();
+    },
+    [open],
+  );
   useEffect(() => {
     const el = curtain.current;
     const lifted = !el || Number(getComputedStyle(el).opacity) < 1;
@@ -166,7 +175,8 @@ export function Hero() {
               drawing={active && (k === base || (sliding && k === base + 1))}
               reducedMotion={reducedMotion}
               reveal={reveal}
-              onReady={open}
+              ready={ready.includes(k)}
+              onReady={() => markReady(k)}
             />
           ))}
         </motion.div>
@@ -185,9 +195,9 @@ export function Hero() {
           ))}
         </nav>
 
-        {/* The four buildings, small at the bottom left, the one on stage in white. */}
+        {/* The buildings, small at the bottom left, the one on stage in white. */}
         <nav aria-label="Объектууд" className="absolute bottom-5 left-4 sm:left-6 lg:left-8">
-          <ul className="flex gap-4 text-[11px] font-medium sm:gap-5">
+          <ul className="flex gap-3 text-[13px] font-medium sm:gap-5">
             {heroScenes.map((scene, k) => (
               <SceneLink
                 key={scene.id}
@@ -201,17 +211,9 @@ export function Hero() {
           </ul>
         </nav>
 
-        <div
-          aria-hidden
-          className="pointer-events-none absolute bottom-5 right-[24%] hidden flex-col items-center gap-3 lg:flex"
-        >
-          <span className="rotate-180 text-[11px] font-medium uppercase tracking-[0.18em] text-white/60 [writing-mode:vertical-rl]">
-            Гүйлгэх
-          </span>
-          <span className="h-10 w-px bg-white/45" />
-        </div>
 
-        <div className="absolute bottom-4 right-3 flex items-center gap-1 text-white/70 sm:right-5 lg:right-7">
+        {/* from sm up; on a phone the site's contact bar carries the same links and the scene names need the row */}
+        <div className="absolute bottom-4 right-3 hidden items-center gap-1 text-white/70 sm:right-5 sm:flex lg:right-7">
           <a
             href={contact.facebook}
             target="_blank"
@@ -245,7 +247,9 @@ export function Hero() {
         aria-hidden
         className="pointer-events-none fixed inset-0 z-[60] bg-night [animation:curtain-safety_0.4s_ease-out_4s_forwards]"
         style={{ maskComposite: "exclude", WebkitMaskComposite: "xor", maskRepeat: "no-repeat", WebkitMaskRepeat: "no-repeat" }}
-      />
+      >
+        <Loader className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
+      </div>
     </section>
   );
 }
@@ -258,6 +262,7 @@ function ScenePanel({
   drawing,
   reducedMotion,
   reveal,
+  ready,
   onReady,
 }: {
   scene: HeroSceneConfig;
@@ -268,6 +273,8 @@ function ScenePanel({
   reducedMotion: boolean;
   /** the first-load curtain's iris, 0 closed to 1 open */
   reveal: MotionValue<number>;
+  /** its model has drawn */
+  ready: boolean;
   onReady: () => void;
 }) {
   const step = useTransform(scroll, (v) => stepAt(v * UNITS - starts[index], steps[index] - 1));
@@ -287,14 +294,17 @@ function ScenePanel({
           <HeroScene config={scene} progress={step} active={drawing} reducedMotion={reducedMotion} onReady={onReady} />
         )}
       </div>
-      {/* Shade over the scene, as over a photograph: dark under the copy and round the frame, open where the
-          building stands (the right on desktop, the top on phones). */}
+      {/* A light shade over the scene (since 2026-11-10, at the user's request, half what it was): enough under the
+          copy for the white type to read (the left on desktop, the foot on phones), a touch at the foot for the
+          building tabs, and the rest of the scene left clear. */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-night/20" />
-        <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-night)_20%,rgb(22_23_27/0.6)_48%,transparent_72%)] lg:bg-[linear-gradient(90deg,var(--color-night)_6%,rgb(22_23_27/0.82)_32%,rgb(22_23_27/0.2)_60%,transparent_76%)]" />
-        <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-night to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-night/85 to-transparent" />
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgb(22_23_27/0.82)_10%,rgb(22_23_27/0.4)_36%,transparent_58%)] lg:bg-[linear-gradient(90deg,rgb(22_23_27/0.72)_0%,rgb(22_23_27/0.45)_28%,rgb(22_23_27/0.1)_50%,transparent_62%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-linear-to-t from-night/45 to-transparent" />
       </div>
+      {/* on stage before its model has drawn: the loading sign where the building will stand */}
+      {drawing && !ready && (
+        <Loader className="absolute left-1/2 top-[30%] -translate-x-1/2 -translate-y-1/2 lg:left-[64%] lg:top-1/2" />
+      )}
       {scene.steps.map((s, i) => (
         <StepCopy
           key={s.tag}
@@ -347,17 +357,33 @@ function ContactActions() {
     <>
       <Link
         href="/contact"
-        className="group inline-flex items-center gap-2 rounded-[3px] bg-white px-5 py-3 text-xs font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         Инженертэй холбогдох
         <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
       </Link>
       <a
         href={`tel:${contact.phone}`}
-        className="text-xs font-medium text-white/85 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+        className="text-sm font-medium text-white/85 transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
       >
         {contact.phone}
       </a>
     </>
+  );
+}
+
+/** The 3D's loading sign: a light running along a short line, and the words under it. It fades in after half a
+ *  second, so a model that is already in never flashes it; under reduced motion the light holds still. */
+function Loader({ className }: { className?: string }) {
+  return (
+    <div
+      role="status"
+      className={`pointer-events-none flex flex-col items-center gap-3 animate-[loader-in_0.4s_ease-out_0.5s_both] ${className ?? ""}`}
+    >
+      <span aria-hidden className="relative block h-0.5 w-32 overflow-hidden rounded-full bg-white/15">
+        <span className="absolute inset-y-0 left-0 w-1/3 rounded-full bg-white/80 animate-[loader-sweep_1.2s_ease-in-out_infinite] motion-reduce:animate-none" />
+      </span>
+      <span className="font-mono text-[11px] uppercase tracking-[0.16em] text-white/65">3D загвар ачаалж байна</span>
+    </div>
   );
 }

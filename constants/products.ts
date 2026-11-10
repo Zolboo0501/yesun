@@ -1537,3 +1537,49 @@ export const products: Product[] = [
     "source": "https://aironn.com.tr/en/products/duct-type-fans/round-duct-fan-series"
   }
 ];
+
+// The header's Products panel: the categories that have products, with their counts, and one product shown large.
+// Built on the server (app/layout.tsx hands it to the header), so the product list stays out of every page's script.
+// Set `featured` to another product's slug to show that one instead.
+const featured = "shuft-unimax-p-sw-a";
+
+export const productMenu = (() => {
+  const product = products.find((p) => p.slug === featured) ?? products[0];
+  return {
+    total: products.length,
+    categories: categories
+      .map(({ id, label }) => ({ id, label, count: products.filter((p) => p.category === id).length }))
+      .filter((category) => category.count > 0),
+    featured: {
+      slug: product.slug,
+      brand: product.brand.toUpperCase(),
+      name: product.name,
+      title: product.title,
+      image: product.images[0],
+    },
+  };
+})();
+
+export type ProductMenu = typeof productMenu;
+
+// The home page's products (components/home/ProductShowcase.tsx): one or two from every category and every brand
+// with products, all photographed on white or clear grounds, so they sit well on the cards' white tiles.
+const showcase = [
+  "aux-halo",
+  "aux-cassette-cac",
+  "aux-multi-split",
+  "kanion-split-awhp-6-20kw",
+  "ballu-curtain-bhc-l10-s06",
+  "ballu-convector-bec-eve-1500",
+  "shuft-unimax-p-sw-a",
+  "aironn-axial-smoke-exhaust",
+];
+
+export const homeProducts = showcase.flatMap((slug) => {
+  const product = products.find((p) => p.slug === slug);
+  return product
+    ? [{ slug, brand: product.brand.toUpperCase(), name: product.name, title: product.title, image: product.images[0] }]
+    : [];
+});
+
+export type HomeProduct = (typeof homeProducts)[number];
