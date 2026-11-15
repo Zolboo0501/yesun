@@ -130,7 +130,7 @@ function Browser({ filters }: { filters: Filters }) {
           <SlidersHorizontal aria-hidden className="size-4" />
           Шүүлтүүр
           {active > 0 && (
-            <span className="grid size-5 place-items-center rounded-full bg-ink text-[11px] text-white tabular-nums">
+            <span className="grid size-5 place-items-center rounded-full bg-brand text-[11px] text-white tabular-nums">
               {active}
             </span>
           )}
@@ -272,7 +272,7 @@ function Facet({
           onClick={() => onSelect(on && id ? null : id)}
           className={cn(
             "flex min-h-10 w-full cursor-pointer items-center justify-between gap-3 rounded-full px-4 py-2 text-left text-base transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
-            on ? "bg-ink font-semibold text-white" : "text-ink/75 hover:bg-ink/[0.05] hover:text-ink",
+            on ? "bg-brand font-semibold text-white" : "text-ink/75 hover:bg-brand/[0.06] hover:text-brand",
           )}
         >
           <span>{label}</span>

@@ -184,10 +184,10 @@ export function Hero() {
           ))}
         </nav>
 
-        {/* The foot row: the buildings as a tab bar on the left (a dark glass track, the one on stage a white pill that
-            slides to the picked name; full width on phones, the five names sharing it evenly) and the contact icons on
-            the right. It stands above the contact bar while that lies along the foot of the screen (below wide). */}
-        <div className="pointer-events-none absolute inset-x-4 bottom-[calc(var(--bar-room)+0.75rem)] flex items-center justify-between gap-4 sm:inset-x-6 lg:inset-x-8 wide:bottom-5">
+        {/* The buildings as a tab bar at the top of the stage, centred (since 2026-11-15, at the user's request): a dark
+            glass track, the one on stage a white pill that slides to the picked name; full width on phones, the five
+            names sharing it evenly. */}
+        <div className="pointer-events-none absolute inset-x-4 top-4 flex justify-center sm:inset-x-6 sm:top-5 lg:inset-x-8">
           <nav aria-label="Объектууд" className="pointer-events-auto w-full sm:w-auto">
             <ul className="flex rounded-full bg-night/60 p-1 shadow-[0_10px_30px_-12px_rgb(0_0_0/0.6)] ring-1 ring-white/15 backdrop-blur-md">
               {heroScenes.map((scene, k) => (
@@ -201,8 +201,11 @@ export function Hero() {
               ))}
             </ul>
           </nav>
+        </div>
 
-          {/* from sm up; on a phone the site's contact bar carries the same links and the scene names need the row */}
+        {/* the contact icons at the foot, from sm up (on a phone the site's contact bar carries the same links); above
+            the contact bar while that lies along the foot of the screen (below wide) */}
+        <div className="pointer-events-none absolute bottom-[calc(var(--bar-room)+0.75rem)] right-4 sm:right-6 lg:right-8 wide:bottom-5">
           <div className="pointer-events-auto hidden items-center gap-1 text-white/70 sm:flex">
             <a
               href={contact.facebook}
@@ -331,7 +334,6 @@ function ScenePanel({
           progress={step}
           reveal={reveal}
           heading={index === 0 && i === 0 ? "h1" : "h2"}
-          className="bottom-[calc(var(--bar-room)+5.5rem)]"
         >
           {s.cta && <ContactActions />}
         </StepCopy>
@@ -358,13 +360,13 @@ function SceneLink({
         onClick={onSelect}
         aria-current={current ? "true" : undefined}
         data-cursor-label={current ? "Эхнээс нь үзэх" : `${name} үзэх`}
-        className={`relative flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full px-1 text-[13px] font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:min-h-10 sm:px-4 sm:text-sm ${current ? "text-night" : "text-white/80 hover:bg-white/10 hover:text-white"}`}
+        className={`relative flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full px-1 text-[13px] font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:min-h-10 sm:px-4 sm:text-sm ${current ? "text-white" : "text-white/80 hover:bg-white/10 hover:text-white"}`}
       >
         {current && (
           <motion.span
             layoutId="scene-tab"
             aria-hidden
-            className="absolute inset-0 rounded-full bg-white"
+            className="absolute inset-0 rounded-full bg-brand"
             transition={reducedMotion ? { duration: 0 } : { type: "spring", bounce: 0.15, duration: 0.45 }}
           />
         )}

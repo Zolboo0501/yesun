@@ -13,7 +13,7 @@ const icons = { office: Building2, factory: Factory } satisfies Record<PlaceId, 
 
 // a row of a place's card: an icon in a round well, then a small label over the value
 const row = "flex min-h-16 items-center gap-3 px-4 py-3 sm:gap-4 sm:px-5";
-const well = "grid size-10 shrink-0 place-items-center rounded-full bg-ink/[0.05] text-ink/70";
+const well = "grid size-10 shrink-0 place-items-center rounded-full bg-brand/[0.08] text-brand";
 const rowLink = `group ${row} transition-colors duration-200 hover:bg-ink/[0.03] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-brand`;
 const arrow =
   "size-4 shrink-0 text-ink/40 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px";

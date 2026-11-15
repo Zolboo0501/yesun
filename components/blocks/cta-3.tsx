@@ -105,7 +105,7 @@ export default function CTA3({ title, text, action, points, children, className 
             <motion.li key={label} {...enter(0.6 + i * 0.1, { y: 12 })} className="flex flex-col items-center">
               <span
                 aria-hidden
-                className="grid size-16 place-items-center rounded-full border border-white/10 bg-white/[0.06] p-3 text-white/85 sm:size-20 sm:p-3.5 light:border-ink/10 light:bg-white light:text-ink/80 light:shadow-[0_12px_28px_-16px_rgb(11_16_32/0.35)]"
+                className="grid size-16 place-items-center rounded-full border border-white/10 bg-white/[0.06] p-3 text-white/85 sm:size-20 sm:p-3.5 light:border-ink/10 light:bg-white light:text-brand light:shadow-[0_12px_28px_-16px_rgb(11_16_32/0.35)]"
               >
                 {icon}
               </span>

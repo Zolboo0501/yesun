@@ -63,7 +63,7 @@ function BrandCard({ brand }: { brand: Brand }) {
           className="mt-auto inline-flex min-h-11 items-center gap-1.5 self-start pt-6 text-sm font-semibold text-ink transition-colors hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
         >
           {brand.domain}
-          <ArrowUpRight aria-hidden className="size-4" />
+          <ArrowUpRight aria-hidden className="size-4 text-brand" />
         </a>
       </div>
     </motion.article>
@@ -136,7 +136,7 @@ export function Brands() {
         </motion.div>
 
         {/* the next step: which brand fits the project is an engineer's call */}
-        <div className="mt-16 flex flex-col gap-6 rounded-[24px] bg-ink p-8 text-white sm:p-10 lg:mt-20 lg:flex-row lg:items-center lg:justify-between lg:p-12">
+        <div className="mt-16 flex flex-col gap-6 rounded-[24px] bg-brand p-8 text-white sm:p-10 lg:mt-20 lg:flex-row lg:items-center lg:justify-between lg:p-12">
           <div>
             <h2 className="text-balance text-[clamp(1.5rem,1.1rem+1.2vw,2.25rem)] font-semibold leading-[1.1] tracking-[-0.025em]">
               Аль брэнд таны төсөлд тохирох вэ?
@@ -147,7 +147,7 @@ export function Brands() {
           </div>
           <Link
             href="/contact"
-            className="group inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-brand px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:self-auto"
+            className="group inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-white/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:self-auto"
           >
             Инженертэй холбогдох
             <ArrowUpRight aria-hidden className="size-4 transition-transform group-hover:-translate-y-px group-hover:translate-x-px" />

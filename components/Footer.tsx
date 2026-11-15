@@ -72,7 +72,7 @@ function Partners() {
                 className={`group inline-flex min-h-11 items-center gap-1.5 text-sm font-medium ${underlined}`}
               >
                 Бүх түнш
-                <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
+                <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px light:text-brand" />
               </Link>
             </motion.div>
           </div>
@@ -235,19 +235,19 @@ function FooterView() {
                   {[contact.phone, contact.phone2].map((phone) => (
                     <li key={phone}>
                       <a href={`tel:${phone}`} className={`${chip} tabular-nums`}>
-                        <Phone aria-hidden className="size-4" />
+                        <Phone aria-hidden className="size-4 light:text-brand" />
                         {phone}
                       </a>
                     </li>
                   ))}
                   <li>
                     <a href={`mailto:${contact.email}`} className={chip}>
-                      <Mail aria-hidden className="size-4" />
+                      <Mail aria-hidden className="size-4 light:text-brand" />
                       {contact.email}
                     </a>
                   </li>
                   <li className="inline-flex min-h-11 items-center gap-2 px-4 text-sm font-medium text-white/80 light:text-ink/75">
-                    <Clock aria-hidden className="size-4" />
+                    <Clock aria-hidden className="size-4 light:text-brand" />
                     Даваа – Бямба
                     <span className="tabular-nums text-white/55 light:text-ink/55">9:00 – 19:00</span>
                   </li>
@@ -279,7 +279,7 @@ function FooterView() {
                 <Link
                   href={`/contact?place=${id}#location`}
                   aria-label={`${name}: газрын зураг`}
-                  className={`group mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/25 px-5 text-sm font-semibold text-white transition-[border-color,transform] duration-200 hover:border-white/60 active:scale-[0.98] light:border-ink/25 light:text-ink light:hover:border-ink/60 ${linkFocus}`}
+                  className={`group mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-brand/85 active:scale-[0.98] ${linkFocus}`}
                 >
                   Газрын зураг
                   <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />

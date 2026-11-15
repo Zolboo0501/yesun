@@ -3,10 +3,23 @@ import { Heading } from "@/components/about/Heading";
 import PageFlip, { type PageFlipLeaf } from "@/components/react-bits/page-flip";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, ArrowRight, ArrowUpRight, BookOpen } from "lucide-react";
-import { AnimatePresence, MotionConfig, motion, useInView, useReducedMotion } from "motion/react";
+import {
+  AnimatePresence,
+  MotionConfig,
+  motion,
+  useInView,
+  useReducedMotion,
+} from "motion/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent,
+} from "react";
 
 type Kind = "home" | "public" | "industry";
 
@@ -14,6 +27,8 @@ type Project = {
   title: string;
   /** what the building is, when the title does not say */
   scope?: string;
+  /** what was done there, in the client's words on the old projects page (main) */
+  description?: string;
   /** the work done, as short tags */
   work: string[];
   year: number;
@@ -28,6 +43,7 @@ type Project = {
 const projects: Project[] = [
   {
     title: "Монголбанкны үндэсний цахим гүйлгээний төв",
+    description: "Барилгын агаар сэлгэлтийн систем.",
     work: ["Агаар сэлгэлт"],
     year: 2019,
     engineer: "Ц.Хосбаяр",
@@ -37,6 +53,8 @@ const projects: Project[] = [
   {
     title: "Хүннү 2222, 2-р ээлж",
     scope: "Орон сууцны нэгдсэн гараж",
+    description:
+      "Төслийн 2-р ээлжийн орон сууцны нэгдсэн гаражийн агаар сэлгэлт, хөргөлтийн системийн угсралт.",
     work: ["Агаар сэлгэлт", "Хөргөлт", "Угсралт"],
     year: 2020,
     engineer: "Ц.Хосбаяр",
@@ -46,6 +64,7 @@ const projects: Project[] = [
   {
     title: "Хүннү 2222, 2-р ээлж",
     scope: "Орон сууц",
+    description: "Төслийн 2-р ээлжийн орон сууцны агаар сэлгэлтийн систем.",
     work: ["Агаар сэлгэлт"],
     year: 2020,
     engineer: "Ц.Хосбаяр",
@@ -54,6 +73,8 @@ const projects: Project[] = [
   },
   {
     title: "Чингис хаан музей",
+    description:
+      "Барилгын агаар сэлгэлтийн системийн угсралт, тоног төхөөрөмж нийлүүлэлт, хөргөлтийн системийн угсралт.",
     work: ["Агаар сэлгэлт", "Хөргөлт", "Тоног төхөөрөмж", "Угсралт"],
     year: 2021,
     engineer: "Д.Хангай",
@@ -63,6 +84,7 @@ const projects: Project[] = [
   {
     title: "Нисэх гарден хотхон",
     scope: "Орон сууц",
+    description: "Орон сууцны агаар сэлгэлтийн систем.",
     work: ["Агаар сэлгэлт"],
     year: 2022,
     engineer: "М.Далайсайхан",
@@ -72,6 +94,8 @@ const projects: Project[] = [
   {
     title: "Хүннү 2222, 3-р ээлж",
     scope: "Канад сургууль, спорт цогцолбор",
+    description:
+      "Төслийн 3-р ээлжийн Канад сургууль, спорт комплексийн агаар сэлгэлт, хөргөлтийн системийн тоног төхөөрөмж нийлүүлэлт, угсралт.",
     work: ["Агаар сэлгэлт", "Хөргөлт", "Тоног төхөөрөмж", "Угсралт"],
     year: 2022,
     engineer: "Д.Хангай",
@@ -81,6 +105,8 @@ const projects: Project[] = [
   {
     title: "Одод хотхон",
     scope: "2 блок орон сууц, нэгдсэн гараж",
+    description:
+      "Хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем болон нэгдсэн гаражийн агаар сэлгэлт.",
     work: ["Агаар сэлгэлт", "Хөргөлт"],
     year: 2022,
     engineer: "Д.Хангай",
@@ -90,6 +116,8 @@ const projects: Project[] = [
   {
     title: "Platinum Tower",
     scope: "2 блок орон сууц, нэгдсэн гараж",
+    description:
+      "Хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем болон нэгдсэн гаражийн агаар сэлгэлт.",
     work: ["Агаар сэлгэлт", "Хөргөлт"],
     year: 2023,
     engineer: "Ц.Хосбаяр",
@@ -99,6 +127,7 @@ const projects: Project[] = [
   {
     title: "Эрдэнэс Таван Толгой",
     scope: "Нүүрс баяжуулах үйлдвэр",
+    description: "Төслийн үйлдвэрийн барилгын агаар сэлгэлт.",
     work: ["Агаар сэлгэлт"],
     year: 2024,
     engineer: "Д.Хангай",
@@ -108,6 +137,8 @@ const projects: Project[] = [
   {
     title: "Сансар Гарден",
     scope: "2 блок орон сууц",
+    description:
+      "Орон сууцны хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем.",
     work: ["Агаар сэлгэлт", "Хөргөлт"],
     year: 2024,
     engineer: "Ц.Хосбаяр",
@@ -117,6 +148,7 @@ const projects: Project[] = [
   {
     title: "Нийслэлийн захиргааны төв",
     scope: "Цогцолбор",
+    description: "Барилгын агаар сэлгэлтийн систем.",
     work: ["Агаар сэлгэлт"],
     year: 2024,
     engineer: "Ц.Хосбаяр",
@@ -126,6 +158,8 @@ const projects: Project[] = [
   {
     title: "Эрдэнэс Таван Толгой",
     scope: "Ажилчдын байр, оффис",
+    description:
+      "Төслийн ажилчдын байр, оффис барилгын агаар сэлгэлт, хөргөлтийн систем.",
     work: ["Агаар сэлгэлт", "Хөргөлт"],
     year: 2024,
     engineer: "Д.Хангай",
@@ -134,7 +168,7 @@ const projects: Project[] = [
   },
   {
     title: "Спорт цогцолбор",
-    scope: "Сүхбаатар дүүргийн 13 дугаар хороо",
+    scope: "Сүхбаатар дүүргийн нэгдсэн спорт цогцолбор",
     work: ["Агаар сэлгэлт"],
     year: 2026,
     engineer: "Д.Хангай",
@@ -142,8 +176,9 @@ const projects: Project[] = [
     image: "/images/project14.webp",
   },
   {
-    title: "Чандман хотхон",
-    scope: "Хурд ХХК",
+    title: "Чандмань хотхон",
+    scope:
+      "Хурд ХХК компанийн чандмань хотхоны 4 орон сууц, нэгдсэн граш, цэцэрлэгийн агаар сэлгэлт",
     work: ["Агаар сэлгэлт"],
     year: 2026,
     engineer: "Д.Хангай",
@@ -197,10 +232,16 @@ function Cloth({ spine }: { spine: "left" | "right" }) {
   const left = spine === "left";
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0">
-      <div className="absolute inset-0 opacity-55 mix-blend-overlay" style={{ backgroundImage: LINEN }} />
+      <div
+        className="absolute inset-0 opacity-55 mix-blend-overlay"
+        style={{ backgroundImage: LINEN }}
+      />
       <div className="absolute inset-0 bg-[radial-gradient(130%_90%_at_15%_0%,rgb(255_255_255/0.12),transparent_55%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(120%_120%_at_100%_100%,rgb(0_0_0/0.3),transparent_55%)]" />
-      <div className="absolute inset-0" style={{ backgroundImage: hinge(spine) }} />
+      <div
+        className="absolute inset-0"
+        style={{ backgroundImage: hinge(spine) }}
+      />
       {/* pressed in, so lit from the top left: dark on its near walls, light on its far ones */}
       <div
         className={cn(
@@ -227,7 +268,10 @@ function Cover() {
           <p className="text-balance bg-[linear-gradient(100deg,#f4f6f9_0%,#c5cbd6_32%,#ffffff_50%,#b6bdca_68%,#eef1f5_100%)] bg-clip-text text-[max(1.5rem,7cqw)] font-semibold leading-[1.02] tracking-[-0.03em] text-transparent [filter:drop-shadow(0_-1px_0_rgb(0_0_0/0.55))_drop-shadow(0_1px_0_rgb(255_255_255/0.1))]">
             Хэрэгжүүлсэн төслүүд
           </p>
-          <span aria-hidden className="mt-[3.5cqw] block h-px w-[16cqw] bg-linear-to-r from-[#c5cbd6] to-transparent" />
+          <span
+            aria-hidden
+            className="mt-[3.5cqw] block h-px w-[16cqw] bg-linear-to-r from-[#c5cbd6] to-transparent"
+          />
           <p className="mt-[3cqw] text-[max(0.8125rem,2.8cqw)] text-white/65">
             Онцлох {N} төсөл · {FIRST}–{LAST}
           </p>
@@ -249,7 +293,9 @@ function BackCover() {
         <p className="relative text-balance text-[max(1.25rem,5.4cqw)] font-semibold leading-[1.1] tracking-[-0.025em]">
           Дараагийн төсөл таных байж болно.
         </p>
-        <p className="relative mt-[2.5cqw] text-[max(0.8125rem,2.6cqw)] text-white/65">Инженертэй холбогдож, төслөө ярилцаарай.</p>
+        <p className="relative mt-[2.5cqw] text-[max(0.8125rem,2.6cqw)] text-white/65">
+          Инженертэй холбогдож, төслөө ярилцаарай.
+        </p>
       </div>
     </div>
   );
@@ -307,7 +353,11 @@ function PageBlock({
       >
         <div
           className="absolute inset-y-[3px]"
-          style={{ width: t + under - 2, ...(right ? { left: 0 } : { right: 0 }), backgroundImage: pageEdges(side) }}
+          style={{
+            width: t + under - 2,
+            ...(right ? { left: 0 } : { right: 0 }),
+            backgroundImage: pageEdges(side),
+          }}
         />
       </div>
     </div>
@@ -337,7 +387,16 @@ function TextPage({ project, index }: { project: Project; index: number }) {
         <p className="mt-auto text-balance text-[max(1.125rem,5.4cqw)] font-semibold leading-[1.08] tracking-[-0.025em]">
           {project.title}
         </p>
-        {project.scope && <p className="mt-[1.5cqw] text-[max(0.8125rem,2.8cqw)] text-ink/60">{project.scope}</p>}
+        {project.scope && (
+          <p className="mt-[1.5cqw] text-[max(0.8125rem,2.8cqw)] text-ink/60">
+            {project.scope}
+          </p>
+        )}
+        {project.description && (
+          <p className="mt-[1.5cqw] text-pretty text-[max(0.8125rem,2.6cqw)] leading-snug text-ink/70">
+            {project.description}
+          </p>
+        )}
         <ul className="mt-[4cqw] flex flex-wrap gap-1.5">
           {project.work.map((work) => (
             <li
@@ -351,7 +410,13 @@ function TextPage({ project, index }: { project: Project; index: number }) {
         <div className="mt-[5cqw] flex items-center gap-3 border-t border-ink/10 pt-[4cqw]">
           <span className="relative size-[max(32px,7cqw)] shrink-0 overflow-hidden rounded-full bg-ink/[0.08]">
             {portrait ? (
-              <Image src={portrait} alt="" fill sizes="48px" className="object-cover object-top" />
+              <Image
+                src={portrait}
+                alt=""
+                fill
+                sizes="48px"
+                className="object-cover object-top"
+              />
             ) : (
               <span className="flex size-full items-center justify-center text-[max(11px,2.2cqw)] font-semibold text-ink/50">
                 {initials(project.engineer)}
@@ -363,7 +428,10 @@ function TextPage({ project, index }: { project: Project; index: number }) {
             <span className="block font-semibold">{project.engineer}</span>
           </p>
         </div>
-        <div aria-hidden className="pointer-events-none absolute inset-y-0 right-0 w-[8cqw] bg-linear-to-l from-ink/[0.08] to-transparent" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-y-0 right-0 w-[8cqw] bg-linear-to-l from-ink/[0.08] to-transparent"
+        />
       </div>
     </div>
   );
@@ -389,7 +457,15 @@ const photoSize: Record<string, [number, number]> = {
 };
 
 /** A right-hand page: the project's photograph, with a shade toward the spine. */
-function PhotoPage({ project, width, height }: { project: Project; width: number; height: number }) {
+function PhotoPage({
+  project,
+  width,
+  height,
+}: {
+  project: Project;
+  width: number;
+  height: number;
+}) {
   const [w, h] = photoSize[project.image] ?? [width, height];
   const shown = Math.round(Math.max(width, (height * w) / h));
   return (
@@ -402,7 +478,10 @@ function PhotoPage({ project, width, height }: { project: Project; width: number
         sizes={`${shown}px`}
         className="object-cover"
       />
-      <div aria-hidden className="pointer-events-none absolute inset-y-0 left-0 w-[8%] bg-linear-to-r from-black/25 to-transparent" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 w-[8%] bg-linear-to-r from-black/25 to-transparent"
+      />
     </div>
   );
 }
@@ -442,11 +521,17 @@ function ProjectCard({
           sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
           className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04] motion-reduce:transition-none"
         />
-        <span aria-hidden className="absolute inset-x-0 top-0 h-1/3 bg-linear-to-b from-black/35 to-transparent" />
+        <span
+          aria-hidden
+          className="absolute inset-x-0 top-0 h-1/3 bg-linear-to-b from-black/35 to-transparent"
+        />
         <span className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-xs font-semibold tabular-nums text-ink backdrop-blur-sm">
           {project.year}
         </span>
-        <span aria-hidden className="absolute right-3.5 top-3.5 font-mono text-xs tabular-nums text-white/85">
+        <span
+          aria-hidden
+          className="absolute right-3.5 top-3.5 font-mono text-xs tabular-nums text-white/85"
+        >
           {pad(index + 1)}
         </span>
         {active ? (
@@ -456,7 +541,7 @@ function ProjectCard({
         ) : (
           <span
             aria-hidden
-            className="absolute bottom-3 right-3 flex size-9 translate-y-1 items-center justify-center rounded-full bg-white text-ink opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
+            className="absolute bottom-3 right-3 flex size-9 translate-y-1 items-center justify-center rounded-full bg-white text-brand opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-visible:translate-y-0 group-focus-visible:opacity-100"
           >
             <BookOpen className="size-4" />
           </span>
@@ -465,7 +550,16 @@ function ProjectCard({
       <span className="mt-3 block text-pretty font-semibold leading-snug text-ink transition-colors group-hover:text-brand">
         {project.title}
       </span>
-      {project.scope && <span className="mt-0.5 block text-sm text-ink/55">{project.scope}</span>}
+      {project.scope && (
+        <span className="mt-0.5 block text-sm text-ink/55">
+          {project.scope}
+        </span>
+      )}
+      {project.description && (
+        <span className="mt-2 block text-pretty text-sm leading-snug text-ink/70">
+          {project.description}
+        </span>
+      )}
     </button>
   );
 }
@@ -486,7 +580,11 @@ export function ProjectBook() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]["id"]>("all");
   const reduced = useReducedMotion() ?? false;
   const inView = useInView(stage, { amount: 0.4 });
-  const swipe = useRef<{ x: number; y: number; swiped: boolean }>({ x: 0, y: 0, swiped: false });
+  const swipe = useRef<{ x: number; y: number; swiped: boolean }>({
+    x: 0,
+    y: 0,
+    swiped: false,
+  });
 
   useEffect(() => {
     const room = stage.current;
@@ -494,7 +592,10 @@ export function ProjectBook() {
     if (!room || !whole) return;
     const observer = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        const size = { w: Math.round(entry.contentRect.width), h: Math.round(entry.contentRect.height) };
+        const size = {
+          w: Math.round(entry.contentRect.width),
+          h: Math.round(entry.contentRect.height),
+        };
         if (entry.target === room) setBox(size);
         else setScreen(size);
       }
@@ -512,18 +613,25 @@ export function ProjectBook() {
   const edge = Math.round(Math.min(14, Math.max(6, box.w / 110)));
   const side = edge + 10;
   const room = { w: box.w - 2 * side, h: box.h - 24 };
-  const width = spread ? Math.min(Math.floor(room.w / 2), Math.round(room.h * 1.4)) : room.w;
+  const width = spread
+    ? Math.min(Math.floor(room.w / 2), Math.round(room.h * 1.4))
+    : room.w;
   const height = spread ? Math.min(room.h, Math.round(width * 1.4)) : room.h;
   // A spread can turn past the last photo to the back cover; a single page stops on the last photo.
   const max = spread ? N + 1 : N;
   const shown = Math.min(open, max);
   const current = shown >= 1 && shown <= N ? shown - 1 : -1;
 
-  const turn = useCallback((by: number) => setOpen((o) => Math.max(0, Math.min(Math.min(o, max) + by, max))), [max]);
+  const turn = useCallback(
+    (by: number) =>
+      setOpen((o) => Math.max(0, Math.min(Math.min(o, max) + by, max))),
+    [max],
+  );
   const goTo = (index: number) => {
     setOpen(Math.min(index + 1, max));
     // the book opens the page; bring it back into view
-    if (window.scrollY > 0) window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
+    if (window.scrollY > 0)
+      window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" });
   };
 
   useEffect(() => {
@@ -531,7 +639,12 @@ export function ProjectBook() {
     const onKey = (event: KeyboardEvent) => {
       if (event.altKey || event.ctrlKey || event.metaKey) return;
       const target = event.target as HTMLElement | null;
-      if (target && (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))) return;
+      if (
+        target &&
+        (target.isContentEditable ||
+          /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName))
+      )
+        return;
       if (event.key === "ArrowRight") turn(1);
       else if (event.key === "ArrowLeft") turn(-1);
       else return;
@@ -545,8 +658,18 @@ export function ProjectBook() {
     () =>
       Array.from({ length: N + 1 }, (_, k) => ({
         id: k === 0 ? "cover" : `project-${k}`,
-        front: k === 0 ? <Cover /> : <PhotoPage project={projects[k - 1]} width={width} height={height} />,
-        back: k < N ? <TextPage project={projects[k]} index={k} /> : <BackCover />,
+        front:
+          k === 0 ? (
+            <Cover />
+          ) : (
+            <PhotoPage
+              project={projects[k - 1]}
+              width={width}
+              height={height}
+            />
+          ),
+        back:
+          k < N ? <TextPage project={projects[k]} index={k} /> : <BackCover />,
       })),
     [width, height],
   );
@@ -563,7 +686,8 @@ export function ProjectBook() {
     }
   };
 
-  const counter = shown === 0 ? "Нүүр" : shown > N ? "Төгсгөл" : `${pad(shown)} / ${pad(N)}`;
+  const counter =
+    shown === 0 ? "Нүүр" : shown > N ? "Төгсгөл" : `${pad(shown)} / ${pad(N)}`;
   const project = current >= 0 ? projects[current] : null;
   const roundButton =
     "flex size-12 cursor-pointer items-center justify-center rounded-full border border-ink/20 text-ink transition-colors hover:bg-ink/[0.05] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-default disabled:opacity-30 disabled:hover:bg-transparent";
@@ -613,35 +737,63 @@ export function ProjectBook() {
               // the book stands at the top, its shadow falling into the room under it
               className="items-start"
             >
-              <PageBlock side="left" count={shown} total={N + 1} width={width} height={height} edge={edge} />
-              <PageBlock side="right" count={N + 1 - shown} total={N + 1} width={width} height={height} edge={edge} />
+              <PageBlock
+                side="left"
+                count={shown}
+                total={N + 1}
+                width={width}
+                height={height}
+                edge={edge}
+              />
+              <PageBlock
+                side="right"
+                count={N + 1 - shown}
+                total={N + 1}
+                width={width}
+                height={height}
+                edge={edge}
+              />
             </PageFlip>
           )}
         </div>
 
         <div className="px-4 pb-5 pt-4 sm:px-8 sm:pb-6 lg:px-12">
           {/* what the page shows, when only the photo turns (a portrait screen) and always for assistive tech */}
-          <div aria-live="polite" className={spread ? "sr-only" : "mb-4 min-h-[6.25rem]"}>
+          <div
+            aria-live="polite"
+            className={spread ? "sr-only" : "mb-4 min-h-[6.25rem]"}
+          >
             {project ? (
               <>
                 <p className="font-mono text-xs tabular-nums tracking-[0.14em] text-ink/45">
                   {pad(current + 1)} / {pad(N)} · {project.year}
                 </p>
-                <p className="mt-1.5 text-lg font-semibold leading-tight tracking-[-0.02em]">{project.title}</p>
-                <p className="mt-1 text-sm text-ink/60">
-                  {[project.scope, project.work.join(", ")].filter(Boolean).join(" · ")}
+                <p className="mt-1.5 text-lg font-semibold leading-tight tracking-[-0.02em]">
+                  {project.title}
                 </p>
-                <p className="mt-0.5 text-sm text-ink/60">Гүйцэтгэсэн инженер: {project.engineer}</p>
+                <p className="mt-1 text-sm text-ink/60">
+                  {project.description ??
+                    [project.scope, project.work.join(", ")]
+                      .filter(Boolean)
+                      .join(" · ")}
+                </p>
+                <p className="mt-0.5 text-sm text-ink/60">
+                  Гүйцэтгэсэн инженер: {project.engineer}
+                </p>
               </>
             ) : (
               <p className="text-sm text-ink/60">
-                {shown === 0 ? "Хуудсыг дарж эсвэл шударч нээнэ." : "Дараагийн төсөл таных байж болно."}
+                {shown === 0
+                  ? "Хуудсыг дарж эсвэл шударч нээнэ."
+                  : "Дараагийн төсөл таных байж болно."}
               </p>
             )}
           </div>
 
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-            <p className="hidden text-sm text-ink/55 sm:block">Хуудсан дээр дарж эсвэл ← → товчоор эргүүлнэ.</p>
+            <p className="hidden text-sm text-ink/55 sm:block">
+              Хуудсан дээр дарж эсвэл ← → товчоор эргүүлнэ.
+            </p>
             <div className="col-start-2 flex items-center gap-3">
               <button
                 type="button"
@@ -650,9 +802,11 @@ export function ProjectBook() {
                 aria-label="Өмнөх хуудас"
                 className={roundButton}
               >
-                <ArrowLeft aria-hidden className="size-5" />
+                <ArrowLeft aria-hidden className="size-5 text-brand" />
               </button>
-              <span className="min-w-[5.5rem] text-center font-mono text-sm tabular-nums text-ink/70">{counter}</span>
+              <span className="min-w-[5.5rem] text-center font-mono text-sm tabular-nums text-ink/70">
+                {counter}
+              </span>
               <button
                 type="button"
                 onClick={() => turn(1)}
@@ -660,7 +814,7 @@ export function ProjectBook() {
                 aria-label="Дараагийн хуудас"
                 className={roundButton}
               >
-                <ArrowRight aria-hidden className="size-5" />
+                <ArrowRight aria-hidden className="size-5 text-brand" />
               </button>
             </div>
             <div className="col-span-3 flex justify-center sm:col-span-1 sm:col-start-3 sm:justify-end">
@@ -682,7 +836,10 @@ export function ProjectBook() {
       </section>
 
       {/* every project at a glance, as photo cards a filter narrows; a click opens the book on it */}
-      <section aria-labelledby="all-projects-title" className="bg-white text-ink">
+      <section
+        aria-labelledby="all-projects-title"
+        className="bg-white text-ink"
+      >
         <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8 lg:py-28">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div>
@@ -691,10 +848,17 @@ export function ProjectBook() {
                 Онцлох {N} төсөл, {FIRST}–{LAST} он.
               </p>
             </div>
-            <div role="group" aria-label="Төрлөөр шүүх" className="flex flex-wrap gap-2">
+            <div
+              role="group"
+              aria-label="Төрлөөр шүүх"
+              className="flex flex-wrap gap-2"
+            >
               {FILTERS.map((option) => {
                 const on = filter === option.id;
-                const count = option.id === "all" ? N : projects.filter((p) => p.kind === option.id).length;
+                const count =
+                  option.id === "all"
+                    ? N
+                    : projects.filter((p) => p.kind === option.id).length;
                 return (
                   <button
                     key={option.id}
@@ -703,18 +867,30 @@ export function ProjectBook() {
                     onClick={() => setFilter(option.id)}
                     className={cn(
                       "inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
-                      on ? "bg-brand text-white" : "bg-ink/[0.05] text-ink/75 hover:bg-ink/10 hover:text-ink",
+                      on
+                        ? "bg-brand text-white"
+                        : "bg-ink/[0.05] text-ink/75 hover:bg-ink/10 hover:text-ink",
                     )}
                   >
                     {option.label}
-                    <span className={cn("text-xs tabular-nums", on ? "text-white/55" : "text-ink/40")}>{count}</span>
+                    <span
+                      className={cn(
+                        "text-xs tabular-nums",
+                        on ? "text-white/55" : "text-ink/40",
+                      )}
+                    >
+                      {count}
+                    </span>
                   </button>
                 );
               })}
             </div>
           </div>
 
-          <motion.ul layout className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 lg:mt-14 lg:grid-cols-3 lg:gap-y-10 xl:grid-cols-4">
+          <motion.ul
+            layout
+            className="mt-10 grid grid-cols-2 gap-x-4 gap-y-8 sm:gap-x-5 lg:mt-14 lg:grid-cols-3 lg:gap-y-10 xl:grid-cols-4"
+          >
             <AnimatePresence mode="popLayout" initial={false}>
               {projects.map((item, i) =>
                 filter === "all" || item.kind === filter ? (
@@ -726,7 +902,12 @@ export function ProjectBook() {
                     exit={{ opacity: 0, scale: 0.96 }}
                     transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   >
-                    <ProjectCard project={item} index={i} active={i === current} onOpen={() => goTo(i)} />
+                    <ProjectCard
+                      project={item}
+                      index={i}
+                      active={i === current}
+                      onOpen={() => goTo(i)}
+                    />
                   </motion.li>
                 ) : null,
               )}

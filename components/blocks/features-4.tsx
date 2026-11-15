@@ -102,22 +102,22 @@ export function Features4({ items, label, autoPlay = true, autoPlayDelay = 5000,
                 transition={{ duration: 0.4, delay: index * 0.06 }}
                 className={cn(
                   "relative flex flex-1 cursor-pointer items-start gap-4 overflow-hidden rounded-[20px] p-5 text-left transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand md:p-6",
-                  on ? "bg-ink/[0.06]" : "bg-ink/[0.025] hover:bg-ink/[0.045]",
+                  on ? "bg-brand" : "bg-ink/[0.025] hover:bg-ink/[0.045]",
                 )}
               >
                 <span
                   className={cn(
                     "grid size-10 shrink-0 place-items-center rounded-xl transition-colors duration-200",
-                    on ? "bg-brand text-white" : "bg-ink/[0.06] text-ink",
+                    on ? "bg-white/20 text-white" : "bg-brand/[0.08] text-brand",
                   )}
                 >
                   <TabIcon aria-hidden className="size-5" />
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className={cn("block text-base font-semibold md:text-lg", on ? "text-ink" : "text-ink/75")}>
+                  <span className={cn("block text-base font-semibold md:text-lg", on ? "text-white" : "text-ink/75")}>
                     {item.title}
                   </span>
-                  <span className={cn("mt-1 line-clamp-2 block text-sm", on ? "text-ink/70" : "text-ink/55")}>
+                  <span className={cn("mt-1 line-clamp-2 block text-sm", on ? "text-white/80" : "text-ink/55")}>
                     {item.description}
                   </span>
                 </span>
@@ -129,7 +129,7 @@ export function Features4({ items, label, autoPlay = true, autoPlayDelay = 5000,
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: autoPlayDelay / 1000, ease: "linear" }}
-                    className="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-brand/50"
+                    className="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-white/60"
                   />
                 )}
               </motion.button>
@@ -150,8 +150,8 @@ export function Features4({ items, label, autoPlay = true, autoPlayDelay = 5000,
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               className="flex-1 rounded-[28px] border border-ink/10 bg-white p-6 md:p-8 lg:p-10"
             >
-              <span className="mb-6 grid size-16 place-items-center rounded-2xl bg-ink/[0.05]">
-                <Icon aria-hidden className="size-8 text-ink" />
+              <span className="mb-6 grid size-16 place-items-center rounded-2xl bg-brand/[0.08]">
+                <Icon aria-hidden className="size-8 text-brand" />
               </span>
               <h3 className="text-2xl font-semibold tracking-[-0.02em] text-ink md:text-3xl">{current.title}</h3>
               <p className="mt-3 max-w-[56ch] text-pretty text-step-body leading-relaxed text-ink/70">
@@ -166,8 +166,8 @@ export function Features4({ items, label, autoPlay = true, autoPlayDelay = 5000,
                     transition={{ duration: 0.3, delay: index * 0.08 }}
                     className="flex items-start gap-3 rounded-xl bg-ink/[0.03] p-4"
                   >
-                    <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-ink text-white">
-                      <svg aria-hidden className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <span className="mt-0.5 grid size-6 shrink-0 place-items-center text-brand">
+                      <svg aria-hidden className="size-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                       </svg>
                     </span>

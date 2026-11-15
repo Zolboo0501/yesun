@@ -79,7 +79,7 @@ function Card({ item }: { item: (typeof advantages)[number] }) {
       }}
       className="group flex gap-5 rounded-[20px] bg-ink/[0.035] p-5 ring-1 ring-transparent transition-[background-color,box-shadow] duration-300 hover:bg-white hover:shadow-[0_1px_2px_rgb(11_16_32/0.04),0_16px_36px_-20px_rgb(11_16_32/0.3)] hover:ring-ink/10 sm:flex-col sm:items-center sm:gap-6 sm:px-6 sm:py-10 sm:text-center"
     >
-      <span className="grid size-14 shrink-0 place-items-center rounded-full bg-white text-ink transition-colors duration-300 group-hover:bg-ink/[0.05] sm:size-[4.5rem]">
+      <span className="grid size-14 shrink-0 place-items-center rounded-full bg-white text-brand transition-colors duration-300 group-hover:bg-ink/[0.05] sm:size-[4.5rem]">
         <span className="size-6 sm:size-8">
           <Icon key={`${seen}-${run}`} play={seen && !reduced} />
         </span>

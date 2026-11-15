@@ -52,7 +52,7 @@ function Card({
   return (
     <article className="flex h-full flex-col rounded-[20px] bg-white p-6 text-ink shadow-[0_-6px_20px_-12px_rgb(11_16_32/0.06),0_24px_48px_-28px_rgb(11_16_32/0.14)] sm:p-8 lg:rounded-[28px] lg:p-12">
       <div className="flex min-h-0 flex-1 items-center justify-center pb-6 lg:pb-4">
-        <Glyph seen={seen} active={active} reduced={reduced} className="aspect-square h-full max-h-[22rem] w-auto">
+        <Glyph seen={seen} active={active} reduced={reduced} className="aspect-square h-full max-h-[22rem] w-auto text-brand">
           <Icon seen={seen} reduced={reduced} />
         </Glyph>
       </div>

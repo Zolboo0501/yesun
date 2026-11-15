@@ -251,7 +251,7 @@ export default function Navigation15({ logo, links, cta, dark = false, drawerFoo
               ring,
             )}
           >
-            <Menu aria-hidden className="size-5" />
+            <Menu aria-hidden className="size-5 light:text-brand" />
           </button>
         </div>
       </div>
@@ -293,7 +293,7 @@ export default function Navigation15({ logo, links, cta, dark = false, drawerFoo
                     ring,
                   )}
                 >
-                  <X aria-hidden className="size-5" />
+                  <X aria-hidden className="size-5 light:text-brand" />
                 </button>
               </div>
 

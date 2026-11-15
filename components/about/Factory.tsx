@@ -71,9 +71,6 @@ export function Factory() {
         <div className="lg:col-span-6">
           <Heading id="factory-title" text="Өөрийн үйлдвэртэй" />
         </div>
-        <p className="max-w-[44ch] text-pretty text-step-body leading-[1.65] text-ink/75 lg:col-span-5 lg:col-start-8 lg:self-end">
-          2021 онд ашиглалтад орсон үйлдвэр маань үйлдвэрлэлийн байр, агуулах гэсэн хоёр хэсэгтэй.
-        </p>
       </div>
 
       <motion.ul

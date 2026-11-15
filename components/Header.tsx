@@ -99,7 +99,7 @@ function ProductsPanel({ menu, onPick }: { menu: ProductMenu; onPick: () => void
             className="group mt-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium underline decoration-white/30 decoration-1 underline-offset-[5px] transition-[text-decoration-color] duration-200 hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:decoration-ink/30 light:hover:decoration-ink light:focus-visible:outline-brand"
           >
             Бүх бүтээгдэхүүн ({menu.total})
-            <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
+            <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px light:text-brand" />
           </Link>
         </div>
 
@@ -128,7 +128,7 @@ function ProductsPanel({ menu, onPick }: { menu: ProductMenu; onPick: () => void
             <span className="mt-1 block text-sm text-white/60 light:text-ink/60">{featured.name}</span>
             <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium underline decoration-white/30 decoration-1 underline-offset-[5px] transition-[text-decoration-color] duration-200 group-hover:decoration-white light:decoration-ink/30 light:group-hover:decoration-ink">
               Дэлгэрэнгүй
-              <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
+              <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px light:text-brand" />
             </span>
           </span>
         </Link>

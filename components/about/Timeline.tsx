@@ -1,5 +1,7 @@
 "use client";
-import ElasticSticker, { type ElasticStickerHandle } from "@/components/react-bits/elastic-sticker";
+import ElasticSticker, {
+  type ElasticStickerHandle,
+} from "@/components/react-bits/elastic-sticker";
 import {
   motion,
   useInView,
@@ -13,7 +15,14 @@ import {
   type Variants,
 } from "motion/react";
 import { getImageProps } from "next/image";
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { Heading } from "./Heading";
 import { Part } from "./Part";
 
@@ -64,7 +73,7 @@ const years = [
   },
   {
     year: "2024",
-    title: "Орон сууц, төр, уул уурхай",
+    title: "Орон сууц",
     text: "Сансар Гарден, Нийслэлийн захиргааны төв, Эрдэнэс Таван Толгой.",
     src: "/images/project11.webp",
     alt: "Нийслэлийн нутгийн захиргааны төв цогцолбор",
@@ -80,7 +89,7 @@ const years = [
 
 // The ribbon's top runs from the brand blue at 2011 to an azure today, and each year takes the colour of the ribbon
 // where it stands; both ends keep 3:1 on white at the years' size.
-const FROM = "#2639b0";
+const FROM = "#0a8cf0";
 const TO = "#0a8cf0";
 
 function mix(from: string, to: string, t: number) {
@@ -103,7 +112,12 @@ const SWING = 20; // under lg: how far the ribbon swings out between two years, 
 const STEPS = 48; // samples a segment, to measure its length
 
 type Point = { x: number; y: number };
-type Segment = { d: string; start: number; length: number; fade?: { from: number; to: number; out: boolean } };
+type Segment = {
+  d: string;
+  start: number;
+  length: number;
+  fade?: { from: number; to: number; out: boolean };
+};
 type Road = {
   segments: Segment[];
   ys: number[];
@@ -127,12 +141,20 @@ const bez = (a: number, b: number, c: number, d: number, t: number) => {
  *  ribbon sweeps across the page between them. Below lg the nodes share a lane at the left and the ribbon swings out
  *  between them, one side then the other. */
 function road(nodes: Point[], trackWidth: number): Road {
-  const wide = nodes.some((p, i) => i > 0 && Math.abs(p.x - nodes[i - 1].x) > 4);
-  const width = wide ? Math.round(Math.min(40, Math.max(26, trackWidth * 0.03))) : 18;
+  const wide = nodes.some(
+    (p, i) => i > 0 && Math.abs(p.x - nodes[i - 1].x) > 4,
+  );
+  const width = wide
+    ? Math.round(Math.min(40, Math.max(26, trackWidth * 0.03)))
+    : 18;
   const lead = wide ? 110 : 44;
   const first = nodes[0];
   const last = nodes[nodes.length - 1];
-  const points = [{ x: first.x, y: first.y - lead }, ...nodes, { x: last.x, y: last.y + lead }];
+  const points = [
+    { x: first.x, y: first.y - lead },
+    ...nodes,
+    { x: last.x, y: last.y + lead },
+  ];
   const r: Road = {
     segments: [],
     ys: points.map((p) => p.y),
@@ -155,13 +177,20 @@ function road(nodes: Point[], trackWidth: number): Road {
     const swing = edge ? 0 : (i % 2 ? 1 : -1) * SWING;
     // Across, the handles reach past the middle, so the ribbon stays upright through each bend and keeps clear of the
     // year it arrives above before it sweeps over.
-    const c1 = across ? { x: a.x, y: a.y + dy * 0.6 } : { x: a.x + swing, y: a.y + dy / 3 };
-    const c2 = across ? { x: b.x, y: b.y - dy * 0.6 } : { x: b.x + swing, y: b.y - dy / 3 };
+    const c1 = across
+      ? { x: a.x, y: a.y + dy * 0.6 }
+      : { x: a.x + swing, y: a.y + dy / 3 };
+    const c2 = across
+      ? { x: b.x, y: b.y - dy * 0.6 }
+      : { x: b.x + swing, y: b.y - dy / 3 };
     let length = 0;
     let prev = a;
     for (let s = 1; s <= STEPS; s++) {
       const t = s / STEPS;
-      const p = { x: bez(a.x, c1.x, c2.x, b.x, t), y: bez(a.y, c1.y, c2.y, b.y, t) };
+      const p = {
+        x: bez(a.x, c1.x, c2.x, b.x, t),
+        y: bez(a.y, c1.y, c2.y, b.y, t),
+      };
       length += Math.hypot(p.x - prev.x, p.y - prev.y);
       prev = p;
     }
@@ -183,7 +212,8 @@ function lengthAt(r: Road, y: number) {
   if (y <= r.ys[0]) return 0;
   for (let i = 0; i < r.segments.length; i++) {
     const s = r.segments[i];
-    if (y < r.ys[i + 1]) return s.start + (s.length * (y - r.ys[i])) / (r.ys[i + 1] - r.ys[i]);
+    if (y < r.ys[i + 1])
+      return s.start + (s.length * (y - r.ys[i])) / (r.ys[i + 1] - r.ys[i]);
   }
   return r.total;
 }
@@ -195,61 +225,152 @@ const instant = { duration: 0 };
 // A year's title, line and photo come in when the ribbon reaches its node and go again, quicker, when it draws back.
 const stop: Variants = {
   hidden: { transition: { staggerChildren: 0.03, staggerDirection: -1 } },
-  show: (reduced: boolean) => ({ transition: reduced ? instant : { staggerChildren: 0.08, delayChildren: 0.05 } }),
+  show: (reduced: boolean) => ({
+    transition: reduced
+      ? instant
+      : { staggerChildren: 0.08, delayChildren: 0.05 },
+  }),
 };
 const rise: Variants = {
   hidden: { opacity: 0, y: 14, transition: { duration: 0.3, ease: EASE_IN } },
-  show: (reduced: boolean) => ({ opacity: 1, y: 0, transition: reduced ? instant : { duration: 0.8, ease: EASE_OUT } }),
+  show: (reduced: boolean) => ({
+    opacity: 1,
+    y: 0,
+    transition: reduced ? instant : { duration: 0.8, ease: EASE_OUT },
+  }),
 };
 // The sticker is put down on the page: it comes in a little large and above its place and settles onto it on a spring.
 const drop: Variants = {
-  hidden: { opacity: 0, scale: 1.1, y: -24, transition: { duration: 0.3, ease: EASE_IN } },
+  hidden: {
+    opacity: 0,
+    scale: 1.1,
+    y: -24,
+    transition: { duration: 0.3, ease: EASE_IN },
+  },
   show: (reduced: boolean) => ({
     opacity: 1,
     scale: 1,
     y: 0,
-    transition: reduced ? instant : { type: "spring", stiffness: 260, damping: 22, mass: 0.9 },
+    transition: reduced
+      ? instant
+      : { type: "spring", stiffness: 260, damping: 22, mass: 0.9 },
   }),
 };
 
 /** One segment of the ribbon, after the client's reference: a coloured top with a white rim and pale stripes across it,
  *  standing on a side that the copies below draw, each a little darker and showing only under the one above it, with a
  *  soft shadow at its foot. A mask lays it down along its length; only the segment being laid repaints. */
-function Piece({ seg, road: r, drawn, id, top }: { seg: Segment; road: Road; drawn: MotionValue<number>; id: string; top: string }) {
-  const progress = useTransform(drawn, (l) => Math.min(1, Math.max(0, (l - seg.start) / seg.length)));
-  const visibility = useTransform(progress, (p) => (p > 0 ? "visible" : "hidden"));
+function Piece({
+  seg,
+  road: r,
+  drawn,
+  id,
+  top,
+}: {
+  seg: Segment;
+  road: Road;
+  drawn: MotionValue<number>;
+  id: string;
+  top: string;
+}) {
+  const progress = useTransform(drawn, (l) =>
+    Math.min(1, Math.max(0, (l - seg.start) / seg.length)),
+  );
+  const visibility = useTransform(progress, (p) =>
+    p > 0 ? "visible" : "hidden",
+  );
   const { width: w, depth: h, slant } = r;
   const step = w > 20 ? 3 : 4;
   const walls: { dy: number; color: string }[] = [{ dy: h, color: WALL_FOOT }];
-  for (let dy = h - 2; dy > 0; dy -= step) walls.push({ dy, color: mix(WALL_TOP, WALL_LOW, dy / h) });
+  for (let dy = h - 2; dy > 0; dy -= step)
+    walls.push({ dy, color: mix(WALL_TOP, WALL_LOW, dy / h) });
   const down = (dy: number) => `translate(${dy * slant} ${dy})`;
 
   const body = (
     <g mask={`url(#${id}-lay)`}>
-      <path d={seg.d} transform={down(h + 7)} strokeWidth={w + 12} className="stroke-ink/[0.03]" />
-      <path d={seg.d} transform={down(h + 2)} strokeWidth={w + 3} className="stroke-ink/[0.06]" />
+      <path
+        d={seg.d}
+        transform={down(h + 7)}
+        strokeWidth={w + 12}
+        className="stroke-ink/[0.03]"
+      />
+      <path
+        d={seg.d}
+        transform={down(h + 2)}
+        strokeWidth={w + 3}
+        className="stroke-ink/[0.06]"
+      />
       {walls.map(({ dy, color }) => (
-        <path key={dy} d={seg.d} transform={down(dy)} strokeWidth={w} stroke={color} />
+        <path
+          key={dy}
+          d={seg.d}
+          transform={down(dy)}
+          strokeWidth={w}
+          stroke={color}
+        />
       ))}
       <path d={seg.d} strokeWidth={w} stroke="white" />
       <path d={seg.d} strokeWidth={w - 4} stroke={top} />
-      <path d={seg.d} strokeWidth={w - 4} strokeDasharray="4 6 4 6 4 34" className="stroke-white/[0.14]" />
+      <path
+        d={seg.d}
+        strokeWidth={w - 4}
+        strokeDasharray="4 6 4 6 4 34"
+        className="stroke-white/[0.14]"
+      />
     </g>
   );
 
   return (
     <motion.g style={{ visibility }}>
-      <mask id={`${id}-lay`} maskUnits="userSpaceOnUse" x="-10%" y="-10%" width="120%" height="120%">
-        <motion.path d={seg.d} stroke="white" strokeWidth={w + 2 * h + 30} style={{ pathLength: progress }} />
+      <mask
+        id={`${id}-lay`}
+        maskUnits="userSpaceOnUse"
+        x="-10%"
+        y="-10%"
+        width="120%"
+        height="120%"
+      >
+        <motion.path
+          d={seg.d}
+          stroke="white"
+          strokeWidth={w + 2 * h + 30}
+          style={{ pathLength: progress }}
+        />
       </mask>
       {seg.fade ? (
         <>
-          <linearGradient id={`${id}-fade`} gradientUnits="userSpaceOnUse" x1="0" y1={seg.fade.from} x2="0" y2={seg.fade.to}>
-            <stop offset={seg.fade.out ? 0.2 : 0} stopColor={seg.fade.out ? "white" : "black"} />
-            <stop offset={seg.fade.out ? 1 : 0.8} stopColor={seg.fade.out ? "black" : "white"} />
+          <linearGradient
+            id={`${id}-fade`}
+            gradientUnits="userSpaceOnUse"
+            x1="0"
+            y1={seg.fade.from}
+            x2="0"
+            y2={seg.fade.to}
+          >
+            <stop
+              offset={seg.fade.out ? 0.2 : 0}
+              stopColor={seg.fade.out ? "white" : "black"}
+            />
+            <stop
+              offset={seg.fade.out ? 1 : 0.8}
+              stopColor={seg.fade.out ? "black" : "white"}
+            />
           </linearGradient>
-          <mask id={`${id}-edge`} maskUnits="userSpaceOnUse" x="-10%" y="-10%" width="120%" height="120%">
-            <rect x="-10%" y="-10%" width="120%" height="120%" fill={`url(#${id}-fade)`} />
+          <mask
+            id={`${id}-edge`}
+            maskUnits="userSpaceOnUse"
+            x="-10%"
+            y="-10%"
+            width="120%"
+            height="120%"
+          >
+            <rect
+              x="-10%"
+              y="-10%"
+              width="120%"
+              height="120%"
+              fill={`url(#${id}-fade)`}
+            />
           </mask>
           <g mask={`url(#${id}-edge)`}>{body}</g>
         </>
@@ -263,14 +384,25 @@ function Piece({ seg, road: r, drawn, id, top }: { seg: Segment; road: Road; dra
 type Year = (typeof years)[number];
 
 /** Each year's photo through Next's optimizer, 1200 wide: the sticker draws it at up to two and a half times its size. */
-const stickerSrc = (src: string) => getImageProps({ src, alt: "", width: 600, height: 450 }).props.src;
+const stickerSrc = (src: string) =>
+  getImageProps({ src, alt: "", width: 600, height: 450 }).props.src;
 
 /** A year's photo as a react-bits ElasticSticker: a glossy photo sticker with a white edge, turned a little toward the
  *  ribbon's side, put down on the page when the ribbon arrives and pressed on with a short peel. Under a mouse its
  *  corner lifts after the pointer; when left alone a corner lifts now and then. Each sticker is a WebGL canvas, so it
  *  is mounted only within a screen of view (two or three at a time) and unmounted beyond. It does not drag here: a
  *  sticker that moved would leave its year, and on phones it would hold the page's scroll. */
-function Photo({ item, left, reached, reduced }: { item: Year; left: boolean; reached: boolean; reduced: boolean }) {
+function Photo({
+  item,
+  left,
+  reached,
+  reduced,
+}: {
+  item: Year;
+  left: boolean;
+  reached: boolean;
+  reduced: boolean;
+}) {
   const box = useRef<HTMLDivElement>(null);
   const near = useInView(box, { margin: "60% 0px 60% 0px" });
   const sticker = useRef<ElasticStickerHandle>(null);
@@ -290,7 +422,12 @@ function Photo({ item, left, reached, reduced }: { item: Year; left: boolean; re
         left ? "lg:col-start-8" : "lg:col-start-1"
       }`}
     >
-      <motion.div variants={drop} custom={reduced} aria-hidden className="aspect-[4/3]">
+      <motion.div
+        variants={drop}
+        custom={reduced}
+        aria-hidden
+        className="aspect-[4/3]"
+      >
         {near && (
           <ElasticSticker
             ref={sticker}
@@ -313,7 +450,13 @@ function Photo({ item, left, reached, reduced }: { item: Year; left: boolean; re
   );
 }
 
-function Stop({ item, index, reached, reduced, nodeRef }: {
+function Stop({
+  item,
+  index,
+  reached,
+  reduced,
+  nodeRef,
+}: {
   item: Year;
   index: number;
   reached: boolean;
@@ -323,7 +466,9 @@ function Stop({ item, index, reached, reduced, nodeRef }: {
   // At lg the ribbon turns at the left edge for 2011, 2020, 2022 and 2024, and at the right edge for the others; the
   // year sits on the bend, the title and line in the middle third, the photo in the far third.
   const left = index % 2 === 0;
-  const tone = { "--node": mix(FROM, TO, index / (years.length - 1)) } as CSSProperties;
+  const tone = {
+    "--node": mix(FROM, TO, index / (years.length - 1)),
+  } as CSSProperties;
   return (
     <motion.li
       initial="hidden"
@@ -344,12 +489,16 @@ function Stop({ item, index, reached, reduced, nodeRef }: {
       />
       <p
         className={`text-(length:--year) font-semibold leading-none tracking-[-0.04em] tabular-nums text-ink/20 transition-colors duration-700 group-data-[reached=true]:text-(--node) lg:col-span-4 lg:row-start-1 ${
-          left ? "lg:col-start-1 lg:pl-20" : "lg:col-start-9 lg:pr-20 lg:text-right"
+          left
+            ? "lg:col-start-1 lg:pl-20"
+            : "lg:col-start-9 lg:pr-20 lg:text-right"
         }`}
       >
         {item.year}
       </p>
-      <div className={`lg:col-span-3 lg:row-start-1 ${left ? "lg:col-start-5" : "lg:col-start-6"}`}>
+      <div
+        className={`lg:col-span-3 lg:row-start-1 ${left ? "lg:col-start-5" : "lg:col-start-6"}`}
+      >
         <motion.h3
           variants={rise}
           custom={reduced}
@@ -357,7 +506,11 @@ function Stop({ item, index, reached, reduced, nodeRef }: {
         >
           {item.title}
         </motion.h3>
-        <motion.p variants={rise} custom={reduced} className="mt-3 max-w-[36ch] text-pretty text-step-body leading-[1.6] text-ink/70">
+        <motion.p
+          variants={rise}
+          custom={reduced}
+          className="mt-3 max-w-[36ch] text-pretty text-step-body leading-[1.6] text-ink/70"
+        >
           {item.text}
         </motion.p>
       </div>
@@ -379,7 +532,12 @@ export function Timeline() {
   const [reached, setReached] = useState(0);
 
   const target = useMotionValue(0);
-  const drawn = useSpring(target, { stiffness: 120, damping: 22, mass: 0.6, restDelta: 0.5 });
+  const drawn = useSpring(target, {
+    stiffness: 120,
+    damping: 22,
+    mass: 0.6,
+    restDelta: 0.5,
+  });
   const { scrollY } = useScroll();
 
   const place = useCallback((l: number) => {
@@ -405,7 +563,9 @@ export function Timeline() {
       drawn.jump(r.total);
       return;
     }
-    target.set(lengthAt(r, window.innerHeight * READ - box.getBoundingClientRect().top));
+    target.set(
+      lengthAt(r, window.innerHeight * READ - box.getBoundingClientRect().top),
+    );
   }, [reduced, target, drawn]);
 
   const measure = useCallback(() => {
@@ -414,7 +574,10 @@ export function Timeline() {
     const at = box.getBoundingClientRect();
     const points = nodes.current.map((node) => {
       const n = node!.getBoundingClientRect();
-      return { x: n.left + n.width / 2 - at.left, y: n.top + n.height / 2 - at.top };
+      return {
+        x: n.left + n.width / 2 - at.left,
+        y: n.top + n.height / 2 - at.top,
+      };
     });
     geometry.current = road(points, at.width);
     setLine(geometry.current);
@@ -440,24 +603,45 @@ export function Timeline() {
     <Part labelledBy="timeline-title" className="overflow-x-clip">
       <Heading id="timeline-title" text="Бидний түүх" />
       <div ref={track} className="relative mt-20 lg:mt-28">
-        <svg aria-hidden fill="none" className="pointer-events-none absolute inset-0 size-full overflow-visible">
+        <svg
+          aria-hidden
+          fill="none"
+          className="pointer-events-none absolute inset-0 size-full overflow-visible"
+        >
           {line && (
             <>
               <defs>
-                <linearGradient id={`${uid}-top`} gradientUnits="userSpaceOnUse" x1="0" y1={line.first} x2="0" y2={line.last}>
+                <linearGradient
+                  id={`${uid}-top`}
+                  gradientUnits="userSpaceOnUse"
+                  x1="0"
+                  y1={line.first}
+                  x2="0"
+                  y2={line.last}
+                >
                   <stop offset="0" stopColor={FROM} />
                   <stop offset="1" stopColor={TO} />
                 </linearGradient>
               </defs>
               {/* The route ahead, which the ribbon covers as it is laid. */}
               <path
-                d={line.segments.filter((s) => !s.fade).map((s) => s.d).join("")}
+                d={line.segments
+                  .filter((s) => !s.fade)
+                  .map((s) => s.d)
+                  .join("")}
                 strokeWidth={1.5}
                 strokeDasharray="6 8"
                 className="stroke-ink/20"
               />
               {line.segments.map((seg, i) => (
-                <Piece key={i} seg={seg} road={line} drawn={drawn} id={`${uid}-${i}`} top={`url(#${uid}-top)`} />
+                <Piece
+                  key={i}
+                  seg={seg}
+                  road={line}
+                  drawn={drawn}
+                  id={`${uid}-${i}`}
+                  top={`url(#${uid}-top)`}
+                />
               ))}
             </>
           )}

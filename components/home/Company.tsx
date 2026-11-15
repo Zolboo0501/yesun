@@ -119,7 +119,7 @@ export function Company() {
             far side a little lighter for depth, and the brand blue where the pointer is and where a click's pulse runs. */}
         <AstralShell
           className="size-full"
-          colors={["#05070f", "#2639b0"]}
+          colors={["#05070f", "#0a8cf0"]}
           backgroundColor="#ffffff"
           nodes={wide ? 2000 : 1100}
           connections={4}

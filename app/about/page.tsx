@@ -3,7 +3,8 @@ import { Intro } from "@/components/about/Intro";
 import { Statements } from "@/components/about/Statements";
 import { Strengths } from "@/components/about/Strengths";
 import { Team } from "@/components/about/Team";
-import { Timeline } from "@/components/about/Timeline";
+// The timeline ("Бидний түүх") is set aside for now (the user's call, 2026-11-15); uncomment it and its tag below to bring it back.
+// import { Timeline } from "@/components/about/Timeline";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
@@ -18,7 +19,7 @@ const AboutPage = () => (
   <>
     <Intro />
     <Team />
-    <Timeline />
+    {/* <Timeline /> */}
     <Factory />
     <Strengths />
     <Statements />

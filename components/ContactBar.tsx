@@ -6,6 +6,7 @@ const channels = [
   { name: "Facebook", tip: "Facebook", href: contact.facebook, Icon: FacebookIcon, away: true },
   { name: "Messenger", tip: "Messenger", href: contact.messenger, Icon: MessengerIcon, away: true },
   { name: `Залгах: ${contact.phone}`, tip: contact.phone, href: `tel:${contact.phone}`, Icon: PhoneIcon },
+  { name: `Залгах: ${contact.phone2}`, tip: contact.phone2, href: `tel:${contact.phone2}`, Icon: PhoneIcon },
   { name: `Имэйл бичих: ${contact.email}`, tip: contact.email, href: `mailto:${contact.email}`, Icon: MailIcon },
 ].filter((channel) => channel.href);
 
@@ -27,7 +28,7 @@ export function ContactBar() {
               aria-label={away ? `${name} (шинэ цонхонд нээгдэнэ)` : name}
               className="grid size-11 place-items-center rounded-full transition-colors duration-200 hover:bg-ink/[0.06] hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand wide:size-10"
             >
-              <Icon className="size-5 wide:size-[18px]" />
+              <Icon className="size-5 text-brand wide:size-[18px]" />
             </a>
             <span
               aria-hidden
