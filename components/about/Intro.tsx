@@ -111,7 +111,7 @@ export function Intro() {
             variants={rise}
             className="mt-6 max-w-[36ch] text-pretty text-step-body leading-[1.6] text-white/80 lg:mt-8"
           >
-            Агаар сэлгэлт, хөргөлтийн системийн зураг төсөл, угсралт, засвар үйлчилгээ.
+            Агаар сэлгэлт, хөргөлтийн системийг зураг төслийн дагуу угсарч, засвар үйлчилгээ үзүүлнэ.
           </motion.p>
         </div>
         <dl className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4 lg:col-span-4 lg:col-start-9 lg:grid-cols-2">

@@ -40,7 +40,7 @@ export function EngineerTeam() {
               <div className="mt-[0.45em] flex items-start gap-5 pl-[0.9em]">
                 <span aria-hidden className="mt-[0.8rem] h-px w-12 shrink-0 bg-ink/60 sm:w-16" />
                 <p className="max-w-[38ch] text-pretty text-step-body leading-[1.55] text-ink/80">
-                  Зураг төсөл, тооцоо, угсралт, ашиглалтыг нэг дор хариуцдаг мэргэшсэн баг.
+                  Угсралт, тохируулга, ашиглалтыг нэг дор хариуцдаг мэргэшсэн баг.
                 </p>
               </div>
             </div>

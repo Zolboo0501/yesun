@@ -24,20 +24,21 @@ type Step = {
   cta?: boolean;
 };
 
-// The company in four parts: who we are, design and our own factory, supply and installation, service.
+// The company in four parts: who we are, our own factory, supply and installation, service. It installs to the
+// project's design and does not design (CLAUDE.md).
 // Every figure is confirmed by the client (PRODUCT.md).
 const steps: Step[] = [
   {
     title: "2011 оноос хойш агаарын системийг нэвтрүүлж байна",
-    text: "Барилга, хот байгуулалтын яамны тусгай зөвшөөрөлтэй. Агаар сэлгэлт, хөргөлтийн системийг зураг төслөөс эхлээд угсралт, засвар үйлчилгээ хүртэл нэг дор хийдэг.",
+    text: "Барилга, хот байгуулалтын яамны тусгай зөвшөөрөлтэй. Агаар сэлгэлт, хөргөлтийн системийг зураг төслийн дагуу угсарч, засвар үйлчилгээг нь нэг дор хариуцдаг.",
     facts: [
       { value: "2011", label: "Байгуулагдсан" },
       { value: "150+", label: "Угсралт хийсэн объект" },
     ],
   },
   {
-    title: "Зураг төслөөс систем хүртэл өөрсдөө хийнэ.",
-    text: "Агаарын тооцоолол, зураг төслийг инженерүүд маань гаргаж, суваг, фасон эдлэлийг өөрийн үйлдвэрт төслийн хэмжээгээр хийнэ.",
+    title: "Суваг, фасон эдлэлээ өөрсдөө үйлдвэрлэнэ.",
+    text: "Суваг, фасон эдлэлийг өөрийн үйлдвэрт зураг төслийн хэмжээгээр хийнэ.",
     facts: [
       { value: "1 800 м²", label: "Үйлдвэрийн талбай" },
       { value: "12", label: "Үйлдвэрийн тоног төхөөрөмж" },

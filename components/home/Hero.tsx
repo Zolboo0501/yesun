@@ -26,36 +26,18 @@ const HeroScene = dynamic(() => import("./HeroScene"), {
   loading: () => null,
 });
 
-// Scenes may have different numbers of steps (the building walks down its floors). Each scene takes one scroll
-// screen per step: one between each pair of its steps and one to slide to the next scene.
-const count = heroScenes.length;
+// The visitor picks a scene from the names at the bottom left. The section is as tall as that scene's steps, one
+// scroll screen each (the building walks down its floors, so it is taller), so scrolling walks only the scene on
+// stage and then the page moves on; another scene slides in only when its name is picked.
 const steps = heroScenes.map((s) => s.steps.length);
-const starts = steps.map((_, k) => steps.slice(0, k).reduce((a, n) => a + n, 0)); // where each scene begins
-const UNITS = starts[count - 1] + steps[count - 1] - 1; // the last scene does not slide on
-const smooth = (t: number) => t * t * (3 - 2 * t);
 const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
+const SLIDE = { duration: 0.8, ease: [0.65, 0, 0.35, 1] } as const;
 
 /** A scene's own progress, 0..last: each step holds still for the first and last fifth of its scroll, then travels. */
 const stepAt = (local: number, last: number) => {
   const x = Math.min(Math.max(local, 0), last);
   const i = Math.min(Math.floor(x), last - 1);
   return i + clamp01((x - i - 0.2) / 0.6);
-};
-/** The scene whose scroll (its steps and its slide out) holds x. */
-const sceneAt = (x: number) => {
-  let k = 0;
-  while (k < count - 1 && x >= starts[k + 1]) k++;
-  return k;
-};
-/** 0..count-1: which scene fills the stage; fractions are the slide from one scene to the next. */
-const trackAt = (x: number) => {
-  const k = sceneAt(x);
-  return k + (k < count - 1 ? smooth(clamp01(x - starts[k] - (steps[k] - 1))) : 0);
-};
-/** The step of the scene on stage at scroll progress v, travelling between steps. */
-const stepNow = (v: number) => {
-  const k = sceneAt(v * UNITS);
-  return stepAt(v * UNITS - starts[k], steps[k] - 1);
 };
 // On first load the whole first screen, header included, opens through scroll-mask's iris: a night curtain lies over
 // everything and the iris is cut out of it (the full layer XOR the iris), centred on the subject. The 3D settles from
@@ -122,29 +104,31 @@ export function Hero() {
     target: section,
     offset: ["start start", "end end"],
   });
-  const track = useTransform(scrollYProgress, (v) => trackAt(v * UNITS));
-  const x = useTransform(track, (t) => `${(-t * 100) / count}%`);
-
-  // Mount the scene on stage and its neighbours (so the next model loads while this one plays); draw only what shows.
+  // The scene on stage, and the one sliding out after a new name was picked (drawn until the new one is in). The
+  // neighbours of the one on stage stay mounted too, so their models are in before they are picked.
   const [base, setBase] = useState(0);
-  const [sliding, setSliding] = useState(false);
-  useMotionValueEvent(track, "change", (t) => {
-    setBase(Math.floor(t + 1e-4));
-    setSliding(t - Math.floor(t + 1e-4) > 1e-3);
-  });
+  const [leaving, setLeaving] = useState<number | null>(null);
+  const last = steps[base] - 1;
 
   // the step of the scene on stage, for the step lines
-  const onStage = useTransform(scrollYProgress, stepNow);
+  const onStage = useTransform(scrollYProgress, (v) => stepAt(v * last, last));
 
-  /** Scroll to scene k's step. */
-  const go = (k: number, step = 0) => {
+  const sectionTop = () => (section.current?.getBoundingClientRect().top ?? 0) + window.scrollY;
+  /** Scroll to a step of the scene on stage. */
+  const go = (step: number) => {
     const el = section.current;
     if (!el) return;
-    const top = el.getBoundingClientRect().top + window.scrollY;
     window.scrollTo({
-      top: top + ((el.offsetHeight - window.innerHeight) * (starts[k] + step)) / UNITS,
+      top: sectionTop() + ((el.offsetHeight - window.innerHeight) * step) / last,
       behavior: reducedMotion ? "auto" : "smooth",
     });
+  };
+  /** Put scene k on stage at its first step; picking the one already on stage goes back to its start. */
+  const pick = (k: number) => {
+    if (k === base) return go(0);
+    setLeaving(base);
+    setBase(k);
+    window.scrollTo({ top: sectionTop(), behavior: "auto" });
   };
 
   return (
@@ -153,7 +137,7 @@ export function Hero() {
       ref={section}
       aria-label="Есөн Бэлчир: оффис, цэцэрлэг, сургууль, барилгын агаар сэлгэлт, хөргөлтийн систем"
       className="relative bg-night text-white"
-      style={{ height: `${(UNITS + 1) * 100}svh` }}
+      style={{ height: `${steps[base] * 100}svh` }}
     >
       {/* The stage. A drafting crosshair follows the mouse over it, with the point's coordinates beside it; a drag
           measures, a click pins a point. Phones and touch keep their own behaviour. overflow-clip, not hidden, so
@@ -163,23 +147,28 @@ export function Hero() {
         fontFamily={mono.style.fontFamily}
         className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-clip"
       >
-        {/* The scenes stand side by side; scrolling past one scene's last step slides the next one in. */}
-        <motion.div style={{ x, width: `${count * 100}%` }} className="flex h-full">
+        {/* The scenes lie in the order of their names, the one on stage in view and the others beside it; a picked
+            one slides in from its side while the one on stage slides out the other way. */}
+        <div className="relative h-full">
           {heroScenes.map((scene, k) => (
             <ScenePanel
               key={scene.id}
               scene={scene}
               index={k}
               scroll={scrollYProgress}
-              mounted={Math.abs(k - base) <= 1}
-              drawing={active && (k === base || (sliding && k === base + 1))}
+              current={k === base}
+              place={Math.sign(k - base)}
+              moving={k === base || k === leaving}
+              mounted={Math.abs(k - base) <= 1 || k === leaving}
+              drawing={active && (k === base || k === leaving)}
               reducedMotion={reducedMotion}
               reveal={reveal}
               ready={ready.includes(k)}
               onReady={() => markReady(k)}
+              onArrive={() => setLeaving(null)}
             />
           ))}
-        </motion.div>
+        </div>
 
         {/* The scene's steps, as short lines down the right edge (the current one long and bright);
             each one jumps to its step. */}
@@ -190,53 +179,55 @@ export function Hero() {
               index={i}
               label={heroScenes[base].steps[i].tag}
               step={onStage}
-              onSelect={() => go(base, i)}
+              onSelect={() => go(i)}
             />
           ))}
         </nav>
 
-        {/* The buildings, small at the bottom left, the one on stage in white. */}
-        <nav aria-label="Объектууд" className="absolute bottom-[calc(var(--bar-room)+0.75rem)] left-4 sm:left-6 lg:bottom-5 lg:left-8">
-          <ul className="flex gap-3 text-[13px] font-medium sm:gap-5">
-            {heroScenes.map((scene, k) => (
-              <SceneLink
-                key={scene.id}
-                name={scene.name}
-                index={k}
-                track={track}
-                current={base === k}
-                onSelect={() => go(k)}
-              />
-            ))}
-          </ul>
-        </nav>
+        {/* The foot row: the buildings as a tab bar on the left (a dark glass track, the one on stage a white pill that
+            slides to the picked name; full width on phones, the five names sharing it evenly) and the contact icons on
+            the right. It stands above the contact bar while that lies along the foot of the screen (below wide). */}
+        <div className="pointer-events-none absolute inset-x-4 bottom-[calc(var(--bar-room)+0.75rem)] flex items-center justify-between gap-4 sm:inset-x-6 lg:inset-x-8 wide:bottom-5">
+          <nav aria-label="Объектууд" className="pointer-events-auto w-full sm:w-auto">
+            <ul className="flex rounded-full bg-night/60 p-1 shadow-[0_10px_30px_-12px_rgb(0_0_0/0.6)] ring-1 ring-white/15 backdrop-blur-md">
+              {heroScenes.map((scene, k) => (
+                <SceneLink
+                  key={scene.id}
+                  name={scene.name}
+                  current={base === k}
+                  reducedMotion={reducedMotion}
+                  onSelect={() => pick(k)}
+                />
+              ))}
+            </ul>
+          </nav>
 
-
-        {/* from sm up; on a phone the site's contact bar carries the same links and the scene names need the row */}
-        <div className="absolute bottom-[calc(var(--bar-room)+0.5rem)] right-3 hidden items-center gap-1 text-white/70 sm:right-5 sm:flex lg:bottom-4 lg:right-7">
-          <a
-            href={contact.facebook}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
-            className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <FacebookIcon className="size-3.5" />
-          </a>
-          <a
-            href={`mailto:${contact.email}`}
-            aria-label="Имэйл"
-            className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <MailIcon className="size-3.5" />
-          </a>
-          <a
-            href={`tel:${contact.phone}`}
-            aria-label="Утас"
-            className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
-          >
-            <PhoneIcon className="size-3.5" />
-          </a>
+          {/* from sm up; on a phone the site's contact bar carries the same links and the scene names need the row */}
+          <div className="pointer-events-auto hidden items-center gap-1 text-white/70 sm:flex">
+            <a
+              href={contact.facebook}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+              className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+            >
+              <FacebookIcon className="size-3.5" />
+            </a>
+            <a
+              href={`mailto:${contact.email}`}
+              aria-label="Имэйл"
+              className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+            >
+              <MailIcon className="size-3.5" />
+            </a>
+            <a
+              href={`tel:${contact.phone}`}
+              aria-label="Утас"
+              className="grid size-8 place-items-center transition-colors hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+            >
+              <PhoneIcon className="size-3.5" />
+            </a>
+          </div>
         </div>
       </DraftingCursor>
 
@@ -258,16 +249,26 @@ function ScenePanel({
   scene,
   index,
   scroll,
+  current,
+  place,
+  moving,
   mounted,
   drawing,
   reducedMotion,
   reveal,
   ready,
   onReady,
+  onArrive,
 }: {
   scene: HeroSceneConfig;
   index: number;
   scroll: MotionValue<number>;
+  /** on stage: its steps follow the scroll */
+  current: boolean;
+  /** -1 left of the stage, 0 on it, 1 right of it */
+  place: number;
+  /** sliding in or out, rather than jumping aside out of sight */
+  moving: boolean;
   mounted: boolean;
   drawing: boolean;
   reducedMotion: boolean;
@@ -276,14 +277,30 @@ function ScenePanel({
   /** its model has drawn */
   ready: boolean;
   onReady: () => void;
+  /** it has slid onto the stage */
+  onArrive: () => void;
 }) {
-  const step = useTransform(scroll, (v) => stepAt(v * UNITS - starts[index], steps[index] - 1));
+  // Its own step follows the scroll only while it is on stage, so one that slides out keeps the step it was on.
+  const last = steps[index] - 1;
+  const step = useMotionValue(0);
+  useMotionValueEvent(scroll, "change", (v) => {
+    if (current) step.set(stepAt(v * last, last));
+  });
+  useEffect(() => {
+    if (current) step.set(stepAt(scroll.get() * last, last));
+  }, [current, scroll, step, last]);
   const zoomed = useRef<HTMLDivElement>(null);
   useMotionValueEvent(reveal, "change", (p) => {
     if (zoomed.current) paintZoom(zoomed.current, p);
   });
   return (
-    <div className="relative h-full shrink-0" style={{ width: `${100 / count}%` }}>
+    <motion.div
+      className="absolute inset-0"
+      initial={false}
+      animate={{ x: `${place * 100}%` }}
+      transition={moving && !reducedMotion ? SLIDE : { duration: 0 }}
+      onAnimationComplete={current ? onArrive : undefined}
+    >
       {/* the 3D starts slightly zoomed and settles as the curtain opens */}
       <div
         ref={zoomed}
@@ -314,39 +331,45 @@ function ScenePanel({
           progress={step}
           reveal={reveal}
           heading={index === 0 && i === 0 ? "h1" : "h2"}
+          className="bottom-[calc(var(--bar-room)+5.5rem)]"
         >
           {s.cta && <ContactActions />}
         </StepCopy>
       ))}
-    </div>
+    </motion.div>
   );
 }
 
 function SceneLink({
   name,
-  index,
-  track,
   current,
+  reducedMotion,
   onSelect,
 }: {
   name: string;
-  index: number;
-  track: MotionValue<number>;
   current: boolean;
+  reducedMotion: boolean;
   onSelect: () => void;
 }) {
-  const color = useTransform(track, (t) => (Math.round(t) === index ? "rgb(255 255 255)" : "rgb(255 255 255 / 0.4)"));
   return (
-    <li>
-      <motion.button
+    <li className="flex-1 sm:flex-none">
+      <button
         type="button"
         onClick={onSelect}
-        aria-current={current ? "step" : undefined}
-        style={{ color }}
-        className="py-1 transition-colors hover:!text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        aria-current={current ? "true" : undefined}
+        data-cursor-label={current ? "Эхнээс нь үзэх" : `${name} үзэх`}
+        className={`relative flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full px-1 text-[13px] font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:min-h-10 sm:px-4 sm:text-sm ${current ? "text-night" : "text-white/80 hover:bg-white/10 hover:text-white"}`}
       >
-        {name}
-      </motion.button>
+        {current && (
+          <motion.span
+            layoutId="scene-tab"
+            aria-hidden
+            className="absolute inset-0 rounded-full bg-white"
+            transition={reducedMotion ? { duration: 0 } : { type: "spring", bounce: 0.15, duration: 0.45 }}
+          />
+        )}
+        <span className="relative">{name}</span>
+      </button>
     </li>
   );
 }

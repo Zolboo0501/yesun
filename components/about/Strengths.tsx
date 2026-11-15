@@ -24,8 +24,8 @@ const advantages: { title: string; text: string; Icon: ComponentType<Play> }[] =
     Icon: UpdatesIcon,
   },
   {
-    title: "Зураг төсөл, хариуцлага",
-    text: "Зураг төслөө өөрсдөө боловсруулж, гүйцэтгэлийн бүх хариуцлагыг хүлээнэ.",
+    title: "Гүйцэтгэлийн хариуцлага",
+    text: "Зураг төслийн дагуу угсарч, гүйцэтгэлийн бүх хариуцлагыг хүлээнэ.",
     Icon: DraftIcon,
   },
   {

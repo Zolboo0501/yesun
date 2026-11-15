@@ -9,7 +9,7 @@ import { CoolIcon, FactoryIcon, Glyph, ServiceIcon, VentIcon, type Draw } from "
 const services: { title: string; text: string; Icon: ComponentType<Draw> }[] = [
   {
     title: "Агаар сэлгэлт",
-    text: "Орчин үеийн агаар сэлгэлтийн системийн зураг төсөл гаргаж, угсарч, засвар үйлчилгээ хийнэ. Барилга бүрт тохирох шийдлийг сонгоно.",
+    text: "Орчин үеийн агаар сэлгэлтийн системийг зураг төслийн дагуу угсарч, засвар үйлчилгээ хийнэ. Барилга бүрт тохирох төхөөрөмжийг санал болгоно.",
     Icon: VentIcon,
   },
   {

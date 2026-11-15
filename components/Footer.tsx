@@ -194,7 +194,7 @@ function FooterView() {
           <div className="relative overflow-hidden border-t border-white/10 pb-20 pt-32 lg:pb-28 lg:pt-40 light:border-ink/10">
             <CTA3
               title={"Төслөө\nхамтдаа ярилцъя."}
-              text="Агаар сэлгэлт, хөргөлтийн системийг зураг төслөөс угсралт, засвар үйлчилгээ хүртэл нэг дор хийнэ."
+              text="Агаар сэлгэлт, хөргөлтийн системийг зураг төслийн дагуу угсарч, засвар үйлчилгээг нь хариуцна."
               action={{ label: "Инженертэй холбогдох", href: "/contact" }}
               tiles={({ seen, active, reduced }) => [
                 // the home page's service icons, drawn in once seen and moving while in view: air, the engineer's

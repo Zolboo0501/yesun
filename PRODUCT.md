@@ -17,14 +17,14 @@ web
 ## Product Purpose
 
 This is the corporate website of Есөн Бэлчир ХХК, an HVAC engineering company in Ulaanbaatar, Mongolia. Its job is to win projects. It shows:
-- what the company designs, makes, supplies and installs;
+- what the company makes, supplies and installs;
 - the projects it has delivered.
 
 Then it turns a project client's visit into a conversation with an engineer.
 
 ## Positioning
 
-The site presents the company as doing the whole job under one roof: calculation and design, its own duct fabrication, equipment supply, installation and after-sales service.
+The site presents the company as doing the whole job under one roof: its own duct fabrication, equipment supply, installation to the project's design drawings, and after-sales service. **It does not design or calculate systems itself** (the client's correction, 2026-11-15): the design comes from the project's designer, and the company installs to it (зураг төслийн дагуу угсралт).
 
 The figures behind that claim are **confirmed by the client** (2026-11-03):
 

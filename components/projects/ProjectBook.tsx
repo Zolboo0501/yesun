@@ -132,6 +132,24 @@ const projects: Project[] = [
     kind: "industry",
     image: "/images/project12.webp",
   },
+  {
+    title: "Спорт цогцолбор",
+    scope: "Сүхбаатар дүүргийн 13 дугаар хороо",
+    work: ["Агаар сэлгэлт"],
+    year: 2026,
+    engineer: "Д.Хангай",
+    kind: "public",
+    image: "/images/project14.webp",
+  },
+  {
+    title: "Чандман хотхон",
+    scope: "Хурд ХХК",
+    work: ["Агаар сэлгэлт"],
+    year: 2026,
+    engineer: "Д.Хангай",
+    kind: "home",
+    image: "/images/project15.webp",
+  },
 ];
 
 // The team page's portraits of the engineers who led them; one has no photo yet and shows her initials.
@@ -366,6 +384,8 @@ const photoSize: Record<string, [number, number]> = {
   "/images/project11.webp": [1600, 1067],
   "/images/project12.webp": [2029, 1143],
   "/images/project13.webp": [762, 764],
+  "/images/project14.webp": [1333, 924],
+  "/images/project15.webp": [1254, 1254],
 };
 
 /** A right-hand page: the project's photograph, with a shade toward the spine. */
