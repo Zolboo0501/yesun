@@ -1,169 +1,252 @@
 "use client";
-import { Calendar, ChevronRight, MapPin } from "lucide-react";
-import { motion } from "motion/react";
-import { ImageWithFallback } from "../ImageWithFallback";
+import { DollyGallery, type DollyGalleryDrive } from "@/components/react-bits/dolly-gallery";
+import { ArrowUpRight } from "lucide-react";
+import { useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { getImageProps } from "next/image";
 import Link from "next/link";
+import { useEffect, useRef } from "react";
+import { StepCopy, StepLine } from "./Step";
 
-const projects = [
-  {
-    title: "Монгол банкны үндэсний цахим гүйлгээний төв",
-    category: "Агааржуулалт",
-    location: "Улаанбаатар",
-    year: "2019",
-    description: "Барилгын агаар сэлгэлтийн систем",
-    image: "/images/project3.webp",
-  },
-  {
-    title: "Хүннү 2222",
-    category: "Агааржуулалт",
-    location: "Улаанбаатар",
-    year: "2020",
-    description:
-      "Төслийн 2–рээлжийн орон сууцны нэгдсэн граж барилгын агаар сэлгэлт, Хөргөлтийн системийн угсралт",
-    image: "/images/project6.webp",
-  },
+type Project = { src: string; width: number; height: number; title: string; subtitle: string; alt: string };
 
+// The client's original photos (public/images), with their pixel sizes.
+// The run goes from the museum to the mine, with repeat clients spaced apart.
+const projects: Project[] = [
   {
-    title: "Хүннү 2222",
-    category: "Агааржуулалт",
-    location: "Улаанбаатар",
-    year: "2020",
-    description:
-      "Төслийн 2–р ээлжийн орон сууц Барилгын агаар сэлгэлтийн систем",
-    image: "/images/project4.webp",
-  },
-  {
+    src: "/images/project2.webp",
+    width: 1430,
+    height: 805,
     title: "Чингис хаан музей",
-    category: "Агааржуулалт & Хөргөлт",
-    location: "Улаанбаатар",
-    year: "2021",
-    description:
-      "Барилгын Агаар сэлгэлтийн системийн угсралт тоног төхөөрөмж нийлүүлэх, хөргөлтийн системийн угсралт",
-    image: "/images/project2.webp",
+    subtitle: "Агаар сэлгэлт, хөргөлт, тоног төхөөрөмж · 2021",
+    alt: "Чингис хаан үндэсний музей",
   },
   {
-    title: "Эрдэнэс Таван Толгойн Нүүрс Баяжуулах үйлдвэр",
-    category: "Агааржуулалт",
-    location: "Өмнөговь",
-    year: "2024",
-    description: "Төслийн үйлдвэрийн барилга агаар сэлгэлт",
-    image: "/images/project.webp",
+    src: "/images/project8.webp",
+    width: 2048,
+    height: 1152,
+    title: "Platinum Tower",
+    subtitle: "Агаар сэлгэлт, хөргөлт, нэгдсэн гараж · 2023",
+    alt: "Platinum Tower орон сууц",
   },
-
   {
+    src: "/images/project9.webp",
+    width: 3072,
+    height: 1364,
+    title: "Хүннү 2222",
+    subtitle: "Канад сургууль, спорт цогцолбор · 2022",
+    alt: "Хүннү 2222 төслийн Канад сургууль, спорт цогцолбор",
+  },
+  {
+    src: "/images/project11.webp",
+    width: 1600,
+    height: 1067,
+    title: "Нийслэлийн захиргааны төв",
+    subtitle: "Цогцолборын агаар сэлгэлт · 2024",
+    alt: "Нийслэлийн нутгийн захиргааны төв цогцолбор",
+  },
+  {
+    src: "/images/project12.webp",
+    width: 2029,
+    height: 1143,
+    title: "Эрдэнэс Таван Толгой",
+    subtitle: "Ажилчдын байр, оффис, хөргөлт · 2024",
+    alt: "Эрдэнэс Таван Толгойн ажилчдын байр, оффис барилга",
+  },
+  {
+    src: "/images/project7.webp",
+    width: 1536,
+    height: 2048,
+    title: "Одод хотхон",
+    subtitle: "Агаар сэлгэлт, хөргөлт, нэгдсэн гараж · 2022",
+    alt: "Одод хотхоны орон сууц",
+  },
+  {
+    src: "/images/project13.webp",
+    width: 762,
+    height: 764,
     title: "Сансар Гарден",
-    category: "Агааржуулалт & Хөргөлт",
-    location: "Улаанбаатар",
-    year: "2024",
-    description:
-      "Орон сууцны хотхоны 2 блок барилгын агаар сэлгэлт, хөргөлтийн систем",
-    image: "/images/project13.webp",
+    subtitle: "2 блокийн агаар сэлгэлт, хөргөлт · 2024",
+    alt: "Сансар Гарден орон сууцны хотхон",
+  },
+  {
+    src: "/images/project4.webp",
+    width: 966,
+    height: 680,
+    title: "Хүннү 2222",
+    subtitle: "2-р ээлжийн орон сууц · 2020",
+    alt: "Хүннү 2222 төслийн 2-р ээлжийн орон сууц",
+  },
+  {
+    src: "/images/project10.webp",
+    width: 3840,
+    height: 2160,
+    title: "Нисэх гарден хотхон",
+    subtitle: "Орон сууцны агаар сэлгэлт · 2022",
+    alt: "Нисэх гарден хотхон",
+  },
+  {
+    src: "/images/project.webp",
+    width: 2280,
+    height: 1140,
+    title: "Эрдэнэс Таван Толгой",
+    subtitle: "Нүүрс баяжуулах үйлдвэр, агаар сэлгэлт · 2024",
+    alt: "Эрдэнэс Таван Толгойн нүүрс баяжуулах үйлдвэр",
   },
 ];
 
+// Next's image optimizer serves each photo at the width the screen needs (never past the original). A tile is at most
+// 820 × 566 (the gallery's box caps it below that: the full width less 32px on phones and tablets) and crops its photo
+// to 1.45:1, so a photo wider than that is asked for at the width its height needs. A stable list, so the gallery
+// builds its tiles once.
+const images = projects.map(({ src, width, height, alt }) => {
+  const crop = Math.max(1, width / height / 1.45); // how much wider than its tile the covering photo is
+  const { props } = getImageProps({
+    src,
+    alt,
+    width,
+    height,
+    quality: 90,
+    sizes: `(min-width: 1024px) ${Math.round(820 * crop)}px, calc(min(820px, 100vw - 32px) * ${crop.toFixed(2)})`,
+  });
+  return { src: props.src, srcSet: props.srcSet, sizes: props.sizes, alt };
+});
+
+// A scroll stage like the hero's: the opening, then one step per project, a screen of scroll each. Each step holds
+// still for the first and last fifth of its scroll, then travels to the next.
+const STEPS = projects.length + 1;
+const UNITS = STEPS - 1;
+const SPACING = 900; // the gallery's depth from one project to the next
+const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
+const stepAt = (x: number) => {
+  const c = Math.min(Math.max(x, 0), UNITS);
+  const i = Math.min(Math.floor(c), UNITS - 1);
+  return i + clamp01((c - i - 0.2) / 0.6);
+};
+
 export function Projects() {
+  const section = useRef<HTMLElement>(null);
+  const reducedMotion = useReducedMotion() ?? false;
+
+  const { scrollYProgress } = useScroll({
+    target: section,
+    offset: ["start start", "end end"],
+  });
+  const step = useTransform(scrollYProgress, (v) => stepAt(v * UNITS));
+
+  // The gallery follows the scroll: the opening holds the first project a step away, and every later step brings the
+  // next one to the front.
+  const driveRef = useRef<DollyGalleryDrive | null>(null);
+  useMotionValueEvent(step, "change", (s) => driveRef.current?.go((s - 1) * SPACING));
+  useEffect(() => {
+    driveRef.current?.go((step.get() - 1) * SPACING);
+  }, [step]);
+
+  /** Scroll to step i. */
+  const go = (i: number) => {
+    const el = section.current;
+    if (!el) return;
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({
+      top: top + ((el.offsetHeight - window.innerHeight) * i) / UNITS,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+  };
+
   return (
-    <section id="projects" className="py-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-center mb-16"
-        >
-          <motion.span
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-            className="inline-block px-4 py-2 bg-black text-sm uppercase tracking-wider text-white"
-          >
-            Төслүүд
-          </motion.span>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="text-3xl lg:text-4xl text-gray-900 mb-6"
-          >
-            Амжилттай <span className="text-[#0100FD]">төслүүд</span>
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.3 }}
-            className="text-lg text-gray-600 max-w-3xl mx-auto"
-          >
-            Бид олон төрлийн төсөл амжилттай хэрэгжүүлсэн туршлагатай
-          </motion.p>
-        </motion.div>
-
-        <div className="grid lg:grid-cols-3 gap-8 mb-12">
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 0 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-              className="group bg-white overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="relative h-64 overflow-hidden">
-                <ImageWithFallback
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/30 to-transparent"></div>
-                <div className="absolute top-4 left-4">
-                  <span className="inline-block bg-black text-white text-xs px-4 py-2 uppercase tracking-wider">
-                    {project.category}
-                  </span>
-                </div>
-              </div>
-
-              <div className="p-8">
-                <h3 className="text-xl text-gray-900 mb-3 group-hover:text-[#0100FD] transition-colors">
-                  {project.title}
-                </h3>
-                <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                  {project.description}
-                </p>
-
-                <div className="flex items-center justify-between text-sm text-gray-500 pb-6 border-b border-gray-100">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-[#0100FD]" />
-                    <span>{project.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-[#0100FD]" />
-                    <span>{project.year}</span>
-                  </div>
-                </div>
-
-                <Link href={"/projects"} className="hover:cursor-pointer">
-                  <button className="mt-6 text-[#0100FD] hover:text-[#FE0002] transition-colors flex items-center gap-2 group">
-                    <span>Дэлгэрэнгүй үзэх</span>
-                    <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </button>
-                </Link>
-              </div>
-            </motion.div>
-          ))}
+    <section
+      id="projects"
+      ref={section}
+      aria-label="Хэрэгжүүлсэн төслүүд"
+      className="relative bg-white text-ink"
+      style={{ height: `${STEPS * 100}svh` }}
+    >
+      <div className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))] overflow-clip">
+        {/* The projects stand one behind another down the stage's depth and come to the front one per step, large,
+            in the right three fifths on desktop and above the copy on phones. The scroll drives them; the pointer only
+            leans them, a little. Each photo stands centred, so it is whole inside the screen on every step. The photo
+            leaving the front fades where it stands instead of flying at the camera, so scrolling back brings the last
+            one in whole rather than huge and cut by the gallery's edge. */}
+        <div className="absolute inset-x-0 top-0 h-[60%] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-full lg:w-[60%]">
+          <DollyGallery
+            images={images}
+            infinite={false}
+            itemWidth={820}
+            aspectRatio={1.45}
+            borderRadius={20}
+            // no frame, only a soft shadow under each rounded photo, so it lifts off the white ground
+            tileClassName="shadow-[0_24px_48px_-12px_rgb(11_16_32/0.25),0_60px_120px_-30px_rgb(11_16_32/0.3)]"
+            grayscale={0.25}
+            spacing={SPACING}
+            spread={0}
+            scatter={0}
+            passRange={0.5}
+            passDepth={0.1}
+            parallaxX={0.02}
+            parallaxY={0.03}
+            autoScroll={0}
+            wheel={false}
+            dragSpeed={0}
+            driveRef={driveRef}
+            label="Хэрэгжүүлсэн төслүүдийн зургууд"
+            className="touch-pan-y overflow-visible"
+          />
         </div>
 
-        {/* View All Button */}
-        <Link className="flex justify-center" href={"/projects"}>
-          <button className="bg-[#0100FD] text-sm text-white px-10 py-4 hover:bg-[#0100FD]/90 transition-all shadow-lg hover:shadow-xl">
-            Бүх төслүүдийг үзэх
-          </button>
-        </Link>
+        {/* Shade over the stage, as on the hero: dark under the copy and round the frame, open where the photos are. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 bg-[linear-gradient(0deg,var(--color-white)_calc(22%_+_var(--bar-room)),rgb(255_255_255/0.6)_calc(46%_+_var(--bar-room)),transparent_calc(64%_+_var(--bar-room)))] lg:bg-[linear-gradient(90deg,var(--color-white)_8%,rgb(255_255_255/0.8)_24%,rgb(255_255_255/0.25)_34%,transparent_42%)]" />
+          <div className="absolute inset-x-0 top-0 h-20 bg-linear-to-b from-white to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-white/85 to-transparent" />
+        </div>
+
+        <StepCopy
+          tone="light"
+          title="Хэрэгжүүлсэн төслүүд."
+          text="Музейгээс уурхай хүртэл олон объектод агаар сэлгэлт, хөргөлт угсарсан."
+          index={0}
+          progress={step}
+          large
+        >
+          <Link
+            href="/projects"
+            className="group inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-brand/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          >
+            Бүх төсөл
+            <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
+          </Link>
+        </StepCopy>
+        {/* each project as a caption beside its photo: the name a size down in a column that ends before the photo,
+            and one short line under it, its year kept with the last word */}
+        {projects.map((p, i) => (
+          <StepCopy
+            key={i}
+            tone="light"
+            title={p.title}
+            text={p.subtitle.replace(" · ", "\u00a0·\u00a0")}
+            index={i + 1}
+            progress={step}
+            heading="h3"
+            className="text-[clamp(2.25rem,0.75rem+2.4vw,2.875rem)] lg:w-[min(25rem,32vw)]"
+          />
+        ))}
+
+        {/* the opening and each project, as short lines down the right edge; each one jumps to its step */}
+        <nav
+          aria-label="Төслүүд"
+          className="absolute right-4 top-1/2 flex -translate-y-1/2 flex-col gap-1.5 sm:right-6 lg:right-8"
+        >
+          {Array.from({ length: STEPS }, (_, i) => (
+            <StepLine
+              key={i}
+              tone="light"
+              index={i}
+              label={i === 0 ? "Эхлэл" : projects[i - 1].title}
+              step={step}
+              onSelect={() => go(i)}
+            />
+          ))}
+        </nav>
       </div>
     </section>
   );
 }
-
-export default Projects;

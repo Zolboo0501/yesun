@@ -5,7 +5,7 @@ export function StructuredData() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     "name": "Есөн Бэлчир ХХК",
-    "description": "Агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээ",
+    "description": "Агаар сэлгэлт, хөргөлтийн төхөөрөмжийн нийлүүлэлт, угсралт, засвар үйлчилгээ",
     "url": siteUrl,
     "telephone": contact.phone,
     "email": contact.email,
@@ -53,8 +53,8 @@ export function StructuredData() {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Product",
-            "name": "Агаар сэрүүцэгч",
-            "description": "KANION, AUX брэндийн агаар сэрүүцэгч"
+            "name": "Агааржуулагч",
+            "description": "KANION, AUX брэндийн агааржуулагч"
           }
         },
         {
@@ -69,8 +69,8 @@ export function StructuredData() {
           "@type": "Offer",
           "itemOffered": {
             "@type": "Product",
-            "name": "Галын сэнс",
-            "description": "AIRONN брэндийн галын сэнс"
+            "name": "Утаа зайлуулах сэнс",
+            "description": "AIRONN брэндийн утаа зайлуулах сэнс"
           }
         }
       ]

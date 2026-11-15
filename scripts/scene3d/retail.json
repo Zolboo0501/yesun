@@ -1,0 +1,112 @@
+{
+  "cache_dir": "~/.cache/interior-3d-hero/polyhaven",
+  "materials": {
+    "wood": {
+      "asset": "oak_veneer_05",
+      "mul": [
+        1.19,
+        1.21,
+        1.12
+      ],
+      "rough_mul": 0.9,
+      "tile": 1.0,
+      "nsize": 1024
+    },
+    "plaster": {
+      "asset": "beige_wall_001",
+      "mul": [
+        1.01,
+        1.08,
+        1.12
+      ],
+      "add": 0.3,
+      "tile": 3.0,
+      "normal_strength": 0.5
+    },
+    "border": {
+      "asset": "concrete_floor_worn_001",
+      "mul": [
+        1.05,
+        1.03,
+        0.99
+      ],
+      "add": 0.37,
+      "tile": 3.0,
+      "normal_strength": 0.6
+    },
+    "fabric": {
+      "asset": "poly_wool_herringbone",
+      "mul": [
+        0.61,
+        0.74,
+        0.92
+      ],
+      "tile": 0.27
+    },
+    "fabric_light": {
+      "asset": "poly_wool_herringbone",
+      "mul": [
+        1.11,
+        1.08,
+        0.99
+      ],
+      "add": 0.27,
+      "tile": 0.27
+    },
+    "floor": {
+      "asset": "concrete_floor_worn_001",
+      "mul": [
+        1.04,
+        1.03,
+        1.01
+      ],
+      "add": 0.3,
+      "rough_mul": 0.55,
+      "tile": 3.0,
+      "normal_strength": 0.5
+    }
+  },
+  "colors": {
+    "desk": "f3f2ef",
+    "panel": "ecebe7",
+    "dark_metal": "2b2d31",
+    "plastic": "26282c",
+    "accent_metal": "b9b4aa",
+    "led": "fff0d8",
+    "window_frame": "dcdcd8",
+    "blind": "efece6",
+    "pot": "d9d5cd",
+    "slab": "34373c",
+    "duct": "a3a8ae",
+    "duct_wrap": "8e9399",
+    "ahu": "dcdedf"
+  },
+  "ceiling": {
+    "type": "open"
+  },
+  "features": {
+    "windows": true,
+    "blinds": false,
+    "downlights": false,
+    "linear_lights": false,
+    "feature_wall": false,
+    "shelving": false,
+    "meeting_room": false,
+    "planter": false,
+    "fig_tree": false,
+    "pendant_ring": false,
+    "pendant_linear": false,
+    "desk_items": false,
+    "full_floor": true,
+    "door_bay": 1,
+    "ceiling_border": false
+  },
+  "hvac": {
+    "enabled": true,
+    "sprinkler": true,
+    "ducted_unit": true
+  },
+  "name": "yesun-retail",
+  "room": "retail",
+  "note": "A small supermarket for the home page's trade and services scene: three gondolas of goods, drinks coolers along the back wall, a produce stand, the till by the shopfront with its sliding doors, a polished concrete floor and an open ceiling, and its own system (systems.retail): a packaged rooftop unit on its curb, a supply drop to a header and two round spiral mains with jet nozzles over the aisles, a return drop to a grille box, an air curtain over the door."
+}

@@ -1,14 +1,17 @@
+import { ContactBar } from "@/components/ContactBar";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { siteUrl } from "@/constants/data";
+import { productMenu } from "@/constants/products";
 import { shareMetadata, siteName } from "@/lib/metadata";
 import type { Metadata } from "next";
-import { ptSans } from "./fonts";
+import { golos, mono } from "./fonts";
 import "./globals.css";
 
-const defaultTitle = "Есөн Бэлчир ХХК - Агаар сэлгэлт ба Хөргөлтийн Систем";
+const defaultTitle = "Есөн Бэлчир ХХК – Агаар сэлгэлт, хөргөлтийн систем";
 const defaultDescription =
-  "Есөн бэлчир нь агаар сэлгэлт, хөргөлтийн төхөөрөмж болон хоолойн системийн нийлүүлэлт, суурилуулалт, засвар үйлчилгээг үзүүлдэг Монголын тэргүүлэгч компани юм.";
+  "Есөн Бэлчир ХХК агаар сэлгэлт, хөргөлтийн төхөөрөмж болон шугам хоолойн системийн нийлүүлэлт, угсралт, засвар үйлчилгээ үзүүлдэг.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -95,12 +98,14 @@ export default function RootLayout({
   return (
     <html lang="mn">
       <body
-        className={`scroll-smooth ${ptSans.variable}`}
+        className={`scroll-smooth font-sans ${golos.variable} ${mono.variable}`}
         suppressHydrationWarning
       >
-        <Header />
-        {children}
+        <SmoothScroll />
+        <Header productMenu={productMenu} />
+        <main id="main">{children}</main>
         <Footer />
+        <ContactBar />
       </body>
     </html>
   );

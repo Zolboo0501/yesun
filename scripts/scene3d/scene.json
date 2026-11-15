@@ -1,0 +1,54 @@
+{
+  "name": "yesun-walnut-office",
+  "note": "Есөн Бэлчир (yusunbelchir.mn): modern corporate office, dark walnut baffle ceiling in a white plaster frame, bronze ring pendant, white bench desks, black mesh chairs, walnut planter with trailing plants. Edit this file to change the look; scene.example.json only holds the generator's defaults.",
+  "cache_dir": "~/.cache/interior-3d-hero/polyhaven",
+
+  "materials": {
+    "wood":         { "asset": "black_walnut_veneer_02",   "mul": [0.62, 0.55, 0.50], "rough_mul": 0.85, "tile": 1.0, "nsize": 1024 },
+    "floor":        { "asset": "laminate_floor_02",        "mul": [0.78, 0.68, 0.60], "rough_mul": 0.75, "tile": 1.7, "nsize": 1024 },
+    "plaster":      { "asset": "beige_wall_001",           "mul": [1.06, 1.06, 1.08], "add": 0.09, "tile": 3.0, "normal_strength": 0.6 },
+    "border":       { "asset": "concrete_floor_worn_001",  "mul": [1.15, 1.12, 1.08], "add": 0.08, "tile": 3.0, "normal_strength": 0.7 },
+    "fabric":       { "asset": "poly_wool_herringbone",    "mul": [0.36, 0.36, 0.38], "tile": 0.27 },
+    "fabric_light": { "asset": "poly_wool_herringbone",    "mul": [0.95, 0.93, 0.90], "tile": 0.27 }
+  },
+
+  "colors": {
+    "desk": "f1f0ed",
+    "panel": "e9e7e3",
+    "dark_metal": "18191c",
+    "plastic": "1c1d20",
+    "accent_metal": "8c6b47",
+    "led": "ffd9a8",
+    "window_frame": "1d1e21",
+    "blind": "ddd8cf",
+    "pot": "8d8a85",
+    "leaf_dark": "2f5a24",
+    "leaf_light": "7aa64a",
+    "duct": "3b3e44",
+    "duct_wrap": "45484d",
+    "ahu": "2b2d31",
+    "slab": "1e1f22",
+    "sprinkler": "b3261e",
+    "sky_top": "a9c0db",
+    "sky_bottom": "eef0ee"
+  },
+
+  "ceiling": { "type": "slats", "pitch": 0.11, "slat_width": 0.045, "slat_depth": 0.14 },
+
+  "features": {
+    "windows": true,
+    "blinds": true,
+    "downlights": true,
+    "linear_lights": true,
+    "feature_wall": true,
+    "shelving": true,
+    "meeting_room": true,
+    "planter": true,
+    "fig_tree": true,
+    "pendant_ring": true,
+    "pendant_linear": true,
+    "desk_items": true
+  },
+
+  "hvac": { "enabled": true, "sprinkler": true, "ducted_unit": true }
+}

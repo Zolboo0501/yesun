@@ -1,0 +1,696 @@
+// The hero's five scenes, in the order of their names at the foot of the stage: each is a model built by scripts/scene3d (office.glb from
+// scene.json, the others from kindergarten.json, school.json, retail.json and building.json), its camera shots and
+// its copy.
+// Shots are three.js coordinates: x, y up, z towards the camera (Blender's -y). Every camera sits outside the
+// room or the building's cut, so a stop between two shots never lands inside a wall.
+
+export type Vec = [number, number, number];
+export type Shot = {
+  pos: Vec;
+  target: Vec;
+  fov: number;
+  /** how far right of the copy the subject sits on desktop, as a share of the width */
+  shift: number;
+  /** suspended ceilings in place (1) or faded out to show the ducts above (0) */
+  ceiling: number;
+  /** slab or structure shown (1) or faded out (0); in between it is a ghost the system shows through */
+  slab: number;
+  /** the whole system pulled apart (1) */
+  sys: number;
+  /** the air handling unit opened up (1) */
+  ahu: number;
+  /** fit-out, glazing and street faded out (1) with the system left in place; 0 when unset */
+  fade?: number;
+  /** the floor (0 = ground) whose network is in focus, the other floors' dimmed; all alike when unset */
+  floor?: number;
+};
+export type Step = { tag: string; title: string; text: string; cta?: boolean };
+export type HeroSceneConfig = {
+  id: string;
+  /** shown in the scene list and the counter */
+  name: string;
+  model: string;
+  label: string;
+  /** the light's mood: what reflections see, the sun, the glazing and the room's own lamps */
+  mood: {
+    background: string;
+    sun: string;
+    sunIntensity: number;
+    daylight: string;
+    pendant: string;
+  };
+  sun: { position: Vec; extent: number; far: number };
+  /** office-style area and lamp lights inside the room; off for the building, which is lit from outside */
+  interior: boolean;
+  /** an outdoor scene's distance haze; its colour matches the backdrop at the horizon so the ground melts into it */
+  fog?: { color: string; near: number; far: number };
+  /** CSS background behind the canvas (a sky for an outdoor scene); the page's panel colour shows when unset */
+  backdrop?: string;
+  shots: Shot[];
+  steps: Step[];
+};
+
+const service: Step = {
+  tag: "Үйлчилгээ",
+  title: "Баталгаа, үйлчилгээ",
+  text: "Угсарсан системдээ 1–3 жилийн баталгаа өгнө. Яаралтай дуудлагад 24/7 ажиллана.",
+  cta: true,
+};
+
+// The rooms share one shell and light, but each has a system of its own (the office's in build_scene.py, the
+// kindergarten's and the school's in systems.py), so each frames its own: pulled apart from above, the ducts from
+// just over the slab, the unit opened up, the ceiling from below.
+const roomLight = { position: [-12, 6.5, 2.5] as Vec, extent: 8, far: 30 };
+
+export const heroScenes: HeroSceneConfig[] = [
+  {
+    id: "office",
+    name: "Оффис",
+    model: "/models/hvac/office.glb",
+    label:
+      "Нартай оффис, модон тааз, таазны дээрх агаар сэлгэлт, хөргөлтийн систем",
+    mood: {
+      background: "#8f8a83",
+      sun: "#fff2df",
+      sunIntensity: 3.8,
+      daylight: "#eaf1ff",
+      pendant: "#ffcf94",
+    },
+    sun: roomLight,
+    interior: true,
+    shots: [
+      {
+        pos: [1.4, 1.55, 6.2],
+        target: [-0.9, 2.0, -1.0],
+        fov: 46,
+        shift: 0.06,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [7.4, 11.2, 10.4],
+        target: [-0.6, 4.0, 0],
+        fov: 32,
+        shift: 0.17,
+        ceiling: 1,
+        slab: 0,
+        sys: 1,
+        ahu: 0,
+      },
+      {
+        pos: [2.7, 4.4, 1.7],
+        target: [0.75, 3.42, -0.15],
+        fov: 34,
+        shift: 0.15,
+        ceiling: 1,
+        slab: 0,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-1.3, 4.15, 5.6],
+        target: [-2.75, 3.75, 0.3],
+        fov: 40,
+        shift: 0.17,
+        ceiling: 1,
+        slab: 0,
+        sys: 0,
+        ahu: 1,
+      },
+      {
+        pos: [2.2, 1.3, 5.2],
+        target: [0.4, 3.0, 0.5],
+        fov: 44,
+        shift: 0.12,
+        ceiling: 0,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-2.6, 1.6, 6.4],
+        target: [0.2, 1.85, -1.0],
+        fov: 46,
+        shift: 0.06,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+    ],
+    steps: [
+      {
+        tag: "Есөн Бэлчир",
+        title: "Есөн Бэлчир",
+        text: "Таны найдвартай түнш. Барилга, үйлдвэр, оффисын агаар сэлгэлт, хөргөлтийн системийг угсарч, засвар үйлчилгээ хийнэ.",
+      },
+      {
+        tag: "Зураг төсөл",
+        title: "Зураг төслийн дагуу",
+        text: "Ажлаа батлагдсан зураг төслийн дагуу гүйцэтгэнэ.",
+      },
+      {
+        tag: "Үйлдвэрлэл",
+        title: "Үйлдвэрлэл",
+        text: "Олон улсын стандартын дагуу тоноглогдсон үйлдвэртээ агаарын суваг хийдэг.",
+      },
+      {
+        tag: "Төхөөрөмж",
+        title: "Төхөөрөмж",
+        text: "Дэлхийд танигдсан KANION, AUX, BALLU, SHUFT, AIRONN, LAVFILL брэндийн албан ёсны төлөөлөгч.",
+      },
+      {
+        tag: "Угсралт",
+        title: "Угсралт",
+        text: "Нийслэл, орон нутгийн олон объектод угсралт хийсэн.",
+      },
+      service,
+    ],
+  },
+  {
+    id: "kindergarten",
+    name: "Цэцэрлэг",
+    model: "/models/hvac/kindergarten.glb",
+    label:
+      "Цэцэрлэгийн бүлгийн өрөө, таазны дээрх дулаан хэмнэх төхөөрөмж, дугуй суваг, агаар түгээгч",
+    mood: {
+      background: "#b4b8bd",
+      sun: "#fff6ea",
+      sunIntensity: 3.4,
+      daylight: "#eef4ff",
+      pendant: "#fff1dc",
+    },
+    sun: roomLight,
+    interior: true,
+    shots: [
+      {
+        pos: [2.2, 1.45, 6.3],
+        target: [-0.4, 1.0, -0.8],
+        fov: 46,
+        shift: 0.06,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [6.4, 11.4, 10.2],
+        target: [-1.9, 4.1, 0.3],
+        fov: 32,
+        shift: 0.17,
+        ceiling: 1,
+        slab: 0,
+        sys: 1,
+        ahu: 0,
+      },
+      {
+        pos: [2.9, 5.6, 3.9],
+        target: [-0.4, 3.3, 0.3],
+        fov: 40,
+        shift: 0.15,
+        ceiling: 1,
+        slab: 0,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-1.0, 4.7, 6.4],
+        target: [-2.3, 3.3, 1.9],
+        fov: 36,
+        shift: 0.2,
+        ceiling: 1,
+        slab: 0,
+        sys: 0,
+        ahu: 1,
+      },
+      {
+        pos: [2.0, 1.3, 5.2],
+        target: [0.2, 3.0, 0.2],
+        fov: 44,
+        shift: 0.12,
+        ceiling: 0,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-2.4, 1.4, 6.4],
+        target: [1.6, 1.0, -0.6],
+        fov: 46,
+        shift: 0.06,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+    ],
+    steps: [
+      {
+        tag: "Цэцэрлэг",
+        title: "Цэцэрлэгт цэвэр агаар",
+        text: "Бид таны хүүхэд бүрт цэвэр агаар хүргэнэ.",
+      },
+      {
+        tag: "Зураг төсөл",
+        title: "Зураг төслийн дагуу",
+        text: "Батлагдсан зураг төслийн дагуу суваг, төхөөрөмжийг угсарна.",
+      },
+      {
+        tag: "Суваг",
+        title: "Нам гүм ажиллагаа",
+        text: "Суваг цэвэр агаарыг таазны агаар түгээгч бүрт нам гүм хүргэнэ.",
+      },
+      {
+        tag: "Төхөөрөмж",
+        title: "Дулаан хэмнэх төхөөрөмж",
+        text: "Гадагш гарах агаарын дулаанаар орж ирэх хүйтэн агаарыг халаана.",
+      },
+      {
+        tag: "Тараалт",
+        title: "Жигд агаарын урсгал",
+        text: "Тааз дахь агаар түгээгч цэвэр агаарыг жигд тарааж, бохир агаарыг сорж гаргана.",
+      },
+      service,
+    ],
+  },
+  {
+    id: "school",
+    name: "Сургууль",
+    model: "/models/hvac/school.glb",
+    label:
+      "Сургуулийн анги, таазны дээрх агаар бэлтгэх төхөөрөмж, гол суваг, агаар түгээгч",
+    mood: {
+      background: "#b4b8bd",
+      sun: "#fff6ea",
+      sunIntensity: 3.4,
+      daylight: "#eef4ff",
+      pendant: "#fff1dc",
+    },
+    sun: roomLight,
+    interior: true,
+    shots: [
+      {
+        pos: [0.9, 1.5, 6.6],
+        target: [0.3, 1.55, -2.0],
+        fov: 44,
+        shift: 0.06,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [7.0, 11.6, 10.0],
+        target: [-1.1, 4.1, -0.2],
+        fov: 32,
+        shift: 0.17,
+        ceiling: 1,
+        slab: 0,
+        sys: 1,
+        ahu: 0,
+      },
+      {
+        pos: [3.8, 5.9, 3.4],
+        target: [0.4, 3.25, -0.6],
+        fov: 42,
+        shift: 0.15,
+        ceiling: 1,
+        slab: 0,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-0.6, 5.5, 5.2],
+        target: [-1.7, 3.35, -2.4],
+        fov: 28,
+        shift: 0.22,
+        ceiling: 1,
+        slab: 0,
+        sys: 0,
+        ahu: 1,
+      },
+      {
+        pos: [-2.0, 1.3, 5.2],
+        target: [0.0, 3.0, 0.0],
+        fov: 44,
+        shift: 0.12,
+        ceiling: 0,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-3.0, 1.6, 6.2],
+        target: [1.5, 1.4, -1.5],
+        fov: 46,
+        shift: 0.06,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+    ],
+    steps: [
+      {
+        tag: "Сургууль",
+        title: "Анги бүрт цэвэр агаар",
+        text: "Олон сурагчтай ангийн агаарыг тогтмол сэлгэж, хичээллэхэд таатай орчин бүрдүүлнэ.",
+      },
+      {
+        tag: "Угсралт",
+        title: "Угсралт, тохируулга",
+        text: "Зураг төслийн дагуу суваг, төхөөрөмжийг угсарч, анги бүрийн агаарыг тохируулна.",
+      },
+      {
+        tag: "Суваг",
+        title: "Гол суваг, гурван салаа",
+        text: "Гол сувгаас гурван салаа гарч, таазны агаар түгээгч бүрт агаар хүргэнэ.",
+      },
+      {
+        tag: "Төхөөрөмж",
+        title: "Агаар бэлтгэх төхөөрөмж",
+        text: "Гаднаас авсан агаарыг шүүж, халаагаад анги бүрт хэрэгтэй хэмжээгээр нийлүүлнэ.",
+      },
+      {
+        tag: "Төсөл",
+        title: "Хэрэгжүүлсэн төсөл",
+        text: "Бид 2022 онд Хүннү 2222 төслийн Канад сургууль, спорт цогцолборт ажилласан.",
+      },
+      service,
+    ],
+  },
+  // A shop under an open ceiling, its plant in one casing on the roof (systems.retail): the shop first, the system
+  // pulled apart, the ducts from over the faded roof, the rooftop unit opened, then the air curtain over the door,
+  // and the shop again from the other side.
+  {
+    id: "retail",
+    name: "Худалдаа",
+    model: "/models/hvac/retail.glb",
+    label:
+      "Дэлгүүрийн танхим, дээвэр дээрх төхөөрөмж, таазны доорх ил суваг, үүдний агаарын хөшиг",
+    mood: {
+      background: "#b4b8bd",
+      sun: "#fff6ea",
+      sunIntensity: 3.4,
+      daylight: "#eef4ff",
+      pendant: "#fff6ec",
+    },
+    sun: roomLight,
+    interior: true,
+    shots: [
+      {
+        pos: [1.4, 1.55, 6.2],
+        target: [-0.9, 2.3, -1.0],
+        fov: 46,
+        shift: 0.06,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [7.2, 12.4, 10.8],
+        target: [-0.2, 5.0, -0.4],
+        fov: 32,
+        shift: 0.17,
+        ceiling: 1,
+        slab: 0,
+        sys: 1,
+        ahu: 0,
+      },
+      {
+        pos: [3.4, 6.2, 3.8],
+        target: [-0.1, 3.3, 0.0],
+        fov: 40,
+        shift: 0.15,
+        ceiling: 1,
+        slab: 0,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        // in front of the roof's edge and not far above it, so the way down to the door never looks down onto the roof
+        pos: [2.3, 6.2, 5.2],
+        target: [0.0, 4.95, -2.0],
+        fov: 32,
+        shift: 0.18,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 1,
+      },
+      {
+        pos: [-1.4, 1.95, 6.6],
+        target: [-4.9, 2.2, 2.55],
+        fov: 40,
+        shift: 0.2,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-2.8, 1.6, 6.4],
+        target: [1.4, 1.6, -1.2],
+        fov: 46,
+        shift: 0.06,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+    ],
+    steps: [
+      {
+        tag: "Худалдаа",
+        title: "Дэлгүүрт тав тухтай орчин",
+        text: "Хүн олонтой дэлгүүрийн агаарыг тасралтгүй сэлгэж, тохиромжтой температур барина.",
+      },
+      {
+        tag: "Систем",
+        title: "Дээврээс шууд",
+        text: "Дээвэр дээрх төхөөрөмж агаарыг шүүж, хөргөж эсвэл халааж танхимд нийлүүлнэ.",
+      },
+      {
+        tag: "Суваг",
+        title: "Таазны ил суваг",
+        text: "Ил сувгууд агаарыг тавиурын эгнээ бүрт жигд хүргэнэ.",
+      },
+      {
+        tag: "Төхөөрөмж",
+        title: "Бүгд нэг их биед",
+        text: "Шүүлтүүр, сэнс, хөргөлт, халаалт нэг их биед багтсан тул угсрах, засварлахад хялбар.",
+      },
+      {
+        tag: "Үүд",
+        title: "Үүдэнд агаарын хөшиг",
+        text: "Агаарын хөшиг хаалга нээгдэх бүрт хүйтэн агаарыг дотогш оруулахгүй.",
+      },
+      service,
+    ],
+  },
+  {
+    id: "building",
+    name: "Барилга",
+    model: "/models/hvac/building.glb?v=3",
+    label:
+      "Олон давхар барилгын зүсэлт: дээврийн төхөөрөмж, босоо суваг, давхар бүрийн суваг, зогсоолын сэнс",
+    mood: {
+      background: "#b9c6d3",
+      sun: "#fff4e6",
+      sunIntensity: 4.2,
+      daylight: "#eaf1ff",
+      pendant: "#fff1dc",
+    },
+    sun: { position: [-22, 34, 26], extent: 22, far: 90 },
+    interior: false,
+    fog: { color: "#16171b", near: 55, far: 130 },
+    shots: [
+      {
+        pos: [-12, 12, 42],
+        target: [1, 7.5, 0],
+        fov: 38,
+        shift: 0.15,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-6, 24, 10.5],
+        target: [-1.4, 19.2, -1.2],
+        fov: 36,
+        shift: 0.12,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 1,
+      },
+      {
+        pos: [3.6, 9.6, 17],
+        target: [2.55, 9.2, -4.3],
+        fov: 36,
+        shift: 0.12,
+        ceiling: 0,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      // every floor's network in place: the structure ghosted, the fit-out and the street faded
+      {
+        pos: [-15, 23.5, 37.5],
+        target: [0.5, 8.2, 0],
+        fov: 40,
+        shift: 0.15,
+        ceiling: 0,
+        slab: 0.07,
+        sys: 0,
+        ahu: 0,
+        fade: 1,
+      },
+      // then down the floors from the top, one step each with that floor in focus (floor 4 is the fifth, 0 the ground):
+      // each floor whole, the camera leaning towards what its step names (the damper and control box by the shaft,
+      // the main stepping down, the diffusers, the return along the back, the air curtain over the entrance)
+      {
+        pos: [-8.3, 25.9, 13.2],
+        target: [0.2, 17.4, -1.3],
+        fov: 40,
+        shift: 0.2,
+        ceiling: 0,
+        slab: 0.07,
+        sys: 0,
+        ahu: 0,
+        fade: 1,
+        floor: 4,
+      },
+      {
+        pos: [-9.1, 22.3, 14.5],
+        target: [-0.6, 13.8, 0],
+        fov: 40,
+        shift: 0.2,
+        ceiling: 0,
+        slab: 0.07,
+        sys: 0,
+        ahu: 0,
+        fade: 1,
+        floor: 3,
+      },
+      {
+        pos: [-9.9, 18.7, 14.2],
+        target: [-1.4, 10.2, -0.3],
+        fov: 40,
+        shift: 0.2,
+        ceiling: 0,
+        slab: 0.07,
+        sys: 0,
+        ahu: 0,
+        fade: 1,
+        floor: 2,
+      },
+      {
+        pos: [-9.7, 15.1, 12.9],
+        target: [-1.2, 6.6, -1.6],
+        fov: 40,
+        shift: 0.2,
+        ceiling: 0,
+        slab: 0.07,
+        sys: 0,
+        ahu: 0,
+        fade: 1,
+        floor: 1,
+      },
+      {
+        pos: [-15.5, 8.5, 12],
+        target: [-5.2, 2.6, -0.4],
+        fov: 40,
+        shift: 0.2,
+        ceiling: 0,
+        slab: 0.07,
+        sys: 0,
+        ahu: 0,
+        fade: 1,
+        floor: 0,
+      },
+      {
+        pos: [2.5, -1.4, 10.5],
+        target: [-1.5, -2.2, -1.2],
+        fov: 44,
+        shift: 0.12,
+        ceiling: 1,
+        slab: 1,
+        sys: 0,
+        ahu: 0,
+      },
+      {
+        pos: [-14, 15, 46],
+        target: [1, 9.5, 0],
+        fov: 36,
+        shift: 0.15,
+        ceiling: 0,
+        slab: 0,
+        sys: 1,
+        ahu: 0,
+      },
+    ],
+    steps: [
+      {
+        tag: "Барилга",
+        title: "Дээврээс зогсоол хүртэл",
+        text: "Бүх давхар болон газар доорх зогсоолын агаарыг нэг систем хариуцна.",
+      },
+      {
+        tag: "Дээвэр",
+        title: "Дээвэр дээрх төхөөрөмж",
+        text: "Агаар бэлтгэх төхөөрөмж, бохир агаар гаргах сэнс дээвэр дээр байрлана.",
+      },
+      {
+        tag: "Босоо суваг",
+        title: "Барилгын босоо сувгууд",
+        text: "Босоо сувгууд шахтаар дамжин давхар бүрт цэвэр агаар хүргэж, бохир агаарыг гаргана.",
+      },
+      {
+        tag: "Давхар",
+        title: "Давхар бүрийн сүлжээ",
+        text: "Давхар бүр шахтаас тусдаа салаа авч, өөрийн сүлжээгээр ажиллана.",
+      },
+      {
+        tag: "5 давхар",
+        title: "Хамгаалалт ба хяналт",
+        text: "Галын хаалт гал гарвал автоматаар хаагдаж, урсгал тохируулагч агаарын хэмжээг тааруулна.",
+      },
+      {
+        tag: "4 давхар",
+        title: "Жигд урсгалтай гол суваг",
+        text: "Гол суваг салааны дараа нарийсаж, агаарыг жигд хурдтай урсгана.",
+      },
+      {
+        tag: "3 давхар",
+        title: "Өрөөнд жигд түгээлт",
+        text: "Гурван салаа зургаан агаар түгээгчээр агаарыг өрөөнд жигд тараана.",
+      },
+      {
+        tag: "2 давхар",
+        title: "Бохир агаарыг зайлуулах",
+        text: "Сорох суваг өрөөний бохир агаарыг сорж, дээвэр дээрх төхөөрөмж рүү буцаана.",
+      },
+      {
+        tag: "1 давхар",
+        title: "Үүдний агаарын хөшиг",
+        text: "Агаарын хөшиг өвлийн хүйтэн агаарыг лоббид оруулахгүй.",
+      },
+      {
+        tag: "Зогсоол",
+        title: "Зогсоолын агаар сэлгэлт",
+        text: "Хүчтэй сэнснүүд зогсоолын машины утаа, хийг гадагшлуулна.",
+      },
+      {
+        tag: "Систем",
+        title: "Нэг систем, нэг гүйцэтгэгч",
+        text: "Үйлдвэрлэл, угсралтаас засвар үйлчилгээ хүртэл нэг дор хариуцна.",
+        cta: true,
+      },
+    ],
+  },
+];

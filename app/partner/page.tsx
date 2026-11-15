@@ -1,10 +1,4 @@
-import AirOne from "@/components/partner/AirOne";
-import Aux from "@/components/partner/Aux";
-import Ballu from "@/components/partner/Ballu";
-import { Banner } from "@/components/partner/Banner";
-import Kanion from "@/components/partner/Kanion";
-import Lavfill from "@/components/partner/Lavfill";
-import Shuft from "@/components/partner/Shuft";
+import { Brands } from "@/components/partner/Brands";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata(
@@ -13,18 +7,7 @@ export const metadata = pageMetadata(
   "/partner",
 );
 
-const Partner = () => {
-  return (
-    <>
-      <Banner />
-      <Kanion />
-      <Aux />
-      <Ballu />
-      <Shuft />
-      <AirOne />
-      <Lavfill />
-    </>
-  );
-};
+// The six partner brands as cards, with a jump row of their logos and a closing call (components/partner/Brands.tsx).
+const Partner = () => <Brands />;
 
 export default Partner;

@@ -2,8 +2,30 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/* the header, the Partners block and the footer are night on the home page and white everywhere else */
+@custom-variant light (&:where(.light, .light *));
 
 @theme inline {
+  --font-sans: var(--font-golos), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+  /* header and the home page's first screen: one deep charcoal */
+  --color-night: #16171b;
+  /* warm monochrome with one washed-out blue for tags */
+  --color-bone: #f7f6f3;
+  --color-line: #eaeaea;
+  --color-quiet: #787774;
+  --color-charcoal: #111111;
+  --color-prose: #2f3437;
+  --color-tag: #e1f3fe;
+  --color-tag-ink: #1f6c9f;
+  --color-ink: #0b1020;
+  --color-soft: #4f5a6e;
+  --color-panel: #e9ebee;
+  --color-brand: #0a8cf0; /* the user's colour (2026-11-15); was #0100fd, then #2639b0 */
+  --color-graphite: #1f2226;
+  --color-mist: #aeb2b8; /* a cool mid grey; the Company ground before it moved onto night */
+  --text-step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --text-step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -44,11 +66,18 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --spacing-128: 32rem;
   --spacing-144: 36rem;
-  --font-family-fester: var(--font-fester);
-  --font-family-mulish: var(--font-mulish);
+  /* from here the page container leaves a margin wide enough for the contact bar at the left edge */
+  --breakpoint-wide: 90rem;
 }
 
 :root {
+  --header-h: 4.5rem; /* the floating pill header: a 56px bar with 8px above and below; the scroll stages pin under it */
+  /* the foot of the screen the contact bar takes below wide (components/ContactBar.tsx: its 58px pill and the 1rem or
+     safe area under it); the scroll stages keep their copy above it. None from wide, where the bar stands at the left. */
+  --bar-room: calc(max(1rem, env(safe-area-inset-bottom)) + 3.625rem);
+  @variant wide {
+    --bar-room: 0px;
+  }
   --radius: 0.625rem;
   --background: #ffffff;
   --foreground: #333333;
@@ -125,6 +154,12 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* selected text in a neutral grey with white letters, readable on the night and the white grounds alike; not the
+     brand blue (the user's call, 2026-11-09) */
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-ink) 60%, white);
+    color: var(--color-white);
+  }
 }
 
 @keyframes ping-slow {
@@ -142,28 +177,104 @@
   animation: ping-slow 3s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
-@keyframes infinite-scroll {
+/* the hero's scroll hint: a brand mark running down a hairline */
+/* The home page's first-load curtain (components/home/Hero.tsx) lifts on its own if the script never runs. */
+@keyframes curtain-safety {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* The hero's 3D loading sign (components/home/Hero.tsx): a light running along a line, and the sign fading in late. */
+@keyframes loader-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
+}
+@keyframes loader-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hint-drop {
   0% {
-    transform: translateX(0);
+    transform: translateY(-100%);
+  }
+  70%,
+  100% {
+    transform: translateY(260%);
+  }
+}
+
+/* The partners orbit (components/Footer.tsx): each logo's carrier turns about the centre and the logo turns back by as
+   much, so it stays upright. The whole orbit holds still while a logo is pointed at or focused, so it can be clicked,
+   and it does not turn at all for visitors who ask for less motion. */
+@keyframes orbit {
+  to {
+    rotate: 360deg;
+  }
+}
+.orbit:has(a:hover, a:focus-visible) .orbit-turn {
+  animation-play-state: paused;
+}
+
+/* The home page's service icons (components/home/ServiceIcons.tsx): air running along a dashed line (its dash and gap
+   make 90), smoke rings leaving a chimney, windows lit in turn, a wrench working a bolt. They turn on `orbit` too. */
+/* the footer's air line: short dashes running along a duct (components/blocks/cta-3.tsx) */
+@keyframes air-run {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -90;
+  }
+}
+@keyframes puff {
+  0% {
+    opacity: 0;
+    translate: 0 8px;
+    scale: 0.6;
+  }
+  25% {
+    opacity: 0.75;
   }
   100% {
-    transform: translateX(-50%);
+    opacity: 0;
+    translate: 36px -66px;
+    scale: 1.5;
   }
 }
-
-@keyframes infinite-scroll-reverse {
-  0% {
-    transform: translateX(-50%);
-  }
+@keyframes glow {
+  0%,
   100% {
-    transform: translateX(0);
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
   }
 }
-
-.animate-infinite-scroll {
-  animation: infinite-scroll 100s linear infinite;
+@keyframes rock {
+  0%,
+  100% {
+    rotate: -9deg;
+  }
+  50% {
+    rotate: 9deg;
+  }
 }
-
-.animate-infinite-scroll-reverse {
-  animation: infinite-scroll-reverse 100s linear infinite;
+@media (prefers-reduced-motion: reduce) {
+  .orbit-turn {
+    animation: none;
+  }
 }

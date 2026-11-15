@@ -1,9 +1,11 @@
-import { About } from "@/components/home/About";
-import { Features } from "@/components/home/Features";
+import { Company } from "@/components/home/Company";
+import { EngineerTeam } from "@/components/home/EngineerTeam";
 import { Hero } from "@/components/home/Hero";
+import { ProductShowcase } from "@/components/home/ProductShowcase";
 import { Projects } from "@/components/home/Projects";
 import { Services } from "@/components/home/Services";
 import { StructuredData } from "@/components/StructuredData";
+import { homeProducts, productMenu } from "@/constants/products";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -15,10 +17,11 @@ export default function Home() {
     <div className="min-h-screen bg-white">
       <StructuredData />
       <Hero />
-      <About />
+      <Company />
       <Services />
-      <Features />
       <Projects />
+      <ProductShowcase items={homeProducts} menu={productMenu} />
+      <EngineerTeam />
     </div>
   );
 }

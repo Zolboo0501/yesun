@@ -1,0 +1,462 @@
+"use client";
+import { Environment, Lightformer, useGLTF } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Bloom, EffectComposer, SSAO, ToneMapping } from "@react-three/postprocessing";
+import type { MotionValue } from "motion/react";
+import { ToneMappingMode } from "postprocessing";
+import { Suspense, useEffect, useRef, useState, type RefObject } from "react";
+import * as THREE from "three";
+import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
+import { heroScenes, type HeroSceneConfig } from "./heroScenes";
+
+RectAreaLightUniformsLib.init();
+
+// Each scene's model, light and shots live in heroScenes.ts; this component draws whichever it is given.
+const DRACO = "/draco/"; // three's Draco decoder, copied into public/draco/
+
+type Input = { dragging: boolean; lastX: number; yaw: number; px: number; py: number };
+
+type SceneProps = {
+  config: HeroSceneConfig;
+  progress: MotionValue<number>;
+  active: boolean;
+  reducedMotion: boolean;
+  /** called once the scene has drawn its first frames (its model loaded, its shaders compiled) */
+  onReady?: () => void;
+};
+
+export default function HeroScene({ config, progress, active, reducedMotion, onReady }: SceneProps) {
+  const { mood, sun, shots } = config;
+  // Mouse drag turns the room a little; touch is left alone so the page still scrolls.
+  const input = useRef<Input>({ dragging: false, lastX: 0, yaw: 0, px: 0, py: 0 });
+  // Phones and small screens take the lite path: no ambient occlusion, no post-processing passes at all (the renderer
+  // tone-maps itself), no shadows and a lower pixel ratio, so scrolling and switching buildings stay smooth.
+  const [lite] = useState(
+    () => window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768,
+  );
+
+  return (
+    <div
+      className="size-full cursor-grab active:cursor-grabbing"
+      onPointerDown={(e) => {
+        if (e.pointerType !== "mouse") return;
+        input.current.dragging = true;
+        input.current.lastX = e.clientX;
+      }}
+      onPointerMove={(e) => {
+        if (e.pointerType !== "mouse") return;
+        const rect = e.currentTarget.getBoundingClientRect();
+        input.current.px = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        input.current.py = ((e.clientY - rect.top) / rect.height) * 2 - 1;
+        if (!input.current.dragging) return;
+        input.current.yaw += (e.clientX - input.current.lastX) * 0.003;
+        input.current.lastX = e.clientX;
+      }}
+      onPointerUp={() => (input.current.dragging = false)}
+      onPointerLeave={() => {
+        input.current.dragging = false;
+        input.current.px = input.current.py = 0;
+      }}
+    >
+      <Canvas
+        frameloop={active ? "always" : "never"}
+        dpr={[1, lite ? 1.25 : 1.75]}
+        shadows={lite ? false : "percentage"}
+        flat={!lite}
+        gl={lite ? { antialias: true, powerPreference: "high-performance" } : undefined}
+        // the lite path has no ToneMapping pass, so the renderer maps the tones itself (AgX, as the pass does)
+        onCreated={lite ? ({ gl }) => void (gl.toneMapping = THREE.AgXToneMapping) : undefined}
+        camera={{ position: shots[0].pos, fov: shots[0].fov, near: 0.05, far: 160 }}
+        fallback={
+          <p className="flex size-full items-center justify-center text-step-small text-soft">
+            Таны хөтөч 3D дүрслэлийг дэмжихгүй байна.
+          </p>
+        }
+        aria-label={config.label}
+      >
+        <Environment resolution={256} environmentIntensity={0.9}>
+          <color attach="background" args={[mood.background]} />
+          {/* the window wall, the white ceiling and a warm floor bounce, as seen by reflections */}
+          <Lightformer intensity={5} position={[-9, 1.5, 0]} rotation-y={Math.PI / 2} scale={[12, 3, 1]} color={mood.daylight} />
+          <Lightformer intensity={1.2} position={[0, 6, 0]} rotation-x={Math.PI / 2} scale={[10, 8, 1]} color="#fff4e6" />
+          <Lightformer intensity={0.8} position={[0, -3, 0]} rotation-x={-Math.PI / 2} scale={[10, 8, 1]} color="#c89f7a" />
+          <Lightformer intensity={1} position={[9, 2, 0]} rotation-y={-Math.PI / 2} scale={[10, 3, 1]} color="#fff1e0" />
+        </Environment>
+        {config.fog && <fog attach="fog" args={[config.fog.color, config.fog.near, config.fog.far]} />}
+        <hemisphereLight args={["#e6eef8", "#6a5544", 0.7]} />
+        {/* low sun through the window wall; the ceiling and walls cast, so it lands in patches */}
+        <directionalLight
+          castShadow
+          position={sun.position}
+          intensity={mood.sunIntensity}
+          color={mood.sun}
+          shadow-mapSize={[2048, 2048]}
+          shadow-camera-left={-sun.extent}
+          shadow-camera-right={sun.extent}
+          shadow-camera-top={sun.extent}
+          shadow-camera-bottom={-sun.extent}
+          shadow-camera-near={1}
+          shadow-camera-far={sun.far}
+          shadow-bias={-0.0003}
+          shadow-normalBias={0.03}
+          shadow-radius={4}
+        />
+        {config.interior && (
+          <>
+            {/* soft daylight from the glazing */}
+            <rectAreaLight position={[-5.0, 1.5, 0]} rotation={[0, -Math.PI / 2, 0]} width={8} height={2.6} intensity={2.2} color={mood.daylight} />
+            {/* pools under the lamps, and a work light in the plenum */}
+            <pointLight position={[-1.2, 2.05, 0]} intensity={4} distance={4.5} color={mood.pendant} />
+            <pointLight position={[1.75, 2.15, 0.6]} intensity={2.5} distance={3.5} color={mood.pendant} />
+            <pointLight position={[0, 3.6, 1.5]} intensity={3} distance={6} color="#f4f1ec" />
+          </>
+        )}
+
+        <Suspense fallback={null}>
+          <Rig
+            model={config.model}
+            shots={shots}
+            progress={progress}
+            inputRef={input}
+            animate={!reducedMotion}
+            onReady={onReady}
+          />
+          <WarmUp active={active} />
+        </Suspense>
+
+        {lite ? null : (
+          <EffectComposer multisampling={4} enableNormalPass>
+            {/* postprocessing's own SSAO: n8ao 2.0.1 crashes on three 0.187 */}
+            <SSAO
+              samples={16}
+              rings={4}
+              radius={0.08}
+              intensity={22}
+              bias={0.03}
+              luminanceInfluence={0.55}
+              worldDistanceThreshold={1.2}
+              worldDistanceFalloff={0.4}
+              worldProximityThreshold={0.5}
+              worldProximityFalloff={0.15}
+              resolutionScale={0.5}
+            />
+            <Bloom mipmapBlur intensity={0.55} luminanceThreshold={0.9} luminanceSmoothing={0.2} />
+            <ToneMapping mode={ToneMappingMode.AGX} />
+          </EffectComposer>
+        )}
+      </Canvas>
+    </div>
+  );
+}
+
+// scratch vectors, rewritten every frame; each Rig keeps its own look target
+const targetPos = new THREE.Vector3();
+const targetLook = new THREE.Vector3();
+const tmpA = new THREE.Vector3();
+const tmpB = new THREE.Vector3();
+const { damp, clamp, lerp } = THREE.MathUtils;
+
+/** Blender stores offsets Z-up; three.js is Y-up. */
+const toThree = (v: unknown) =>
+  Array.isArray(v) && v.length === 3
+    ? new THREE.Vector3(Number(v[0]), Number(v[2]), -Number(v[1]))
+    : new THREE.Vector3();
+
+// Shadows: everything solid casts except the feature ceiling and the slab (they would black out
+// the plenum); the room shell casts too, which is what keeps the sun to patches by the windows.
+const NO_CAST = new Set(["ceiling_reveal", "slab", "glass", "meeting_glass", "cooler_glass", "city"]);
+const NO_RECEIVE = new Set(["glass", "meeting_glass", "cooler_glass", "city"]);
+
+type Parts = ReturnType<typeof findParts>;
+
+function findParts(scene: THREE.Object3D) {
+  // Each floor's network (extra `floor`, 0 = ground) gets materials of its own, so a shot can bring one floor
+  // forward and dim the others. Cloned first, so the glow below picks the clones up.
+  const floors: { floor: number; materials: THREE.Material[] }[] = [];
+  scene.traverse((o) => {
+    if (typeof o.userData.floor !== "number") return;
+    const materials: THREE.Material[] = [];
+    o.traverse((c) => {
+      if (!(c instanceof THREE.Mesh)) return;
+      const material = (c.material as THREE.Material).clone();
+      material.transparent = true;
+      c.material = material;
+      materials.push(material);
+    });
+    floors.push({ floor: o.userData.floor, materials });
+  });
+
+  // Materials the model gives an x-ray colour (the building's ducts, by the air they carry) glow in it once the
+  // fit-out has faded, so each floor's network reads at a glance.
+  const glowing: { material: THREE.MeshStandardMaterial; base: THREE.Color; xray: THREE.Color }[] = [];
+  scene.traverse((o) => {
+    if (!(o instanceof THREE.Mesh)) return;
+    const names = new Set<string>();
+    for (let n: THREE.Object3D | null = o; n; n = n.parent) names.add(n.name);
+    o.castShadow = ![...NO_CAST].some((k) => names.has(k));
+    o.receiveShadow = ![...NO_RECEIVE].some((k) => names.has(k));
+    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+      if (m.name.startsWith("leaf_")) {
+        m.alphaTest = 0.5;
+        m.transparent = false;
+        m.side = THREE.DoubleSide;
+      }
+      // AgX flattens emissive; lift the monitors so their dashboards read.
+      if (m.name === "screen") (m as THREE.MeshStandardMaterial).emissiveIntensity = 2.4;
+      if (m.name === "glass") {
+        m.depthWrite = false;
+        m.side = THREE.DoubleSide;
+      }
+      if (
+        typeof m.userData.xray === "string" &&
+        m instanceof THREE.MeshStandardMaterial &&
+        !glowing.some((g) => g.material === m)
+      ) {
+        const xray = new THREE.Color(`#${m.userData.xray}`);
+        m.emissive.copy(xray);
+        m.emissiveIntensity = 0;
+        glowing.push({ material: m, base: m.color.clone(), xray });
+      }
+    }
+  });
+
+  // Each slat or ceiling tile gets its own material so it can fade on its own beat, centre out.
+  const ceiling = (scene.getObjectByName("ceiling_reveal")?.children ?? []).map((piece) => {
+    const mesh = piece as THREE.Mesh;
+    const material = (mesh.material as THREE.MeshStandardMaterial).clone();
+    mesh.material = material;
+    return { mesh, material, home: piece.position.clone(), delay: Math.min(Math.abs(piece.position.x) / 3.3, 1) };
+  });
+
+  // Exploded-view parts carry their offsets from Blender as glTF extras.
+  const exploding: { obj: THREE.Object3D; home: THREE.Vector3; sys: THREE.Vector3; ahu: THREE.Vector3; delay: number }[] = [];
+  const fading: { mesh: THREE.Mesh; material: THREE.Material; base: number }[] = [];
+  // the AHU's fan, plus any other fan the model marks to spin (the kindergarten's unit has two); fans marked
+  // spin_up stand upright, like a rooftop unit's condenser fans, and turn about the vertical
+  const fans: THREE.Object3D[] = [];
+  const upFans: THREE.Object3D[] = [];
+  scene.traverse((o) => {
+    const d = o.userData;
+    if (d.spin_up) upFans.push(o);
+    else if (o.name === "ahu_fan" || d.spin) fans.push(o);
+    if (d.explode_sys || d.explode_ahu) {
+      exploding.push({
+        obj: o,
+        home: o.position.clone(),
+        sys: toThree(d.explode_sys),
+        ahu: toThree(d.explode_ahu),
+        delay: Number(d.delay ?? 0),
+      });
+    }
+    if (d.fade_explode) {
+      o.traverse((c) => {
+        if (!(c instanceof THREE.Mesh)) return;
+        const material = (c.material as THREE.Material).clone();
+        material.transparent = true;
+        c.material = material;
+        // base: glass is already see-through and must stay so
+        fading.push({ mesh: c, material, base: material.opacity });
+      });
+    }
+  });
+
+  const slab = scene.getObjectByName("slab") as THREE.Mesh | undefined;
+  const slabMaterial = slab?.material as THREE.MeshStandardMaterial | undefined;
+  if (slabMaterial) slabMaterial.transparent = true;
+  return {
+    ceiling,
+    exploding,
+    fading,
+    slab,
+    slabMaterial,
+    glowing,
+    floors,
+    door: scene.getObjectByName("ahu_door"),
+    fans,
+    upFans,
+  };
+}
+
+/** 0..1 for one part of a staggered move: later parts start later and finish together. */
+const staged = (amount: number, delay: number) => {
+  const o = clamp(amount * 1.5 - delay * 0.5, 0, 1);
+  return o * o * (3 - 2 * o);
+};
+
+function Rig({
+  model,
+  shots,
+  progress,
+  inputRef,
+  animate,
+  onReady,
+}: {
+  model: string;
+  shots: HeroSceneConfig["shots"];
+  progress: MotionValue<number>;
+  inputRef: RefObject<Input>;
+  animate: boolean;
+  onReady?: () => void;
+}) {
+  const { scene } = useGLTF(model, DRACO);
+  const lookRef = useRef(new THREE.Vector3().fromArray(shots[0].target));
+  const group = useRef<THREE.Group>(null);
+  const offset = useRef({ w: 0, h: 0, x: 0, y: 0 });
+  const state = useRef({ ceiling: 1, slab: 1, sys: 0, ahu: 0, fade: 0, isolate: 0, focus: 0 });
+  // The parts the story moves, looked up on the first frame.
+  const partsRef = useRef<Parts | null>(null);
+
+  const frames = useRef(0);
+
+  useFrame(({ camera, size }, delta) => {
+    // the third frame: the model is in and the first frame's shader compile is behind us
+    if (frames.current < 3 && ++frames.current === 3) onReady?.();
+    partsRef.current ??= findParts(scene);
+    const parts = partsRef.current;
+    const cam = camera as THREE.PerspectiveCamera;
+    const k = animate ? 5 : 1000;
+    const input = inputRef.current;
+
+    // Scroll scrubs between neighbouring shots with an ease-in-out.
+    const p = clamp(progress.get(), 0, shots.length - 1);
+    const i = Math.min(Math.floor(p), shots.length - 2);
+    const f = p - i;
+    const t = f * f * (3 - 2 * f);
+    const a = shots[i];
+    const b = shots[i + 1];
+    targetPos.lerpVectors(tmpA.fromArray(a.pos), tmpB.fromArray(b.pos), t);
+    targetLook.lerpVectors(tmpA.fromArray(a.target), tmpB.fromArray(b.target), t);
+    targetPos.x += input.px * 0.12;
+    targetPos.y -= input.py * 0.06;
+
+    cam.position.set(
+      damp(cam.position.x, targetPos.x, k, delta),
+      damp(cam.position.y, targetPos.y, k, delta),
+      damp(cam.position.z, targetPos.z, k, delta),
+    );
+    const look = lookRef.current;
+    look.set(
+      damp(look.x, targetLook.x, k, delta),
+      damp(look.y, targetLook.y, k, delta),
+      damp(look.z, targetLook.z, k, delta),
+    );
+    cam.lookAt(look);
+
+    // Ceiling, slab and the exploded views ease towards the current step's state.
+    const s = state.current;
+    const slow = animate ? 2 : 1000;
+    s.ceiling = damp(s.ceiling, lerp(a.ceiling, b.ceiling, t), slow, delta);
+    s.slab = damp(s.slab, lerp(a.slab, b.slab, t), k, delta);
+    s.sys = damp(s.sys, lerp(a.sys, b.sys, t), slow, delta);
+    s.ahu = damp(s.ahu, lerp(a.ahu, b.ahu, t), slow, delta);
+    s.fade = damp(s.fade, lerp(a.fade ?? 0, b.fade ?? 0, t), slow, delta);
+
+    const hidden = 1 - s.ceiling;
+    for (const piece of parts.ceiling) {
+      const e = staged(hidden, piece.delay);
+      piece.mesh.position.set(piece.home.x, piece.home.y + e * 0.18, piece.home.z);
+      piece.material.opacity = 1 - e;
+      piece.material.transparent = e > 0.001;
+      piece.material.depthWrite = e < 0.5;
+      piece.mesh.visible = e < 0.99;
+    }
+    for (const part of parts.exploding) {
+      const es = staged(s.sys, part.delay);
+      const ea = staged(s.ahu, part.delay);
+      part.obj.position
+        .copy(part.home)
+        .addScaledVector(part.sys, es)
+        .addScaledVector(part.ahu, ea);
+    }
+    // Fit-out, glazing and street go with the exploded view, or on their own to leave the system in place.
+    const gone = clamp(Math.max(s.sys * 2, s.fade), 0, 1);
+    for (const f of parts.fading) {
+      f.material.opacity = f.base * (1 - gone);
+      f.mesh.visible = gone < 0.99;
+    }
+    for (const g of parts.glowing) {
+      g.material.color.lerpColors(g.base, g.xray, gone);
+      g.material.emissiveIntensity = gone * 0.5;
+    }
+
+    // One floor in focus (a shot's `floor`): its network at full strength, the other floors' dimmed. The focus
+    // glides from floor to floor between two such shots, and starts on its floor when the isolation begins.
+    const focusTo = lerp(a.floor ?? b.floor ?? 0, b.floor ?? a.floor ?? 0, t);
+    s.isolate = damp(s.isolate, lerp(a.floor === undefined ? 0 : 1, b.floor === undefined ? 0 : 1, t), slow, delta);
+    s.focus = s.isolate < 0.01 ? focusTo : damp(s.focus, focusTo, slow, delta);
+    for (const f of parts.floors) {
+      const opacity = 1 - s.isolate * (1 - clamp(1 - Math.abs(f.floor - s.focus), 0, 1)) * 0.92;
+      for (const m of f.materials) {
+        m.opacity = opacity;
+        m.depthWrite = opacity > 0.5;
+      }
+    }
+    if (parts.slab && parts.slabMaterial) {
+      parts.slabMaterial.opacity = s.slab;
+      // a ghosted structure stops writing depth, so its layers blend evenly over the system inside
+      parts.slabMaterial.depthWrite = s.slab > 0.98;
+      parts.slab.visible = s.slab > 0.02;
+    }
+    if (parts.door) parts.door.rotation.y = -staged(s.ahu, 0.05) * 1.2;
+    if (animate) {
+      for (const fan of parts.fans) fan.rotation.z += delta * (1 + s.ahu * 6);
+      for (const fan of parts.upFans) fan.rotation.y += delta * (1 + s.ahu * 6);
+    }
+
+    // Released drags ease the room back so every shot frames what it should.
+    if (!input.dragging) input.yaw = damp(input.yaw, 0, 2.5, delta);
+    if (group.current) group.current.rotation.y = input.yaw;
+
+    // Lens follows the shot; desktop keeps the subject right of the copy, phones keep it above.
+    const wide = size.width >= 1024;
+    const fov = lerp(a.fov, b.fov, t) / (wide ? 1 : 0.8);
+    const ox = wide ? Math.round(-size.width * lerp(a.shift, b.shift, t)) : 0;
+    const oy = wide ? 0 : Math.round(size.height * 0.15);
+    const o = offset.current;
+    if (o.w !== size.width || o.h !== size.height || o.x !== ox || o.y !== oy) {
+      Object.assign(o, { w: size.width, h: size.height, x: ox, y: oy });
+      cam.setViewOffset(size.width, size.height, ox, oy, size.width, size.height);
+    }
+    if (Math.abs(cam.fov - fov) > 1e-3 || cam.zoom !== 1) {
+      cam.fov = fov;
+      cam.zoom = 1;
+      cam.updateProjectionMatrix();
+    }
+  });
+
+  return (
+    <group ref={group}>
+      <primitive object={scene} />
+    </group>
+  );
+}
+
+// the first scene loads with the page; the others are mounted (and so fetched) a scene ahead of being seen
+useGLTF.preload(heroScenes[0].model, DRACO);
+
+/** Fetch and parse a building's model ahead of its mount (no canvas, no shaders), for when it is picked. */
+export const preloadModel = (model: string) => useGLTF.preload(model, DRACO);
+
+/** A scene's first frame compiles every shader (the lights, the shadow map, the environment, the effects) and uploads
+ *  every texture, which can hold the page for a moment. A scene waiting beside the one on stage (mounted, its model in,
+ *  but not drawing) draws that first frame once while the browser is idle, so it slides in without a stall. */
+function WarmUp({ active }: { active: boolean }) {
+  const advance = useThree((state) => state.advance);
+  const warmed = useRef(false);
+  useEffect(() => {
+    if (active || warmed.current) return;
+    const run = () => {
+      if (warmed.current) return;
+      warmed.current = true;
+      advance(performance.now());
+    };
+    // Safari has no requestIdleCallback: a short wait stands in for it
+    if ("requestIdleCallback" in window) {
+      const idle = window.requestIdleCallback(run, { timeout: 2000 });
+      return () => window.cancelIdleCallback(idle);
+    }
+    const timer = setTimeout(run, 400);
+    return () => clearTimeout(timer);
+  }, [active, advance]);
+  return null;
+}
