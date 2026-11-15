@@ -107,6 +107,11 @@ export function Hero() {
   // The scene on stage, and the one sliding out after a new name was picked (drawn until the new one is in). The
   // neighbours of the one on stage stay mounted too, so their models are in before they are picked.
   const [base, setBase] = useState(0);
+  // Phones keep only the building on stage (and the one sliding out) mounted: a neighbour's model loading in the
+  // background stalls the scroll there.
+  const [lite] = useState(
+    () => typeof window !== "undefined" && (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768),
+  );
   const [leaving, setLeaving] = useState<number | null>(null);
   const last = steps[base] - 1;
 
@@ -124,6 +129,19 @@ export function Hero() {
     });
   };
   /** Put scene k on stage at its first step; picking the one already on stage goes back to its start. */
+  // On phones the neighbours are not mounted, so their models are fetched and parsed while the browser is idle once the
+  // one on stage has drawn: picking one then needs only its canvas, not the download and the parse too.
+  useEffect(() => {
+    if (!lite || !ready.includes(base)) return;
+    const idle = window.requestIdleCallback ?? ((cb: () => void) => window.setTimeout(cb, 1200));
+    const id = idle(() => {
+      import("./HeroScene").then(({ preloadModel }) => {
+        for (const k of [base - 1, base + 1]) if (heroScenes[k]) preloadModel(heroScenes[k].model);
+      });
+    });
+    return () => (window.cancelIdleCallback ?? window.clearTimeout)(id);
+  }, [lite, base, ready]);
+
   const pick = (k: number) => {
     if (k === base) return go(0);
     setLeaving(base);
@@ -159,7 +177,7 @@ export function Hero() {
               current={k === base}
               place={Math.sign(k - base)}
               moving={k === base || k === leaving}
-              mounted={Math.abs(k - base) <= 1 || k === leaving}
+              mounted={(k === base || k === leaving || (!lite && Math.abs(k - base) <= 1)) && (active || !lite)}
               drawing={active && (k === base || k === leaving)}
               reducedMotion={reducedMotion}
               reveal={reveal}

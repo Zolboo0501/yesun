@@ -9,6 +9,8 @@ import { useEffect } from "react";
  *  left to the browser so the page behind stays put and the drawer scrolls itself. */
 export function SmoothScroll() {
   useEffect(() => {
+    // touch screens keep the browser's own scroll untouched (Lenis there fights the phone's toolbar resizing the page)
+    if (window.matchMedia("(pointer: coarse)").matches) return;
     const lenis = new Lenis({
       autoRaf: true,
       stopInertiaOnNavigate: true,

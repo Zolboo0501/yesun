@@ -29,7 +29,8 @@ export default function HeroScene({ config, progress, active, reducedMotion, onR
   const { mood, sun, shots } = config;
   // Mouse drag turns the room a little; touch is left alone so the page still scrolls.
   const input = useRef<Input>({ dragging: false, lastX: 0, yaw: 0, px: 0, py: 0 });
-  // Phones and small screens skip ambient occlusion and multisampling.
+  // Phones and small screens take the lite path: no ambient occlusion, no post-processing passes at all (the renderer
+  // tone-maps itself), no shadows and a lower pixel ratio, so scrolling and switching buildings stay smooth.
   const [lite] = useState(
     () => window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768,
   );
@@ -59,9 +60,12 @@ export default function HeroScene({ config, progress, active, reducedMotion, onR
     >
       <Canvas
         frameloop={active ? "always" : "never"}
-        dpr={[1, lite ? 1.5 : 1.75]}
-        shadows="percentage"
-        flat
+        dpr={[1, lite ? 1.25 : 1.75]}
+        shadows={lite ? false : "percentage"}
+        flat={!lite}
+        gl={lite ? { antialias: true, powerPreference: "high-performance" } : undefined}
+        // the lite path has no ToneMapping pass, so the renderer maps the tones itself (AgX, as the pass does)
+        onCreated={lite ? ({ gl }) => void (gl.toneMapping = THREE.AgXToneMapping) : undefined}
         camera={{ position: shots[0].pos, fov: shots[0].fov, near: 0.05, far: 160 }}
         fallback={
           <p className="flex size-full items-center justify-center text-step-small text-soft">
@@ -120,12 +124,7 @@ export default function HeroScene({ config, progress, active, reducedMotion, onR
           <WarmUp active={active} />
         </Suspense>
 
-        {lite ? (
-          <EffectComposer multisampling={0}>
-            <Bloom mipmapBlur intensity={0.5} luminanceThreshold={0.9} luminanceSmoothing={0.2} />
-            <ToneMapping mode={ToneMappingMode.AGX} />
-          </EffectComposer>
-        ) : (
+        {lite ? null : (
           <EffectComposer multisampling={4} enableNormalPass>
             {/* postprocessing's own SSAO: n8ao 2.0.1 crashes on three 0.187 */}
             <SSAO
@@ -434,6 +433,9 @@ function Rig({
 
 // the first scene loads with the page; the others are mounted (and so fetched) a scene ahead of being seen
 useGLTF.preload(heroScenes[0].model, DRACO);
+
+/** Fetch and parse a building's model ahead of its mount (no canvas, no shaders), for when it is picked. */
+export const preloadModel = (model: string) => useGLTF.preload(model, DRACO);
 
 /** A scene's first frame compiles every shader (the lights, the shadow map, the environment, the effects) and uploads
  *  every texture, which can hold the page for a moment. A scene waiting beside the one on stage (mounted, its model in,

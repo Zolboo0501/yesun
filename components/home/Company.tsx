@@ -177,6 +177,9 @@ function Vapor({
   wide: boolean;
 }) {
   if (!live) return <Tag className={`opacity-0 ${className}`}>{text}</Tag>;
+  // phones show the text plainly: a WebGL canvas per heading there, beside the hero's and the sphere's, is what made
+  // the page flash white and jump while scrolling
+  if (!wide) return <Tag className={className}>{text}</Tag>;
   return (
     <VaporType
       as={Tag}
