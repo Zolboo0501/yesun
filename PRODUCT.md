@@ -34,6 +34,8 @@ The figures behind that claim are **confirmed by the client** (2026-11-03):
 - is the official supplier of six brands: KANION, AUX, BALLU, SHUFT, AIRONN, LAVFILL;
 - gives a 1–3 year quality warranty on installations and offers 24/7 emergency service.
 
+The 150+ sites, the 1,800 m² factory area, the 216 m² warehouse and the 12 machines stay true, but are **not shown on the site** (the user's call, 2026-11-15; see CLAUDE.md).
+
 ## Operating Context
 
 - **Language and market:** the site is in Mongolian (`lang="mn"`) and serves Ulaanbaatar and the provinces. The search terms the site targets are in `SEO_STRATEGY.md`.

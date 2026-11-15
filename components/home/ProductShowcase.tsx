@@ -44,16 +44,16 @@ export function ProductShowcase({ items, menu }: { items: HomeProduct[]; menu: P
                   />
                 </h2>
                 <div className="mt-[0.45em] flex items-start gap-5 pl-[0.9em]">
-                  <span aria-hidden className="mt-[0.8rem] h-px w-12 shrink-0 bg-ink/60 sm:w-16" />
+                  <span aria-hidden className="mt-[0.8rem] h-px w-12 shrink-0 bg-brand sm:w-16" />
                   <p className="max-w-[38ch] text-pretty text-step-body leading-[1.55] text-ink/80">
-                    Хөргөлт, агаар сэлгэлтийн тоног төхөөрөмжийг үйлдвэрлэгчээс нь шууд нийлүүлдэг.
+                    Агааржуулагч, халаалт, агаар цэвэршүүлэх төхөөрөмжийн жинхэнэ бүтээгдэхүүнийг үйлдвэрээс нь шууд нийлүүлнэ.
                   </p>
                 </div>
               </div>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="mt-10 inline-flex">
                 <Link
                   href="/products"
-                  className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-7 text-sm font-semibold text-white transition-colors duration-200 hover:bg-ink/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                  className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-brand px-7 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                 >
                   Бүх бүтээгдэхүүн ({menu.total})
                   <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />

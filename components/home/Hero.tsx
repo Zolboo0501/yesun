@@ -135,7 +135,7 @@ export function Hero() {
     <section
       id="home"
       ref={section}
-      aria-label="Есөн Бэлчир: оффис, цэцэрлэг, сургууль, барилгын агаар сэлгэлт, хөргөлтийн систем"
+      aria-label="Есөн Бэлчир: оффис, цэцэрлэг, сургууль, дэлгүүр, барилгын агаар сэлгэлт, хөргөлтийн систем"
       className="relative bg-night text-white"
       style={{ height: `${steps[base] * 100}svh` }}
     >
@@ -380,7 +380,7 @@ function ContactActions() {
     <>
       <Link
         href="/contact"
-        className="group inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="group inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-brand/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         Инженертэй холбогдох
         <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />

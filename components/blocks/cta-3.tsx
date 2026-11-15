@@ -6,7 +6,7 @@ import { motion, useInView, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { useRef, type ReactNode } from "react";
 
-/** what the tiles' content needs to move: drawn in once seen, moving while in view, still under reduced motion */
+/** what the services' icons need to move: drawn in once seen, moving while in view, still under reduced motion */
 export type CTA3TileState = { seen: boolean; active: boolean; reduced: boolean };
 
 interface CTA3Props {
@@ -14,99 +14,111 @@ interface CTA3Props {
   title: string;
   text: string;
   action: { label: string; href: string };
-  /** the three tiles' content over the rings (left, centre, right), given whether they are seen and in view */
-  tiles: (state: CTA3TileState) => [ReactNode, ReactNode, ReactNode];
+  /** the three services at the ends of the air line (left, centre, right), given whether they are seen and in view */
+  points: (state: CTA3TileState) => { label: string; icon: ReactNode }[];
   /** under the button (the people who answer, the phones and the email) */
   children?: ReactNode;
   className?: string;
 }
 
-// three dashed rings, each turning its own way and pace
-const rings = [
-  { r: 290.5, opacity: 0.5, spin: "animate-[spin_20s_linear_infinite]", delay: 0.1 },
-  { r: 236.5, opacity: 0.8, spin: "animate-[spin_15s_linear_infinite_reverse]", delay: 0.2 },
-  { r: 182.5, opacity: 1, spin: "animate-[spin_25s_linear_infinite]", delay: 0.3 },
-];
+// The air line in a 480 × 120 sheet: a riser comes down from above and splits at a manifold into three drops, one to
+// the centre of each column below, its bends rounded like a duct's.
+const RISER = "M240 0V40";
+const DROPS = ["M240 40H96Q80 40 80 56V120", "M240 40V120", "M240 40H384Q400 40 400 56V120"];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-const tile =
-  "flex items-center justify-center rounded-3xl border border-white/10 bg-white/[0.06] backdrop-blur-sm light:border-ink/10 light:bg-ink/[0.04]";
 
 /**
- * A centred call to action, night by default and white under the `light` variant: three wide glassy tiles with the
- * subject's animated icons over slowly turning dashed rings that fade into the ground, the heading in two lines, one line of
- * text and the button, then whatever it is given. Everything comes in once as it scrolls into view; under reduced
- * motion the rings stand still and the entrances only fade.
+ * A centred call to action, night by default and white under the `light` variant: the company's subject drawn as an
+ * air line (air coming down a riser, splitting at a manifold and running to its three services, each a round node with
+ * its icon and name), the heading in two lines, one line of text and the button, then whatever it is given. The line
+ * draws in once seen and the air runs along it while in view; under reduced motion it is drawn at once and holds
+ * still.
  */
-export default function CTA3({ title, text, action, tiles, children, className }: CTA3Props) {
+export default function CTA3({ title, text, action, points, children, className }: CTA3Props) {
   const [lineA, lineB] = title.split("\n");
   const stage = useRef<HTMLDivElement>(null);
   const seen = useInView(stage, { once: true, amount: 0.4 });
   const active = useInView(stage, { amount: 0.2 });
   const reduced = useReducedMotion() ?? false;
-  const [left, centre, right] = tiles({ seen, active, reduced });
+  const services = points({ seen, active, reduced });
   const enter = (delay: number, from: { x?: number; y?: number; scale?: number } = { y: 20 }) => ({
     initial: { opacity: 0, ...from },
     whileInView: { opacity: 1, x: 0, y: 0, scale: 1 },
     viewport: { once: true, amount: 0.5 },
     transition: { duration: 0.6, delay, ease: EASE },
   });
+  const draw = (delay: number) => ({
+    initial: { pathLength: 0, opacity: 0 },
+    animate: seen ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 },
+    transition: reduced
+      ? { duration: 0 }
+      : { pathLength: { duration: 0.9, delay, ease: EASE }, opacity: { duration: 0.2, delay } },
+  });
 
   return (
     <div className={cn("mx-auto max-w-3xl text-center", className)}>
-      <div ref={stage} className="relative mb-10 flex h-44 items-center justify-center sm:h-52">
-        <div aria-hidden className="pointer-events-none absolute inset-0 -top-24 flex items-center justify-center">
-          <div className="relative size-[320px] sm:size-[420px]">
-            <svg viewBox="0 0 586 586" fill="none" className="size-full opacity-30">
-              {rings.map((ring) => (
-                <motion.g key={ring.r} {...enter(ring.delay, { scale: 0.8 })} style={{ originX: "50%", originY: "50%" }}>
-                  <circle
-                    cx="293"
-                    cy="293"
-                    r={ring.r}
-                    strokeOpacity={ring.opacity}
-                    strokeWidth="5"
-                    strokeDasharray="25 25"
-                    className={cn(
-                      "origin-center stroke-white [transform-box:fill-box] motion-reduce:animate-none light:stroke-ink",
-                      ring.spin,
-                    )}
-                  />
-                </motion.g>
-              ))}
-            </svg>
-            <div className="absolute inset-0 bg-linear-to-b from-transparent from-30% via-night/50 via-60% to-night light:via-white/50 light:to-white" />
-          </div>
-        </div>
+      <div ref={stage} className="mx-auto mb-12 w-[20rem] sm:w-[30rem]">
+        <svg
+          aria-hidden
+          viewBox="0 0 480 120"
+          fill="none"
+          strokeLinecap="round"
+          className={cn("block w-full overflow-visible", !active && "[&_.air]:[animation-play-state:paused]")}
+        >
+          <defs>
+            {/* the riser comes out of the ground above */}
+            <linearGradient id="cta-air-riser" x1="0" y1="0" x2="0" y2="40" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+              <stop offset="1" stopColor="currentColor" stopOpacity="1" />
+            </linearGradient>
+          </defs>
+          {/* the duct: a soft band the air runs inside, faded as one so its joins do not darken */}
+          <g opacity={0.08}>
+            <motion.path d={RISER} stroke="url(#cta-air-riser)" strokeWidth={10} {...draw(0)} />
+            {DROPS.map((d, i) => (
+              <motion.path key={d} d={d} stroke="currentColor" strokeWidth={10} {...draw(0.3 + i * 0.1)} />
+            ))}
+          </g>
+          {/* the air: short dashes running down the riser and out along each drop, once the line is drawn */}
+          <motion.g
+            className="text-white/80 light:text-brand"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: seen ? 1 : 0 }}
+            transition={reduced ? { duration: 0 } : { duration: 0.6, delay: 1.1 }}
+          >
+            {[RISER, ...DROPS].map((d) => (
+              <path
+                key={d}
+                d={d}
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeDasharray="3 13"
+                className="air animate-[air-run_0.8s_linear_infinite] motion-reduce:animate-none"
+              />
+            ))}
+          </motion.g>
+        </svg>
 
-        {/* the side tiles stand a little lower, partly behind the wider centre one */}
-        <motion.div
-          aria-hidden
-          {...enter(0.2, { x: 20, scale: 0.9 })}
-          className={cn(tile, "absolute left-1/2 top-6 h-28 w-36 -translate-x-[calc(100%+3rem)] p-3 text-white/60 sm:h-36 sm:w-48 sm:-translate-x-[calc(100%+5rem)] sm:p-4 light:text-ink/60")}
-        >
-          {left}
-        </motion.div>
-        <motion.div
-          aria-hidden
-          {...enter(0.3, { y: -20 })}
-          className={cn(tile, "relative z-10 h-40 w-52 bg-white/10 p-4 text-white/90 sm:h-48 sm:w-64 sm:p-5 light:bg-ink/[0.07] light:text-ink/85")}
-        >
-          {centre}
-        </motion.div>
-        <motion.div
-          aria-hidden
-          {...enter(0.2, { x: -20, scale: 0.9 })}
-          className={cn(tile, "absolute left-1/2 top-6 h-28 w-36 translate-x-12 p-3 text-white/60 sm:h-36 sm:w-48 sm:translate-x-20 sm:p-4 light:text-ink/60")}
-        >
-          {right}
-        </motion.div>
+        <ul className="grid grid-cols-3">
+          {services.map(({ label, icon }, i) => (
+            <motion.li key={label} {...enter(0.6 + i * 0.1, { y: 12 })} className="flex flex-col items-center">
+              <span
+                aria-hidden
+                className="grid size-16 place-items-center rounded-full border border-white/10 bg-white/[0.06] p-3 text-white/85 sm:size-20 sm:p-3.5 light:border-ink/10 light:bg-white light:text-ink/80 light:shadow-[0_12px_28px_-16px_rgb(11_16_32/0.35)]"
+              >
+                {icon}
+              </span>
+              <span className="mt-3 px-1 font-mono text-[11px] uppercase leading-snug tracking-[0.16em] text-white/60 light:text-ink/55">
+                {label}
+              </span>
+            </motion.li>
+          ))}
+        </ul>
       </div>
 
       <motion.h2
         {...enter(0.4)}
-        // above the rings, whose white fade reaches into the heading's top: once its entrance ends the heading has no
-        // transform left, and a plain element would paint under the positioned rings
         className="relative z-10 text-balance text-[clamp(2.5rem,1.2rem+3.4vw,5rem)] font-semibold leading-[0.98] tracking-[-0.035em]"
       >
         {lineA}
@@ -128,7 +140,7 @@ export default function CTA3({ title, text, action, tiles, children, className }
       <motion.div {...enter(0.6)} className="relative z-10 mt-9 flex justify-center">
         <Link
           href={action.href}
-          className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-7 text-sm font-semibold text-night transition-[background-color,transform] duration-200 hover:bg-white/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white light:bg-ink light:text-white light:hover:bg-ink/85 light:focus-visible:outline-brand"
+          className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-brand px-7 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-brand/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white light:bg-brand light:text-white light:hover:bg-brand/85 light:focus-visible:outline-brand"
         >
           {action.label}
           <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />

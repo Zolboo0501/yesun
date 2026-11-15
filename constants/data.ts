@@ -55,8 +55,8 @@ const engineers: { name: string; role: string; image?: string; text?: string }[]
   { name: "Б.Бэхбат", role: "Инженерийн багийн ахлагч", image: "/images/member2.jpg", text: "17 жилийн туршлагатай" },
   { name: "Ц.Хосбаяр", role: "ХАС-ийн мэргэшсэн инженер", image: "/images/member3.jpg", text: "5 жилийн туршлагатай" },
   { name: "Д.Хангай", role: "ХАС-ийн мэргэшсэн инженер", image: "/images/member4.jpg", text: "5 жилийн туршлагатай" },
-  { name: "С.Энхзаяа", role: "ХАБЭА-н инженер" },
-  { name: "М.Далайсайхан", role: "ХАБЭА-н инженер" },
+  { name: "С.Энхзаяа", role: "ХАБ инженер" },
+  { name: "М.Далайсайхан", role: "ХАБ инженер" },
 ];
 
 export { contact, engineers, menu, places, siteUrl };

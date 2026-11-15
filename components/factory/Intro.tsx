@@ -4,13 +4,10 @@ import { rise, stagger } from "@/lib/reveal";
 import { motion } from "motion/react";
 import Image from "next/image";
 
-// The factory's facts approved on 2026-11-08 (as on the about page): in use since 2021, 1 800 м² on two floors,
-// 12 modern machines, a 216 м² warehouse.
+// The factory's facts approved on 2026-11-08: in use since 2021 (its area, warehouse and machine figures were taken off
+// on 2026-11-15, the user's call).
 const facts = [
   { value: "2021", label: "Ашиглалтад орсон" },
-  { value: "1 800 м²", label: "Үйлдвэрийн талбай" },
-  { value: "12", label: "Орчин үеийн тоног төхөөрөмж" },
-  { value: "216 м²", label: "Агуулах" },
 ];
 
 /** The factory page's opening, on white: the statement and one line on what the plant makes, its hall wide across the
@@ -45,7 +42,7 @@ export function Intro() {
             variants={rise}
             className="max-w-[40ch] text-pretty text-step-body leading-[1.65] text-ink/70 lg:col-span-4 lg:col-start-9"
           >
-            Суваг, фасон эдлэл, агаар сэлгэлтийн тоног төхөөрөмжийг өөрийн үйлдвэрт, төслийн хэмжээгээр хийнэ.
+            Агаар сэлгэлт, хөргөлтийн чиглэлийн үндэсний үйлдвэрлэгч. Үйлдвэрлэлээс угсралт, засвар үйлчилгээ хүртэл бүх шатыг нэг дороос хийнэ.
           </motion.p>
         </div>
 
@@ -64,7 +61,7 @@ export function Intro() {
           />
         </motion.figure>
 
-        <motion.dl variants={rise} className="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4">
+        <motion.dl variants={rise} className="mt-10 grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-3">
           {facts.map((fact) => (
             <div key={fact.label} className="flex flex-col-reverse justify-end gap-1 border-t border-ink/10 pt-4">
               <dt className="text-sm text-ink/60">{fact.label}</dt>

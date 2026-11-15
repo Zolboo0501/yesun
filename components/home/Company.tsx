@@ -19,7 +19,6 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 type Step = {
   title: string;
   text: string;
-  facts?: { value: string; label: string }[];
   brands?: string[];
   cta?: boolean;
 };
@@ -29,33 +28,21 @@ type Step = {
 // Every figure is confirmed by the client (PRODUCT.md).
 const steps: Step[] = [
   {
-    title: "2011 оноос хойш агаарын системийг нэвтрүүлж байна",
-    text: "Барилга, хот байгуулалтын яамны тусгай зөвшөөрөлтэй. Агаар сэлгэлт, хөргөлтийн системийг зураг төслийн дагуу угсарч, засвар үйлчилгээг нь нэг дор хариуцдаг.",
-    facts: [
-      { value: "2011", label: "Байгуулагдсан" },
-      { value: "150+", label: "Угсралт хийсэн объект" },
-    ],
+    title: "Таны найдвартай түнш",
+    text: "2011 оноос хойш Барилга, хот байгуулалтын яамны тусгай зөвшөөрөлтэйгөөр ажиллаж, нийслэл, орон нутгийн олон объектод угсралт хийсэн.",
   },
   {
-    title: "Суваг, фасон эдлэлээ өөрсдөө үйлдвэрлэнэ.",
-    text: "Суваг, фасон эдлэлийг өөрийн үйлдвэрт зураг төслийн хэмжээгээр хийнэ.",
-    facts: [
-      { value: "1 800 м²", label: "Үйлдвэрийн талбай" },
-      { value: "12", label: "Үйлдвэрийн тоног төхөөрөмж" },
-    ],
+    title: "Өөрийн үйлдвэртэй",
+    text: "Олон улсын стандартын дагуу тоноглогдсон үйлдвэртээ агаарын суваг, холбох хэсгийг захиалгаар хийнэ.",
   },
   {
-    title: "Зургаан брэндийн албан ёсны нийлүүлэгч.",
-    text: "Агаар сэлгэлт, хөргөлтийн тоног төхөөрөмжийг нийлүүлж, нийслэл болон орон нутагт өөрсдөө угсарна.",
+    title: "Зургаан брэндийн албан ёсны төлөөлөгч",
+    text: "Дэлхийд танигдсан брэндүүдийн тоног төхөөрөмжийг нийлүүлж, өөрсдөө угсарна.",
     brands: ["KANION", "AUX", "BALLU", "SHUFT", "AIRONN", "LAVFILL"],
   },
   {
     title: "Чанарын баталгаа",
-    text: "Угсралтад 1–3 жилийн чанарын баталгаа өгч, засвар үйлчилгээ хийнэ. Яаралтай дуудлагад 24/7 ажиллана.",
-    facts: [
-      { value: "1–3 жил", label: "Чанарын баталгаа" },
-      { value: "24/7", label: "Яаралтай үйлчилгээ" },
-    ],
+    text: "Угсралтад 1–3 жилийн баталгаа өгнө. Яаралтай дуудлагад 24/7 ажиллана.",
     cta: true,
   },
 ];
@@ -123,7 +110,7 @@ export function Company() {
       aria-label="Бидний тухай"
       className="relative overflow-x-clip bg-white text-ink"
     >
-      {/* One network of the 150+ sites, black on the white ground (a light ground puts the shell in its ink blending), held on screen while the four parts scroll past.
+      {/* One network of the company's sites, black on the white ground (a light ground puts the shell in its ink blending), held on screen while the four parts scroll past.
           Between parts it breaks apart and comes together again in the half the next part leaves free. The pointer
           lights the nodes near it and a click sends a pulse round it; dragging is off, so a swipe over it scrolls. */}
       <div className="sticky top-[var(--header-h)] h-[calc(100svh-var(--header-h))]">
@@ -132,7 +119,7 @@ export function Company() {
             far side a little lighter for depth, and the brand blue where the pointer is and where a click's pulse runs. */}
         <AstralShell
           className="size-full"
-          colors={["#05070f", "#0100fd"]}
+          colors={["#05070f", "#2639b0"]}
           backgroundColor="#ffffff"
           nodes={wide ? 2000 : 1100}
           connections={4}
@@ -181,7 +168,6 @@ function Vapor({
   className,
   sweep,
   wide,
-  interactive = false,
 }: {
   live: boolean;
   as: "h2" | "h3" | "p" | "span";
@@ -189,8 +175,6 @@ function Vapor({
   className: string;
   sweep: "left" | "right";
   wide: boolean;
-  /** the pointer may stir it; off for running text, which would scatter under a reader's mouse */
-  interactive?: boolean;
 }) {
   if (!live) return <Tag className={`opacity-0 ${className}`}>{text}</Tag>;
   return (
@@ -203,7 +187,8 @@ function Vapor({
       condense={1.6}
       loop={false}
       clickAdvance={false}
-      interactive={interactive}
+      // the pointer never stirs it: no text moves under a reader's mouse (the user's call, 2026-11-15)
+      interactive={false}
       dpr={wide ? 2 : 1.5}
       className={`block ${className}`}
     />
@@ -245,7 +230,7 @@ function PartCopy({
     <div className="flex min-h-[calc(100svh-var(--header-h))] items-end px-4 pb-10 sm:px-6 lg:items-center lg:px-0 lg:pb-0">
       <motion.div style={{ opacity }} className={`w-full lg:w-1/2 ${half}`}>
         <div className="pointer-events-auto max-w-[36rem]">
-          {/* The heading, the line and the figures condense out of vapor as the part arrives. Phones keep the lite path:
+          {/* The heading and the line condense out of vapor as the part arrives. Phones keep the lite path:
               there only the heading does, and the rest fades in with the part. */}
           <Vapor
             live={live}
@@ -254,7 +239,6 @@ function PartCopy({
             className={headingClass}
             sweep={sweep}
             wide={wide}
-            interactive
           />
           {wide ? (
             <Vapor
@@ -267,33 +251,6 @@ function PartCopy({
             />
           ) : (
             <p className={`mt-5 ${textClass}`}>{step.text}</p>
-          )}
-
-          {step.facts && (
-            <dl className="mt-8 grid max-w-[26rem] grid-cols-2 gap-x-8">
-              {step.facts.map((fact) => (
-                <div
-                  key={fact.label}
-                  className="flex flex-col-reverse justify-end border-t border-ink/15 py-4"
-                >
-                  <dt className="mt-1 text-sm text-ink/70">{fact.label}</dt>
-                  <dd className="text-2xl font-semibold tracking-[-0.03em] tabular-nums">
-                    {wide ? (
-                      <Vapor
-                        live={live}
-                        as="span"
-                        text={fact.value}
-                        className=""
-                        sweep={sweep}
-                        wide
-                      />
-                    ) : (
-                      fact.value
-                    )}
-                  </dd>
-                </div>
-              ))}
-            </dl>
           )}
 
           {step.brands && (
@@ -311,14 +268,14 @@ function PartCopy({
             <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
               <Link
                 href="/contact"
-                className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-brand/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 Инженертэй холбогдох
                 <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
               </Link>
               <Link
                 href="/about"
-                className="whitespace-nowrap text-sm font-medium text-ink/85 underline decoration-ink/30 decoration-1 underline-offset-[5px] transition-[color,text-decoration-color] duration-200 hover:text-ink hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
+                className="whitespace-nowrap text-sm font-medium text-ink/85 underline decoration-ink/30 decoration-1 underline-offset-[5px] transition-[color,text-decoration-color] duration-200 hover:text-ink hover:decoration-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand"
               >
                 Компанийн танилцуулга
               </Link>

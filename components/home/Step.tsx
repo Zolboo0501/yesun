@@ -104,7 +104,7 @@ export function StepCopy({
       <div className="mt-[0.4em] flex items-start gap-5 pl-[0.9em]">
         <span
           aria-hidden
-          className={`h-px w-12 shrink-0 sm:w-16 ${tone === "light" ? "bg-ink/60" : "bg-white/60"} ${large ? "mt-[0.85rem] sm:mt-[0.95rem]" : "mt-[0.7rem]"}`}
+          className={`h-px w-12 shrink-0 sm:w-16 ${tone === "light" ? "bg-brand" : "bg-white/60"} ${large ? "mt-[0.85rem] sm:mt-[0.95rem]" : "mt-[0.7rem]"}`}
         />
         <StaggeredText
           key={run}
@@ -156,7 +156,7 @@ export function StepLine({
     >
       <motion.span
         style={{ scaleX, opacity }}
-        className={`block h-0.5 w-full origin-right group-hover:!opacity-100 ${tone === "light" ? "bg-ink" : "bg-white shadow-[0_0_0_0.5px_rgb(0_0_0/0.25)]"}`}
+        className={`block h-0.5 w-full origin-right group-hover:!opacity-100 ${tone === "light" ? "bg-brand" : "bg-white shadow-[0_0_0_0.5px_rgb(0_0_0/0.25)]"}`}
       />
     </button>
   );

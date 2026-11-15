@@ -9,7 +9,6 @@ export type Brand = {
   logoScale: number;
   /** the same for the footer orbit's round discs (components/Footer.tsx), each logo's box filling its disc */
   orbitScale: number;
-  country: string;
   since?: string;
   category: string;
   summary: string;
@@ -27,9 +26,8 @@ export const brands: Brand[] = [
     orbitScale: 0.66,
     name: "KANION",
     logo: "/images/kanon.webp",
-    country: "Хятад",
     category: "Агааржуулагч, дулааны насос",
-    summary: "Сүүлийн үеийн технологиор эрчим хүч хэмнэсэн агааржуулагч, дулааны насос үйлдвэрлэдэг.",
+    summary: "Цахилгаан бага зарцуулдаг агааржуулагч, дулааны насос үйлдвэрлэдэг.",
     points: ["3D DC инвертер", "Чимээ бага", "Эрчим хүчний хэмнэлт"],
     url: "https://www.kanionco.com/",
     domain: "kanionco.com",
@@ -44,7 +42,6 @@ export const brands: Brand[] = [
     orbitScale: 0.64,
     name: "AUX",
     logo: "/images/aux.png",
-    country: "Хятад",
     since: "1986",
     category: "Агааржуулагч, мульти систем",
     summary: "2018–2020 онд агааржуулагчийн борлуулалтаар дэлхийд тэргүүлсэн, 100 гаруй оронд зарагддаг брэнд.",
@@ -62,9 +59,8 @@ export const brands: Brand[] = [
     orbitScale: 0.58,
     name: "BALLU",
     logo: "/images/ballu.png",
-    country: "Орос",
     category: "Агааржуулагч, дулааны хөшиг, конвектор",
-    summary: "Халаалт, хөргөлтийн тоног төхөөрөмжөөрөө Орос, ТУХН-д тэргүүлж, 30 гаруй оронд нийлүүлдэг.",
+    summary: "Халаалт, хөргөлтийн төхөөрөмжөө 30 гаруй оронд нийлүүлдэг.",
     points: ["30+ орон", "Олон улсын стандарт", "Ногоон технологи"],
     url: "https://www.ballu.ru/",
     domain: "ballu.ru",
@@ -79,15 +75,14 @@ export const brands: Brand[] = [
     orbitScale: 0.88,
     name: "SHUFT",
     logo: "/images/shuft.png",
-    country: "Орос",
     since: "1998",
-    category: "Агаар боловсруулах төхөөрөмж, хөргөгч",
-    summary: "Оросын агаар сэлгэлтийн тоног төхөөрөмжийн хамгийн том үйлдвэрлэгч.",
+    category: "Агаар бэлтгэх төхөөрөмж, хөргөгч",
+    summary: "Агаар сэлгэлтийн төхөөрөмжийн томоохон үйлдвэрлэгч.",
     points: ["10 МВт хүртэл хөргөгч", "Агаар хуваарилагч", "Утаа зайлуулах систем"],
     url: "https://www.shuft.ru/",
     domain: "shuft.ru",
     photos: [
-      { src: "/images/shuft2.webp", alt: "SHUFT агаар боловсруулах төхөөрөмж" },
+      { src: "/images/shuft2.webp", alt: "SHUFT агаар бэлтгэх төхөөрөмж" },
       { src: "/images/shuft3.jpg", alt: "SHUFT хөргөгч" },
     ],
   },
@@ -97,7 +92,6 @@ export const brands: Brand[] = [
     orbitScale: 0.54,
     name: "AIRONN",
     logo: "/images/aironn.png",
-    country: "Турк",
     since: "2011",
     category: "Утаа зайлуулах, үйлдвэрийн сэнс",
     summary: "Утаа зайлуулах, туннелийн агаар сэлгэлтийн сэнс үйлдвэрлэж, 45 гаруй оронд экспортлодог.",
@@ -115,7 +109,6 @@ export const brands: Brand[] = [
     orbitScale: 0.74,
     name: "LAVFILL",
     logo: "/images/lavfill.jpg",
-    country: "Хятад",
     since: "1999",
     category: "Агаар сорогч сэнс",
     summary: "Ариун цэврийн өрөө, гал тогоонд зориулсан чимээ багатай, хэмнэлттэй сэнс үйлдвэрлэдэг.",

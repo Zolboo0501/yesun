@@ -23,7 +23,7 @@ const years = [
   {
     year: "2011",
     title: "Эхлэл",
-    text: "БХБЯ-ны тусгай зөвшөөрөлтэйгөөр байгуулагдсан.",
+    text: "Барилга, хот байгуулалтын яамны тусгай зөвшөөрөлтэйгөөр байгуулагдсан.",
     src: "/images/engineering.JPG",
     alt: "Есөн Бэлчирийн инженерүүд оффист",
   },
@@ -44,7 +44,7 @@ const years = [
   {
     year: "2021",
     title: "Өөрийн үйлдвэр",
-    text: "Үйлдвэр ашиглалтад орсон. Чингис хаан музей.",
+    text: "Үйлдвэрээ ашиглалтад оруулж, Чингис хаан музейн ажлыг хийсэн.",
     src: "/images/factory4.jpg",
     alt: "Агаар сэлгэлтийн сувгийн үйлдвэрийн цех",
   },
@@ -71,8 +71,8 @@ const years = [
   },
   {
     year: "Өнөөдөр",
-    title: "150 гаруй объект",
-    text: "Нийслэл, орон нутагт. Угсралтаас засвар үйлчилгээ хүртэл нэг дор.",
+    title: "Нийслэл, орон нутагт",
+    text: "Угсралт, засвар үйлчилгээ хийсээр байна.",
     src: "/images/banner2.webp",
     alt: "Барилгын дээвэр дээрх агаар сэлгэлтийн суваг",
   },
@@ -80,7 +80,7 @@ const years = [
 
 // The ribbon's top runs from the brand blue at 2011 to an azure today, and each year takes the colour of the ribbon
 // where it stands; both ends keep 3:1 on white at the years' size.
-const FROM = "#0100fd";
+const FROM = "#2639b0";
 const TO = "#0a8cf0";
 
 function mix(from: string, to: string, t: number) {

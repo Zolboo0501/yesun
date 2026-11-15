@@ -229,7 +229,7 @@ function Cover() {
           </p>
           <span aria-hidden className="mt-[3.5cqw] block h-px w-[16cqw] bg-linear-to-r from-[#c5cbd6] to-transparent" />
           <p className="mt-[3cqw] text-[max(0.8125rem,2.8cqw)] text-white/65">
-            150 гаруй объектоос онцлох {N} нь · {FIRST}–{LAST}
+            Онцлох {N} төсөл · {FIRST}–{LAST}
           </p>
         </div>
         <p className="relative flex items-center gap-2 self-end text-[max(11px,2.4cqw)] font-medium text-white/80">
@@ -359,7 +359,7 @@ function TextPage({ project, index }: { project: Project; index: number }) {
             )}
           </span>
           <p className="text-[max(12px,2.4cqw)] leading-tight">
-            <span className="block text-ink/50">Хариуцсан инженер</span>
+            <span className="block text-ink/50">Гүйцэтгэсэн инженер</span>
             <span className="block font-semibold">{project.engineer}</span>
           </p>
         </div>
@@ -631,7 +631,7 @@ export function ProjectBook() {
                 <p className="mt-1 text-sm text-ink/60">
                   {[project.scope, project.work.join(", ")].filter(Boolean).join(" · ")}
                 </p>
-                <p className="mt-0.5 text-sm text-ink/60">Хариуцсан инженер: {project.engineer}</p>
+                <p className="mt-0.5 text-sm text-ink/60">Гүйцэтгэсэн инженер: {project.engineer}</p>
               </>
             ) : (
               <p className="text-sm text-ink/60">
@@ -667,7 +667,7 @@ export function ProjectBook() {
               {shown === max && (
                 <Link
                   href="/contact"
-                  className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                  className="group inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
                 >
                   Инженертэй холбогдох
                   <ArrowUpRight
@@ -688,7 +688,7 @@ export function ProjectBook() {
             <div>
               <Heading id="all-projects-title" text="Бүх төсөл" />
               <p className="mt-4 max-w-[48ch] text-pretty text-step-body leading-[1.65] text-ink/65">
-                150 гаруй объектоос онцлох {N} нь, {FIRST}–{LAST} он.
+                Онцлох {N} төсөл, {FIRST}–{LAST} он.
               </p>
             </div>
             <div role="group" aria-label="Төрлөөр шүүх" className="flex flex-wrap gap-2">
@@ -703,7 +703,7 @@ export function ProjectBook() {
                     onClick={() => setFilter(option.id)}
                     className={cn(
                       "inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full px-4 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
-                      on ? "bg-ink text-white" : "bg-ink/[0.05] text-ink/75 hover:bg-ink/10 hover:text-ink",
+                      on ? "bg-brand text-white" : "bg-ink/[0.05] text-ink/75 hover:bg-ink/10 hover:text-ink",
                     )}
                   >
                     {option.label}

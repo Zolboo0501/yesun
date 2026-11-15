@@ -199,7 +199,7 @@ export default function Navigation15({ logo, links, cta, dark = false, drawerFoo
                       <motion.span
                         layoutId="nav15-line"
                         aria-hidden
-                        className="absolute inset-x-0 bottom-0 h-px bg-white light:bg-ink"
+                        className="absolute inset-x-0 bottom-0 h-0.5 bg-white light:bg-brand"
                         transition={{ duration: 0.3, ease: EASE }}
                       />
                     )}
@@ -232,7 +232,7 @@ export default function Navigation15({ logo, links, cta, dark = false, drawerFoo
             href={cta.href}
             aria-current={isCurrent(pathname, cta.href) ? "page" : undefined}
             className={cn(
-              "hidden items-center gap-1.5 rounded-full border border-white/25 px-4 py-2 text-sm font-medium transition-colors duration-200 hover:bg-white hover:text-night sm:inline-flex light:border-ink/20 light:hover:bg-ink light:hover:text-white",
+              "hidden items-center gap-1.5 rounded-full border border-white/25 px-4 py-2 text-sm font-medium transition-colors duration-200 hover:border-brand hover:bg-brand hover:text-white sm:inline-flex light:border-ink/20 light:hover:border-brand light:hover:bg-brand light:hover:text-white",
               ring,
             )}
           >
@@ -318,7 +318,7 @@ export default function Navigation15({ logo, links, cta, dark = false, drawerFoo
                           className={cn(
                             "text-2xl font-semibold tracking-[-0.02em] transition-colors duration-200",
                             current
-                              ? "text-white/50 light:text-ink/50"
+                              ? "text-white/50 light:text-brand"
                               : "group-hover:text-white/60 light:group-hover:text-ink/60",
                           )}
                         >
@@ -346,7 +346,7 @@ export default function Navigation15({ logo, links, cta, dark = false, drawerFoo
                   href={cta.href}
                   onClick={() => setDrawerAt(null)}
                   className={cn(
-                    "mt-6 inline-flex w-full min-h-12 items-center justify-center gap-1.5 rounded-full bg-white px-5 text-sm font-semibold text-night transition-colors duration-200 hover:bg-white/85 light:bg-ink light:text-white light:hover:bg-ink/85",
+                    "mt-6 inline-flex w-full min-h-12 items-center justify-center gap-1.5 rounded-full bg-brand px-5 text-sm font-semibold text-white transition-colors duration-200 hover:bg-brand/85 light:bg-brand light:text-white light:hover:bg-brand/85",
                     ring,
                   )}
                 >

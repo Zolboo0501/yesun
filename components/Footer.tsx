@@ -6,7 +6,7 @@ import { contact, menu, places } from "@/constants/data";
 import { rise, stagger } from "@/lib/reveal";
 import { ArrowUpRight, Clock, Mail, Phone } from "lucide-react";
 import { MotionConfig, motion } from "motion/react";
-import { useState, type CSSProperties } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -23,7 +23,7 @@ const label = "font-mono text-[11px] uppercase tracking-[0.16em]";
 const linkFocus =
   "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white light:focus-visible:outline-brand";
 // the house's secondary link: underlined in white 30%, full white under the pointer
-const underlined = `text-white underline decoration-white/30 decoration-1 underline-offset-[5px] transition-[text-decoration-color] duration-200 hover:decoration-white light:text-ink light:decoration-ink/30 light:hover:decoration-ink ${linkFocus}`;
+const underlined = `text-white underline decoration-white/30 decoration-1 underline-offset-[5px] transition-[text-decoration-color] duration-200 hover:decoration-white light:text-ink light:decoration-ink/30 light:hover:decoration-brand ${linkFocus}`;
 
 const Footer = () => {
   const path = usePathname();
@@ -178,7 +178,7 @@ function PartnerOrbit() {
 const chip = `inline-flex min-h-11 items-center gap-2 rounded-full border border-white/15 px-4 text-sm font-medium text-white/85 transition-colors duration-200 hover:border-white/40 hover:text-white light:border-ink/15 light:text-ink/80 light:hover:border-ink/40 light:hover:text-ink ${linkFocus}`;
 
 // links on night: a step brighter and underlined under the pointer, never dimmer
-const textLink = `text-white/80 underline decoration-transparent decoration-1 underline-offset-[5px] transition-[color,text-decoration-color] duration-200 hover:text-white hover:decoration-white/50 light:text-ink/80 light:hover:text-ink light:hover:decoration-ink/40 ${linkFocus}`;
+const textLink = `text-white/80 underline decoration-transparent decoration-1 underline-offset-[5px] transition-[color,text-decoration-color] duration-200 hover:text-white hover:decoration-white/50 light:text-ink/80 light:hover:text-ink light:hover:decoration-brand ${linkFocus}`;
 
 function FooterView() {
   return (
@@ -189,26 +189,27 @@ function FooterView() {
         className="bg-night text-white light:bg-white light:text-ink"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          {/* The close through the repo's cta-3 block: the subject's three icons over the turning rings, the statement,
-              its line and the button, then who answers and how to reach them. */}
+          {/* The close through the repo's cta-3 block: the air line running to the three services, the statement, its line
+              and the button, then who answers and how to reach them. */}
           <div className="relative overflow-hidden border-t border-white/10 pb-20 pt-32 lg:pb-28 lg:pt-40 light:border-ink/10">
             <CTA3
               title={"Төслөө\nхамтдаа ярилцъя."}
-              text="Агаар сэлгэлт, хөргөлтийн системийг зураг төслийн дагуу угсарч, засвар үйлчилгээг нь хариуцна."
+              text="Агаар сэлгэлт, хөргөлтийн систем угсруулах бол бидэнтэй холбогдоорой."
               action={{ label: "Инженертэй холбогдох", href: "/contact" }}
-              tiles={({ seen, active, reduced }) => [
-                // the home page's service icons, drawn in once seen and moving while in view: air, the engineer's
-                // wrench working a bolt, cooling
-                <Glyph key="vent" seen={seen} active={active} reduced={reduced} className="size-full">
-                  <VentIcon seen={seen} reduced={reduced} />
-                </Glyph>,
-                <Glyph key="service" seen={seen} active={active} reduced={reduced} className="size-full">
-                  <ServiceIcon seen={seen} reduced={reduced} />
-                </Glyph>,
-                <Glyph key="cool" seen={seen} active={active} reduced={reduced} className="size-full">
-                  <CoolIcon seen={seen} reduced={reduced} />
-                </Glyph>,
-              ]}
+              points={({ seen, active, reduced }) => {
+                // the home page's service icons without their frame, drawn in once seen and moving while in view;
+                // heavier lines, as they stand small here
+                const glyph = (icon: ReactNode) => (
+                  <Glyph frame={false} seen={seen} active={active} reduced={reduced} className="size-full [stroke-width:20]">
+                    {icon}
+                  </Glyph>
+                );
+                return [
+                  { label: "Агаар сэлгэлт", icon: glyph(<VentIcon seen={seen} reduced={reduced} />) },
+                  { label: "Хөргөлт", icon: glyph(<CoolIcon seen={seen} reduced={reduced} />) },
+                  { label: "Засвар үйлчилгээ", icon: glyph(<ServiceIcon seen={seen} reduced={reduced} />) },
+                ];
+              }}
             >
               <div className="mt-12 flex flex-col items-center gap-5">
                 <div className="flex items-center gap-3">

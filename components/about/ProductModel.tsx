@@ -49,7 +49,7 @@ export default function ProductModel({ active, reducedMotion, featured, turn, on
         shadows="percentage"
         flat
         camera={{ position: PIVOT.clone().add(FROM).toArray(), fov: 50, near: 0.05, far: 60 }}
-        aria-label="Агаарын суваг, фасон эдлэлийн 3D загвар"
+        aria-label="Агаарын суваг, холбох хэсгийн 3D загвар"
       >
         <Stage />
         <Suspense fallback={null}>

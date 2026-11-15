@@ -88,8 +88,15 @@ function Frame(p: Draw) {
   );
 }
 
-/** The icon's sheet: a 512 grid of 22-unit rounded lines inside the frame. Off the front card its motion holds still. */
-export function Glyph({ active, className, children, ...p }: Draw & { active: boolean; className?: string; children: ReactNode }) {
+/** The icon's sheet: a 512 grid of 22-unit rounded lines inside the frame (left out where the icon sits in a round
+ *  node). Off the front card its motion holds still. */
+export function Glyph({
+  active,
+  className,
+  children,
+  frame = true,
+  ...p
+}: Draw & { active: boolean; className?: string; children: ReactNode; frame?: boolean }) {
   return (
     <svg
       viewBox="0 0 512 512"
@@ -101,7 +108,7 @@ export function Glyph({ active, className, children, ...p }: Draw & { active: bo
       aria-hidden
       className={`overflow-visible ${active ? "" : "[&_*]:[animation-play-state:paused]"} ${className ?? ""}`}
     >
-      <Frame {...p} />
+      {frame && <Frame {...p} />}
       {children}
     </svg>
   );

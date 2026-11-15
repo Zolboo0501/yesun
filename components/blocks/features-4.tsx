@@ -108,7 +108,7 @@ export function Features4({ items, label, autoPlay = true, autoPlayDelay = 5000,
                 <span
                   className={cn(
                     "grid size-10 shrink-0 place-items-center rounded-xl transition-colors duration-200",
-                    on ? "bg-ink text-white" : "bg-ink/[0.06] text-ink",
+                    on ? "bg-brand text-white" : "bg-ink/[0.06] text-ink",
                   )}
                 >
                   <TabIcon aria-hidden className="size-5" />
@@ -129,7 +129,7 @@ export function Features4({ items, label, autoPlay = true, autoPlayDelay = 5000,
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: autoPlayDelay / 1000, ease: "linear" }}
-                    className="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-ink/30"
+                    className="absolute inset-x-0 bottom-0 h-0.5 origin-left bg-brand/50"
                   />
                 )}
               </motion.button>

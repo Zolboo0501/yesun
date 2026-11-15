@@ -14,7 +14,7 @@ export function Engineers() {
           <>
             <Heading id="engineers-title" text="Инженер техникийн алба" />
             <p className="mt-5 max-w-[56ch] text-pretty text-step-body leading-[1.65] text-ink/70">
-              Угсралт, тохируулга, ашиглалтыг нэг дор хариуцдаг мэргэшсэн баг.
+              Агаар сэлгэлт, хөргөлтийн системийн угсралт, ашиглалтыг хариуцдаг мэргэшсэн баг.
             </p>
           </>
         }

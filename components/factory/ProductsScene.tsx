@@ -89,7 +89,7 @@ export default function ProductsScene({ progress, active, reducedMotion }: Scene
             Таны хөтөч 3D дүрслэлийг дэмжихгүй байна.
           </p>
         }
-        aria-label="Таазны доор угсарсан агаарын суваг, фасон эдлэлийн 3D дүрслэл"
+        aria-label="Таазны доор угсарсан агаарын суваг, холбох хэсгийн 3D дүрслэл"
       >
         <Stage />
         <Suspense fallback={null}>

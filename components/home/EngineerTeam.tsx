@@ -1,11 +1,9 @@
 "use client";
-import { ArrowUpRight } from "@/components/icons";
 import StaggeredText from "@/components/react-bits/staggered-text";
 import { engineers } from "@/constants/data";
 import { rise, stagger } from "@/lib/reveal";
 import { MotionConfig, motion } from "motion/react";
 import Image from "next/image";
-import Link from "next/link";
 
 const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 const FROM = { opacity: 0, y: 14 };
@@ -38,19 +36,12 @@ export function EngineerTeam() {
                 />
               </h2>
               <div className="mt-[0.45em] flex items-start gap-5 pl-[0.9em]">
-                <span aria-hidden className="mt-[0.8rem] h-px w-12 shrink-0 bg-ink/60 sm:w-16" />
+                <span aria-hidden className="mt-[0.8rem] h-px w-12 shrink-0 bg-brand sm:w-16" />
                 <p className="max-w-[38ch] text-pretty text-step-body leading-[1.55] text-ink/80">
-                  Угсралт, тохируулга, ашиглалтыг нэг дор хариуцдаг мэргэшсэн баг.
+                  Агаар сэлгэлт, хөргөлтийн системийн угсралт, ашиглалтыг хариуцдаг мэргэшсэн баг.
                 </p>
               </div>
             </div>
-            <Link
-              href="/ourTeam#engineers"
-              className="group inline-flex min-h-11 items-center gap-1.5 justify-self-start text-sm font-medium text-ink underline decoration-ink/30 decoration-1 underline-offset-[5px] transition-[text-decoration-color] duration-200 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand lg:col-span-4 lg:justify-self-end"
-            >
-              Бүх инженер
-              <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />
-            </Link>
           </div>
 
           <motion.ul

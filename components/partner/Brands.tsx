@@ -44,10 +44,7 @@ function BrandCard({ brand }: { brand: Brand }) {
               style={{ transform: `scale(${brand.logoScale})` }}
             />
           </h2>
-          <span className="text-right text-sm text-ink/55">
-            {brand.country}
-            {brand.since && ` · ${brand.since} оноос`}
-          </span>
+          {brand.since && <span className="text-right text-sm text-ink/55">{brand.since} оноос</span>}
         </div>
         <p className="mt-5 font-semibold leading-snug text-ink">{brand.category}</p>
         <p className="mt-1.5 text-pretty text-base leading-[1.6] text-ink/70">{brand.summary}</p>
@@ -96,8 +93,7 @@ export function Brands() {
             />
           </h1>
           <p className="max-w-[42ch] text-pretty text-step-body leading-[1.65] text-ink/70 lg:col-span-4 lg:col-start-9">
-            Дэлхийд танигдсан {brands.length} брэндийн агаар сэлгэлт, хөргөлтийн тоног төхөөрөмжийг албан ёсоор нийлүүлж,
-            угсарна.
+            Бид халаалт, хөргөлт, агаар сэлгэлтийн бүтээгдэхүүнээрээ дэлхийд танигдсан {brands.length} брэндийн албан ёсны байнгын төлөөлөгч. Тэдний бүтээгдэхүүнийг нийлүүлж, угсарна.
           </p>
         </div>
 
@@ -146,12 +142,12 @@ export function Brands() {
               Аль брэнд таны төсөлд тохирох вэ?
             </h2>
             <p className="mt-3 max-w-[48ch] text-pretty text-step-body leading-[1.6] text-white/70">
-              Инженер маань төслийн шаардлагад тохирох тоног төхөөрөмжийг санал болгоно.
+              Инженер маань таны барилгад тохирох төхөөрөмжийг санал болгоно.
             </p>
           </div>
           <Link
             href="/contact"
-            className="group inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-ink transition-colors hover:bg-brand hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:self-auto"
+            className="group inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-brand px-6 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-brand/85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:self-auto"
           >
             Инженертэй холбогдох
             <ArrowUpRight aria-hidden className="size-4 transition-transform group-hover:-translate-y-px group-hover:translate-x-px" />

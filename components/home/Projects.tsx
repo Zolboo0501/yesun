@@ -202,14 +202,14 @@ export function Projects() {
         <StepCopy
           tone="light"
           title="Хэрэгжүүлсэн төслүүд."
-          text="Музейгээс уурхай хүртэл 150 гаруй объектод агаар сэлгэлт, хөргөлт угсарсан."
+          text="Музейгээс уурхай хүртэл олон объектод агаар сэлгэлт, хөргөлт угсарсан."
           index={0}
           progress={step}
           large
         >
           <Link
             href="/projects"
-            className="group inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+            className="group inline-flex items-center gap-2 rounded-full bg-brand px-5 py-3 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-brand/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           >
             Бүх төсөл
             <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />

@@ -5,11 +5,9 @@ import { motion, useInView, useReducedMotion, useScroll, useTransform } from "mo
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
-// Every figure is confirmed by the client (PRODUCT.md). The four that say the most, briefly.
+// Every figure is confirmed by the client (PRODUCT.md). 150+ and 1 800 м² were taken off on 2026-11-15 (the user's call; CLAUDE.md).
 const facts = [
   { value: "2011", label: "Байгуулагдсан" },
-  { value: "150+", label: "Объект" },
-  { value: "1 800 м²", label: "Өөрийн үйлдвэр" },
   { value: "1–3 жил", label: "Чанарын баталгаа" },
 ];
 
@@ -28,7 +26,7 @@ const FADE = 1.4; // the crossfade, in s
 
 /** The opening, short and on photographs: the city at dusk, a ceiling's ducts and an air conditioner being serviced
  *  taking turns under a night veil, each closing in slowly while it shows; over them, at the foot, the statement and
- *  one line on what the company does on the left and the four figures that say the most on the right. The photos sink
+ *  one line on what the company does on the left and two figures on the right. The photos sink
  *  a little as the reader scrolls on; they change only while the opening is in view, and not under reduced motion. */
 export function Intro() {
   const reduced = useReducedMotion() ?? false;
@@ -88,7 +86,7 @@ export function Intro() {
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(22_23_27/0.55)_0%,transparent_65%)]" />
       </motion.div>
 
-      {/* the statement and one line at the foot on the left, the four figures beside them on the right */}
+      {/* the statement and one line at the foot on the left, the two figures beside them on the right */}
       <motion.div
         style={{ opacity: fade }}
         variants={stagger}
@@ -111,10 +109,10 @@ export function Intro() {
             variants={rise}
             className="mt-6 max-w-[36ch] text-pretty text-step-body leading-[1.6] text-white/80 lg:mt-8"
           >
-            Агаар сэлгэлт, хөргөлтийн системийг зураг төслийн дагуу угсарч, засвар үйлчилгээ үзүүлнэ.
+            2011 оноос хойш агаар сэлгэлт, хөргөлтийн тоног төхөөрөмж нийлүүлж, угсарч, зөвлөгөө өгдөг.
           </motion.p>
         </div>
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-6 sm:grid-cols-4 lg:col-span-4 lg:col-start-9 lg:grid-cols-2">
+        <dl className="grid grid-cols-2 gap-x-8 gap-y-6 lg:col-span-4 lg:col-start-9">
           {facts.map((fact) => (
             <motion.div
               key={fact.label}

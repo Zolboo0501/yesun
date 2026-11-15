@@ -72,7 +72,7 @@ export function ProductDetail({ product }: { product: Product }) {
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
                 href="/contact"
-                className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                className="group inline-flex min-h-12 items-center gap-2 rounded-full bg-brand px-5 text-sm font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-brand/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
                 Үнийн санал авах
                 <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-px group-hover:translate-x-px" />

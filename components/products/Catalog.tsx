@@ -237,7 +237,7 @@ function Browser({ filters }: { filters: Filters }) {
             <button
               type="button"
               onClick={clear}
-              className="mt-6 inline-flex min-h-11 cursor-pointer items-center rounded-full bg-ink px-5 text-sm font-semibold text-white transition-[background-color,transform] hover:bg-ink/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+              className="mt-6 inline-flex min-h-11 cursor-pointer items-center rounded-full bg-brand px-5 text-sm font-semibold text-white transition-[background-color,transform] hover:bg-brand/85 active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
             >
               Шүүлтүүрийг арилгах
             </button>

@@ -105,7 +105,7 @@ export function ProductTile() {
                 {product ? `${pad(featured + 1)} / ${pad(products.length)}` : `${products.length} бүтээгдэхүүн`}
               </p>
               <p className="mt-2 text-balance text-[clamp(1.375rem,1.05rem+1vw,2rem)] font-semibold leading-[1.1] tracking-[-0.025em]">
-                {product?.name ?? "Агаарын суваг, фасон эдлэл"}
+                {product?.name ?? "Агаарын суваг, холбох хэсэг"}
               </p>
               <p className="mt-1.5 text-sm text-white/70">{product?.lead ?? "Үйлдвэрлэж, нийлүүлнэ."}</p>
             </motion.div>

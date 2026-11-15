@@ -21,7 +21,7 @@
   --color-ink: #0b1020;
   --color-soft: #4f5a6e;
   --color-panel: #e9ebee;
-  --color-brand: #0100fd;
+  --color-brand: #2639b0; /* muted from #0100fd on 2026-11-15, at the user's request */
   --color-graphite: #1f2226;
   --color-mist: #aeb2b8; /* a cool mid grey; the Company ground before it moved onto night */
   --text-step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
@@ -228,6 +228,13 @@
 
 /* The home page's service icons (components/home/ServiceIcons.tsx): air running along a dashed line (its dash and gap
    make 90), smoke rings leaving a chimney, windows lit in turn, a wrench working a bolt. They turn on `orbit` too. */
+/* the footer's air line: short dashes running along a duct (components/blocks/cta-3.tsx) */
+@keyframes air-run {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
 @keyframes flow {
   to {
     stroke-dashoffset: -90;

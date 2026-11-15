@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 import { motion } from "motion/react";
 import Image from "next/image";
 
-// The plant's building (72 × 24 м, two floors, 7,35 м high: the facts approved on 2026-11-08) and four photos of it,
-// in place of the old page's last carousel.
+// The plant's building and four photos of it, in place of the old page's last carousel (its size line was taken off on
+// 2026-11-15, the user's call).
 const photos = [
   {
     src: "/images/factory9.jpg",
@@ -36,9 +36,6 @@ export function Plant() {
             <div className="lg:col-span-6">
               <Heading id="plant-title" text="Манай үйлдвэр" />
             </div>
-            <p className="max-w-[44ch] text-pretty text-step-body leading-[1.65] text-ink/70 lg:col-span-5 lg:col-start-8 lg:self-end">
-              72 × 24 м хэмжээтэй, 7,35 м өндөртэй, хоёр давхар барилгад байрладаг.
-            </p>
           </div>
 
           <motion.ul
