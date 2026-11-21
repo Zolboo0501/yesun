@@ -1,0 +1,95 @@
+{
+  "name": "yesun-mine",
+  "room": "mine",
+  "note": "A coal preparation plant in section for the home page's sixth scene: raw coal conveyor, screens, dense medium cyclones, sumps and pumps, product conveyor and stockpile; its fire protection (water tank, pump house, ring main and hydrants, sprinkler grids, conveyor deluge, gas for the electrical room, smoke fans), its fire alarm, and its automation (PLC and motor control cabinets, cable trays, field instruments, control room).",
+  "cache_dir": "~/.cache/interior-3d-hero/polyhaven",
+  "materials": {
+    "wood": {
+      "asset": "oak_veneer_05",
+      "mul": [
+        1.19,
+        1.21,
+        1.12
+      ],
+      "rough_mul": 0.9,
+      "tile": 1.0,
+      "nsize": 512
+    },
+    "floor": {
+      "asset": "laminate_floor_02",
+      "mul": [
+        1.0,
+        0.94,
+        0.88
+      ],
+      "rough_mul": 0.75,
+      "tile": 1.7,
+      "nsize": 512
+    },
+    "plaster": {
+      "asset": "beige_wall_001",
+      "mul": [
+        1.01,
+        1.08,
+        1.12
+      ],
+      "add": 0.3,
+      "tile": 3.0,
+      "normal_strength": 0.5
+    },
+    "fabric": {
+      "asset": "poly_wool_herringbone",
+      "mul": [
+        0.45,
+        0.47,
+        0.52
+      ],
+      "tile": 0.27
+    },
+    "fabric_light": {
+      "asset": "poly_wool_herringbone",
+      "mul": [
+        1.11,
+        1.08,
+        0.99
+      ],
+      "add": 0.27,
+      "tile": 0.27
+    },
+    "concrete": {
+      "asset": "concrete_floor_worn_001",
+      "mul": [
+        1.05,
+        1.03,
+        1.01
+      ],
+      "add": 0.31,
+      "tile": 3.0,
+      "dsize": 512,
+      "nsize": 512
+    },
+    "gravel": {
+      "asset": "asphalt_02",
+      "mul": [
+        1.41,
+        1.22,
+        1.01
+      ],
+      "add": 0.05,
+      "tile": 4.0,
+      "dsize": 512,
+      "nsize": 512
+    }
+  },
+  "colors": {
+    "desk": "f3f2ef",
+    "panel": "ecebe7",
+    "window_frame": "3a3d42",
+    "pot": "8d8a85",
+    "duct": "7f858c",
+    "duct_wrap": "c3c6ca",
+    "ahu": "d0d3d6",
+    "leaf_dark": "2f5a24",
+    "leaf_light": "7aa64a"
+  }
+}
