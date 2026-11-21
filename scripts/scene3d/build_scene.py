@@ -50,7 +50,7 @@ assert CEIL_TYPE in ("slats", "tiles", "open"), f"unknown ceiling type {CEIL_TYP
 # every room shares the shell and ceiling; the office's HVAC is built here, the kindergarten's and school's in
 # systems.py, and each room's furniture in rooms.py (the building has its own builder, building.py)
 ROOM = SPEC.get("room", "office")
-assert ROOM in ("office", "kindergarten", "school", "retail", "building"), f"unknown room {ROOM}"
+assert ROOM in ("office", "kindergarten", "school", "retail", "building", "mine"), f"unknown room {ROOM}"
 CACHE = os.path.expanduser(SPEC["cache_dir"])
 
 bpy.ops.wm.read_factory_settings(use_empty=True)
@@ -567,13 +567,13 @@ def preview(shots, lights=None):
         print("RENDERED", name)
 
 
-if ROOM == "building":
-    import building  # scripts/scene3d/building.py: a multi-storey building in section, its own layout
-
-    building.build(globals())
+if ROOM in ("building", "mine"):
+    # building.py: a multi-storey building in section; mine.py: a mine's workshop hall. Each has its own layout.
+    own = __import__(ROOM)
+    own.build(globals())
     export_glb()
     if DO_RENDER:
-        preview(building.SHOTS, building.LIGHTS)
+        preview(own.SHOTS, own.LIGHTS)
     sys.exit(0)
 
 

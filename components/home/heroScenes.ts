@@ -1,6 +1,6 @@
-// The hero's five scenes, in the order of their names at the foot of the stage: each is a model built by scripts/scene3d (office.glb from
-// scene.json, the others from kindergarten.json, school.json, retail.json and building.json), its camera shots and
-// its copy.
+// The hero's six scenes, in the order of their names in the tab bar: each is a model built by scripts/scene3d (office.glb from
+// scene.json, the others from kindergarten.json, school.json, retail.json, building.json and mine.json), its camera
+// shots and its copy.
 // Shots are three.js coordinates: x, y up, z towards the camera (Blender's -y). Every camera sits outside the
 // room or the building's cut, so a stop between two shots never lands inside a wall.
 
@@ -691,6 +691,107 @@ export const heroScenes: HeroSceneConfig[] = [
         text: "Үйлдвэрлэл, угсралтаас засвар үйлчилгээ хүртэл нэг дор хариуцна.",
         cta: true,
       },
+    ],
+  },
+  // A coal preparation plant in section (scripts/scene3d/mine.py): the plant is open toward the camera, so every camera
+  // stays in front of the cut or above the roof. Its three systems carry the model's `floor` extra (0 fire water, 1 fire
+  // alarm, 2 automation), so the last steps ghost the cladding, fade the process and bring one system forward at a
+  // time, each in its colour (red, amber, blue).
+  {
+    id: "mine",
+    name: "Уурхай",
+    model: "/models/hvac/mine.glb?v=3",
+    label:
+      "Нүүрс баяжуулах үйлдвэрийн зүсэлт: галын усны сав, насос станц, ус шүршигч, галын дохиолол, удирдлагын өрөө, автоматжуулалтын кабель, хэмжих хэрэгсэл",
+    mood: {
+      background: "#b9c6d3",
+      sun: "#fff1dc",
+      sunIntensity: 4.2,
+      daylight: "#eaf1ff",
+      pendant: "#fff1dc",
+    },
+    sun: { position: [22, 40, 30], extent: 36, far: 120 },
+    interior: false,
+    fog: { color: "#16171b", near: 66, far: 155 },
+    shots: [
+      { pos: [20, 16, 52], target: [4, 7, 0], fov: 40, shift: 0.15, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+      // the fire water tank and the pump house
+      { pos: [22, 6, 24], target: [19.5, 2.6, 4.5], fov: 38, shift: 0.16, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+      // the raw coal conveyor: heat sensing cable and open nozzles over the belt
+      { pos: [30, 9, 26], target: [21, 6.5, 0], fov: 39, shift: 0.16, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+      // the three floors: the riser and the sprinkler grid under each
+      { pos: [-2, 8.5, 37], target: [-1.5, 7.6, 0], fov: 42, shift: 0.17, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+      // call points, sounders and detectors on the columns
+      { pos: [-8.5, 8, 23], target: [-5.5, 7.6, 3], fov: 40, shift: 0.17, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+      // the electrical room: gas cylinders, cabinets
+      { pos: [8.8, 2.7, 15.5], target: [7.6, 2.2, 2], fov: 36, shift: 0.14, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+      // the PLC cabinet opened
+      { pos: [8.9, 1.8, 9.2], target: [6.3, 1.25, 1.6], fov: 32, shift: 0.14, ceiling: 1, slab: 1, sys: 0, ahu: 1 },
+      // the control room
+      { pos: [8.8, 7.3, 14.5], target: [7.9, 6.75, 2], fov: 34, shift: 0.14, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+      // the systems alone: cladding ghosted, process and yard faded, one system in focus per step
+      { pos: [26, 20, 44], target: [5, 5.5, 0], fov: 40, shift: 0.15, ceiling: 0, slab: 0.035, sys: 0, ahu: 0, fade: 1, floor: 0 },
+      { pos: [-8, 12.5, 39], target: [-0.5, 7.6, 0], fov: 40, shift: 0.17, ceiling: 0, slab: 0.035, sys: 0, ahu: 0, fade: 1, floor: 1 },
+      { pos: [14, 10.5, 36], target: [2, 6.6, 0], fov: 40, shift: 0.17, ceiling: 0, slab: 0.035, sys: 0, ahu: 0, fade: 1, floor: 2 },
+      { pos: [-16, 12, 50], target: [1, 7, 0], fov: 40, shift: 0.15, ceiling: 1, slab: 1, sys: 0, ahu: 0 },
+    ],
+    steps: [
+      {
+        tag: "Үйлдвэр",
+        title: "Нүүрс баяжуулах үйлдвэр",
+        text: "Нүүрсний тоос, туузан дамжуулагч, цахилгаан тоноглол галын эрсдэл дагуулдаг. Галын систем, автоматжуулалт үйлдвэрийг өдөр шөнөгүй хамгаална.",
+      },
+      {
+        tag: "Галын ус",
+        title: "Усны нөөц, насос станц",
+        text: "Нөөцийн савнаас ус татах цахилгаан насос, тог тасрахад ажиллах дизель насос, шугамын даралт барих жижиг насос нэг байранд байрлана.",
+      },
+      {
+        tag: "Тууз",
+        title: "Туузан дамжуулагчийн хамгаалалт",
+        text: "Туузны дээгүүр татсан кабель халалтыг мэдэрнэ. Гал илэрвэл дээрх шүршигчүүд туузыг бүхэлд нь усаар бүрхэнэ.",
+      },
+      {
+        tag: "Шүршигч",
+        title: "Давхар бүрийн ус шүршигч",
+        text: "Босоо шугам давхар бүрийн таазан доорх шүршигчийг усаар хангана. Шүршигч халуунд өөрөө нээгдэж, галыг эхэнд нь дарна.",
+      },
+      {
+        tag: "Дохиолол",
+        title: "Илрүүлж, дохио өгнө",
+        text: "Утаа мэдрэгч, гар дохиолол, дуут гэрлэн дохио давхар бүрт байрлаж, удирдлагын өрөөний нэг самбарт холбогдоно.",
+      },
+      {
+        tag: "Цахилгаан",
+        title: "Хийгээр унтраах систем",
+        text: "Цахилгааны өрөөнд ус хэрэглэхгүй. Баллон дахь хий галыг унтрааж, тоног төхөөрөмжийг гэмтээхгүй.",
+      },
+      {
+        tag: "Удирдлага",
+        title: "Удирдлагын шүүгээ",
+        text: "Мэдрэгч бүрийн дохио энд цуглана. Шүүгээ мотор, насос, хаалтыг програмын дагуу автоматаар удирдана.",
+      },
+      {
+        tag: "Хяналт",
+        title: "Удирдлагын өрөө",
+        text: "Оператор үйлдвэрийг бүхэлд нь дэлгэцээс хянана. Гал гарвал систем туузыг зогсоож, агаар сэлгэлтийг унтрааж, утаа зайлуулах сэнсийг асаана.",
+      },
+      {
+        tag: "Усны сүлжээ",
+        title: "Галын усны сүлжээ",
+        text: "Усны сав, насос станц, үйлдвэрийг тойрсон шугам, гадна талын усны цэг, давхар бүрийн шүршигч улаанаар харагдана.",
+      },
+      {
+        tag: "Дохиоллын сүлжээ",
+        title: "Дохиоллын сүлжээ",
+        text: "Туузны мэдрэгч кабель, утаа мэдрэгч, дохиоллын төхөөрөмж шар шугамаар нэг самбарт холбогдоно.",
+      },
+      {
+        tag: "Автоматжуулалт",
+        title: "Автоматжуулалтын сүлжээ",
+        text: "Хэмжих хэрэгсэл, кабелийн тавиур, удирдлагын шүүгээ, операторын дэлгэц цэнхэрээр харагдана.",
+      },
+      service,
     ],
   },
 ];

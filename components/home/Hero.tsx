@@ -17,7 +17,7 @@ import {
 } from "motion/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { heroScenes, type HeroSceneConfig } from "./heroScenes";
 import { StepCopy, StepLine } from "./Step";
 
@@ -30,6 +30,8 @@ const HeroScene = dynamic(() => import("./HeroScene"), {
 // scroll screen each (the building walks down its floors, so it is taller), so scrolling walks only the scene on
 // stage and then the page moves on; another scene slides in only when its name is picked.
 const steps = heroScenes.map((s) => s.steps.length);
+/** a store that never changes: the device is read once */
+const noChange = () => () => {};
 const clamp01 = (t: number) => Math.min(Math.max(t, 0), 1);
 const SLIDE = { duration: 0.8, ease: [0.65, 0, 0.35, 1] } as const;
 
@@ -109,8 +111,11 @@ export function Hero() {
   const [base, setBase] = useState(0);
   // Phones keep only the building on stage (and the one sliding out) mounted: a neighbour's model loading in the
   // background stalls the scroll there.
-  const [lite] = useState(
-    () => typeof window !== "undefined" && (window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768),
+  // Read after hydration (the server's page and the first client render both take the phone path), so the two agree.
+  const lite = useSyncExternalStore(
+    noChange,
+    () => window.matchMedia("(pointer: coarse)").matches || window.innerWidth < 768,
+    () => true,
   );
   const [leaving, setLeaving] = useState<number | null>(null);
   const last = steps[base] - 1;
@@ -142,6 +147,18 @@ export function Hero() {
     return () => (window.cancelIdleCallback ?? window.clearTimeout)(id);
   }, [lite, base, ready]);
 
+  // The tab bar scrolls sideways where the names are wider than the screen: the picked name comes to its middle.
+  const tabs = useRef<HTMLUListElement>(null);
+  useEffect(() => {
+    const track = tabs.current;
+    const tab = track?.children[base] as HTMLElement | undefined;
+    if (!track || !tab) return;
+    track.scrollTo({
+      left: tab.offsetLeft - (track.clientWidth - tab.offsetWidth) / 2,
+      behavior: reducedMotion ? "auto" : "smooth",
+    });
+  }, [base, reducedMotion]);
+
   const pick = (k: number) => {
     if (k === base) return go(0);
     setLeaving(base);
@@ -153,7 +170,7 @@ export function Hero() {
     <section
       id="home"
       ref={section}
-      aria-label="Есөн Бэлчир: оффис, цэцэрлэг, сургууль, дэлгүүр, барилгын агаар сэлгэлт, хөргөлтийн систем"
+      aria-label="Есөн Бэлчир: оффис, цэцэрлэг, сургууль, дэлгүүр, барилгын агаар сэлгэлт, хөргөлтийн систем, нүүрс баяжуулах үйлдвэрийн галын систем, автоматжуулалт"
       className="relative bg-night text-white"
       style={{ height: `${steps[base] * 100}svh` }}
     >
@@ -203,11 +220,15 @@ export function Hero() {
         </nav>
 
         {/* The buildings as a tab bar at the top of the stage, centred (since 2026-11-15, at the user's request): a dark
-            glass track, the one on stage a white pill that slides to the picked name; full width on phones, the five
-            names sharing it evenly. */}
+            glass track, the one on stage a brand pill that slides to the picked name. On phones the six names are wider
+            than the screen, so the track scrolls sideways and brings the picked name to its middle. */}
         <div className="pointer-events-none absolute inset-x-4 top-4 flex justify-center sm:inset-x-6 sm:top-5 lg:inset-x-8">
-          <nav aria-label="Объектууд" className="pointer-events-auto w-full sm:w-auto">
-            <ul className="flex rounded-full bg-night/60 p-1 shadow-[0_10px_30px_-12px_rgb(0_0_0/0.6)] ring-1 ring-white/15 backdrop-blur-md">
+          <nav aria-label="Объектууд" className="pointer-events-auto max-w-full">
+            <motion.ul
+              ref={tabs}
+              layoutScroll
+              className="flex overflow-x-auto overscroll-x-contain rounded-full bg-night/60 p-1 shadow-[0_10px_30px_-12px_rgb(0_0_0/0.6)] ring-1 ring-white/15 backdrop-blur-md [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
               {heroScenes.map((scene, k) => (
                 <SceneLink
                   key={scene.id}
@@ -217,7 +238,7 @@ export function Hero() {
                   onSelect={() => pick(k)}
                 />
               ))}
-            </ul>
+            </motion.ul>
           </nav>
         </div>
 
@@ -372,13 +393,13 @@ function SceneLink({
   onSelect: () => void;
 }) {
   return (
-    <li className="flex-1 sm:flex-none">
+    <li className="flex-none">
       <button
         type="button"
         onClick={onSelect}
         aria-current={current ? "true" : undefined}
         data-cursor-label={current ? "Эхнээс нь үзэх" : `${name} үзэх`}
-        className={`relative flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full px-1 text-[13px] font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:min-h-10 sm:px-4 sm:text-sm ${current ? "text-white" : "text-white/80 hover:bg-white/10 hover:text-white"}`}
+        className={`relative flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full px-3.5 text-[13px] font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:min-h-10 sm:px-4 sm:text-sm ${current ? "text-white" : "text-white/80 hover:bg-white/10 hover:text-white"}`}
       >
         {current && (
           <motion.span
